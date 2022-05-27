@@ -22,8 +22,6 @@ class ProductCrudController extends AbstractAppGrudController
      */
     public function configureFields(string $pageName): iterable
     {
-        $classMetadata = $this->getEntityManager()->getClassMetadata(self::getEntityFqcn());
-        dump($classMetadata);
         return [
             TextField::new('name', 'Name'),
             AssociationField::new('category', 'Category'),

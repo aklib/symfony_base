@@ -9,6 +9,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 class ProductCrudController extends AbstractAppGrudController
 {
+
+
     public static function getEntityFqcn(): string
     {
         return Product::class;
@@ -20,13 +22,13 @@ class ProductCrudController extends AbstractAppGrudController
      */
     public function configureFields(string $pageName): iterable
     {
-        parent::configureFields($pageName);
+        $classMetadata = $this->getEntityManager()->getClassMetadata(self::getEntityFqcn());
+        dump($classMetadata);
         return [
-            TextField::new('name', 'name'),
-            AssociationField::new('category', 'category'),
+            TextField::new('name', 'Name'),
+            AssociationField::new('category', 'Category'),
             DateTimeField::new('createdAt', 'Created')->setFormat('y-MM-d hh:mm:ss')->hideOnForm(),
             DateTimeField::new('updatedAt', 'Updated')->setFormat('y-MM-d hh:mm:ss')->hideOnForm()
         ];
     }
-
 }

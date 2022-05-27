@@ -9,6 +9,7 @@
 
 namespace App\Controller\Admin;
 
+use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -16,6 +17,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 
 abstract class AbstractAppGrudController extends AbstractCrudController
 {
+    private EntityManagerInterface $em;
+
+    public function __construct(EntityManagerInterface $em)
+    {
+        $this->em = $em;
+    }
     /**
      * Customise action icons view in a table
      * @param Crud $crud
@@ -40,5 +47,10 @@ abstract class AbstractAppGrudController extends AbstractCrudController
             return $action->addCssClass('btn btn-icon btn-sm btn-default')->setIcon('fa fa-trash')->setLabel(false)->setHtmlAttributes(['title' => 'Delete']);
         });
         return $actions;
+    }
+
+    public function getEntityManager(): EntityManagerInterface
+    {
+        return $this->em;
     }
 }

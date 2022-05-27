@@ -2,16 +2,18 @@
 
 namespace App\Entity;
 
+use App\Entity\Extension\TimestampableTrait;
 use App\Repository\ProductRepository;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Mapping\Annotation as Gedmo;
+
 
 /**
  * @ORM\Entity(repositoryClass=ProductRepository::class)
  */
 class Product
 {
+    use TimestampableTrait;
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -29,18 +31,6 @@ class Product
      * @ORM\JoinColumn(nullable=false)
      */
     private Category $category;
-
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     * @Gedmo\Timestampable(on="create")
-     */
-    private ?DateTime $createdAt;
-
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     * @Gedmo\Timestampable(on="create")
-     */
-    private ?DateTime $updatedAt;
 
     /**
      * @return int

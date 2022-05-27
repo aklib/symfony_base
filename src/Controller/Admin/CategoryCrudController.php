@@ -14,12 +14,12 @@ class CategoryCrudController extends AbstractAppGrudController
     }
 
 
-    public function configureFields(string $pageName): iterable
+    /*public function configureFields(string $pageName): iterable
     {
         return [
             TextField::new('name'),
 
         ];
-    }
+    }*/
 
 }

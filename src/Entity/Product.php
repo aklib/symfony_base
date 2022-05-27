@@ -33,6 +33,10 @@ class Product
     private Category $category;
 
     /**
+     * @ORM\Column(type="boolean", nullable=false)
+     */
+    private bool $active = true;
+    /**
      * @return int
      */
     public function getId(): int
@@ -107,4 +111,22 @@ class Product
     {
         $this->updatedAt = $updatedAt;
     }
+
+    /**
+     * @return bool
+     */
+    public function isActive(): bool
+    {
+        return $this->active;
+    }
+
+    /**
+     * @param bool $active
+     */
+    public function setActive(bool $active): void
+    {
+        $this->active = $active;
+    }
+
+
 }

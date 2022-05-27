@@ -1,0 +1,257 @@
+<!--begin::Header-->
+<!--header-fixed-->
+<div id="kt_header" class="header header-fixed" title="SCRIPT: /module/Metronic/view/layout/default/header/base.phtml">
+    <!--begin::Container-->
+    <div class="container-fluid  d-flex align-items-stretch justify-content-between">
+        <!--begin::Header Menu Wrapper-->
+        <div class="header-menu-wrapper header-menu-wrapper-left" id="kt_header_menu_wrapper">
+            <!--begin::Header Logo-->
+            <div class="header-logo">
+                <a href="/" class="brand-logo text-uppercase" title="SCRIPT: /module/Application/view/layout/partial/logo-svg-blue.phtml">
+                    Symfony
+                    <span class="svg-icon svg-icon-primary svg-icon-2x">
+                        {{ include('layout/_logo.html.twig') }}
+                    </span>
+                    Base
+                </a>
+
+                <!--<a href="/" class="logo" style="padding: 0; display: block; width:  60%"></a>-->
+                <!--<img src="/img/logo.png" width="20%" alt="logo" class="logo-default"/>-->
+                <!--<img alt="logo" src="/icon/logo-light.png" class="logo" width="100">-->
+            </div>
+            <!--end::Header Logo-->    <!--begin::Header Menu-->
+            <div id="kt_header_menu" class="header-menu header-menu-mobile header-menu-layout-default">
+                <!--begin::Header Nav-->
+
+                <ul class="menu-nav">
+
+                    <!-- BEGIN SUBMENU DROPDOWN -->
+                    <li class="menu-item" data-menu-toggle="click" aria-haspopup="true" title="SCRIPT: /module/Bootstrap/view/navigation/item.phtml">
+                        <a href="/" class="menu-link">
+                            <i class="menu-icon fa fa-home"></i>
+
+                            <!--TEXT-->
+                            <span class="menu-text">Dashboard</span>
+                            <!--ARROW-->
+                        </a>
+                    </li>
+                    <!-- BEGIN SUBMENU DROPDOWN -->
+                    <li class="menu-item menu-item-submenu menu-item-rel" data-menu-toggle="click" aria-haspopup="true"
+                        title="SCRIPT: /module/Bootstrap/view/navigation/item.phtml">
+                        <a href="javascript:;" class="menu-link menu-toggle">
+
+                            <!--TEXT-->
+                            <span class="menu-text">Administration</span>
+                            <!--ARROW-->
+                            <i class="menu-arrow"></i>
+                        </a>
+                        <div class="menu-submenu menu-submenu-classic menu-submenu-left">
+                            <ul class="menu-subnav">
+
+                                <!-- BEGIN SUBMENU DROPDOWN -->
+                                <li class="menu-item menu-item-submenu menu-item-rel" data-menu-toggle="hover" aria-haspopup="true"
+                                    title="SCRIPT: /module/Bootstrap/view/navigation/item.phtml">
+                                    <a href="javascript:;" class="menu-link menu-toggle">
+                                        <i class="menu-icon la la-user-friends"></i>
+
+                                        <!--TEXT-->
+                                        <span class="menu-text">User Management</span>
+                                        <!--ARROW-->
+                                        <i class="menu-arrow"></i>
+                                    </a>
+                                    <div class="menu-submenu menu-submenu-classic menu-submenu-right">
+                                        <ul class="menu-subnav">
+
+                                            <!-- BEGIN SUBMENU DROPDOWN -->
+                                            <li class="menu-item" data-menu-toggle="hover" aria-haspopup="true" title="SCRIPT: /module/Bootstrap/view/navigation/item.phtml">
+                                                <a href="/en/admin/user/list/" class="menu-link">
+                                                    <i class="menu-icon la la-tasks"></i>
+
+                                                    <!--TEXT-->
+                                                    <span class="menu-text">User Management</span>
+                                                    <!--ARROW-->
+                                                </a>
+                                            </li>
+
+                                            <!-- BEGIN SUBMENU DROPDOWN -->
+                                            <li class="menu-item" data-menu-toggle="hover" aria-haspopup="true" title="SCRIPT: /module/Bootstrap/view/navigation/item.phtml">
+                                                <a href="/en/admin/user/create/" class="menu-link">
+                                                    <i class="menu-icon la la-plus"></i>
+
+                                                    <!--TEXT-->
+                                                    <span class="menu-text">User Create</span>
+                                                    <!--ARROW-->
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+
+                                <!-- BEGIN SUBMENU DROPDOWN -->
+                                <li class="menu-item menu-item-submenu menu-item-rel" data-menu-toggle="hover" aria-haspopup="true"
+                                    title="SCRIPT: /module/Bootstrap/view/navigation/item.phtml">
+                                    <a href="javascript:;" class="menu-link menu-toggle">
+                                        <i class="menu-icon la la-shield"></i>
+
+                                        <!--TEXT-->
+                                        <span class="menu-text">Access Management</span>
+                                        <!--ARROW-->
+                                        <i class="menu-arrow"></i>
+                                    </a>
+                                    <div class="menu-submenu menu-submenu-classic menu-submenu-right">
+                                        <ul class="menu-subnav">
+
+                                            <!-- BEGIN SUBMENU DROPDOWN -->
+                                            <li class="menu-item" data-menu-toggle="hover" aria-haspopup="true" title="SCRIPT: /module/Bootstrap/view/navigation/item.phtml">
+                                                <a href="/en/admin/mvc/list/" class="menu-link">
+                                                    <i class="menu-icon la la-user-shield"></i>
+
+                                                    <!--TEXT-->
+                                                    <span class="menu-text">Resource Management</span>
+                                                    <!--ARROW-->
+                                                </a>
+                                            </li>
+
+                                            <!-- BEGIN SUBMENU DROPDOWN -->
+                                            <li class="menu-item" data-menu-toggle="hover" aria-haspopup="true" title="SCRIPT: /module/Bootstrap/view/navigation/item.phtml">
+                                                <a href="/en/admin/column/list/" class="menu-link">
+                                                    <i class="menu-icon la la-user-shield"></i>
+
+                                                    <!--TEXT-->
+                                                    <span class="menu-text">Columns Management</span>
+                                                    <!--ARROW-->
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+
+                                <!-- BEGIN SUBMENU DROPDOWN -->
+                                <li class="menu-item menu-item-submenu menu-item-rel" data-menu-toggle="hover" aria-haspopup="true"
+                                    title="SCRIPT: /module/Bootstrap/view/navigation/item.phtml">
+                                    <a href="javascript:;" class="menu-link menu-toggle">
+                                        <i class="menu-icon la la-envelope"></i>
+
+                                        <!--TEXT-->
+                                        <span class="menu-text">Email Templates</span>
+                                        <!--ARROW-->
+                                        <i class="menu-arrow"></i>
+                                    </a>
+                                    <div class="menu-submenu menu-submenu-classic menu-submenu-right">
+                                        <ul class="menu-subnav">
+
+                                            <!-- BEGIN SUBMENU DROPDOWN -->
+                                            <li class="menu-item" data-menu-toggle="hover" aria-haspopup="true" title="SCRIPT: /module/Bootstrap/view/navigation/item.phtml">
+                                                <a href="/en/admin/preview/list/" class="menu-link">
+                                                    <i class="menu-icon la la-tasks"></i>
+
+                                                    <!--TEXT-->
+                                                    <span class="menu-text">Email Previews</span>
+                                                    <!--ARROW-->
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+
+
+                <!--end::Header Nav-->
+            </div>
+            <!--end::Header Menu-->
+        </div>
+
+        <!--end::Header Menu Wrapper-->
+        <!--begin::Topbar-->
+        <div class="topbar">
+
+            <!--[html-partial:include:{"file":"partials/_header/topbar/_search.html"}]/-->
+
+            <!--[html-partial:include:{"file":"partials/_header/topbar/_notifications.html"}]/-->
+
+            <!--[html-partial:include:{"file":"partials/_header/topbar/_quick-actions.html"}]/-->
+
+            <!--[html-partial:include:{"file":"partials/_header/topbar/_my-cart.html"}]/-->
+
+            <!--[html-partial:include:{"file":"partials/_header/topbar/_quick-panel.html"}]/-->
+
+            <!--[html-partial:include:{"file":"partials/_header/topbar/_languages.html"}]/-->
+
+            <!--[html-partial:include:{"file":"partials/_header/topbar/_user.html"}]/-->
+
+
+            <!--begin::User-->
+            <div class="dropdown" title="SCRIPT: /module/Bootstrap/view/navigation/partial/user-header.phtml">
+
+                <!--begin::Toggle-->
+                <div class="topbar-item" data-toggle="dropdown" data-offset="0px,0px">
+                    <div class="btn btn-icon w-auto btn-clean d-flex align-items-center btn-lg px-2">
+                        <span class="text-dark-50 font-size-base d-none d-md-inline mr-3"><i class="icon-md text-dark-50 flaticon-user-ok"></i>&nbsp;Alexej</span>
+                    </div>
+                </div>
+
+                <!--end::Toggle-->
+
+                <!--begin::Dropdown-->
+                <div class="dropdown-menu p-0 m-0 dropdown-menu-right dropdown-menu-anim-up dropdown-menu-md shadow p-0">
+                    <ul class="navi navi-hover pt-4">
+                        <!--begin::Item-->
+                        <li class="navi-item ">
+                            <a href="/en/my/profile" class="navi-link" title="">
+                                <span class="navi-text">
+                                                                              <span class="symbol symbol-20 mr-3">
+                                             <i class="menu-icon icon-md text-dark-50 flaticon-list-2"></i>
+                                        </span>
+                                                                         Overview                                </span>
+                            </a>
+                        </li>
+                        <!--end::Item-->
+                        <!--begin::Item-->
+                        <li class="navi-item ">
+                            <a href="/en/my/profile/edit" class="navi-link" title="">
+                                <span class="navi-text">
+                                                                              <span class="symbol symbol-20 mr-3">
+                                             <i class="menu-icon icon-md text-dark-50 flaticon-settings-1"></i>
+                                        </span>
+                                                                         Edit Profile                                </span>
+                            </a>
+                        </li>
+                        <!--end::Item-->
+                        <!--begin::Item-->
+                        <li class="navi-item ">
+                            <a href="/en/my/profile/password" class="navi-link" title="">
+                                <span class="navi-text">
+                                                                              <span class="symbol symbol-20 mr-3">
+                                             <i class="menu-icon icon-md text-dark-50 flaticon-lock"></i>
+                                        </span>
+                                                                         Change Password                                </span>
+                            </a>
+                        </li>
+                        <!--end::Item-->
+                        <!--begin::Item-->
+                        <li class="navi-item  bg-dark-o-5">
+                            <div class="separator separator-solid"></div>
+                            <a href="/logout" class="navi-link" title="">
+                                <span class="navi-text">
+                                                                              <span class="symbol symbol-20 mr-3">
+                                             <i class="menu-icon icon-md text-dark-50 flaticon-logout"></i>
+                                        </span>
+                                                                         Logout                                </span>
+                            </a>
+                        </li>
+                        <!--end::Item-->
+                    </ul>
+                </div>
+                <!--end::Dropdown-->
+            </div>
+            <!--end::User-->
+
+        </div>
+
+        <!-- end:: Header Topbar -->    </div>
+    <!--end::Container-->
+</div>
+<!--end::Header-->

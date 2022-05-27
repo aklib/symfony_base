@@ -1,0 +1,16 @@
+/.idea/
+###> symfony/framework-bundle ###
+/.env.local
+/.env.local.php
+/.env.*.local
+/config/secrets/prod/prod.decrypt.private.php
+/public/assets/
+/var/
+/vendor/
+###< symfony/framework-bundle ###
+/docker/
+/docker/elasticsearch/esdata/
+/docker/mysql/mysql/
+/docker/redis/redisdata/
+/Dockerfile
+/docker-compose.yml

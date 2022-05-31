@@ -7,3 +7,4 @@
 <p>This link will expire in {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.</p>
 
 <p>Cheers!</p>
+<a href="{{ path('app_login') }}" class="btn btn-default float-right">{% trans %}Back to Login{% endtrans %}</a>

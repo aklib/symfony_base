@@ -4,10 +4,10 @@
 
 {% block body %}
     {% for flash_error in app.flashes('reset_password_error') %}
-        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+        <div class="alert alert-outline-danger" role="alert">{{ flash_error }}</div>
     {% endfor %}
     <h1>{% trans %}Reset your password{% endtrans %}</h1>
-
+    {% form_theme requestForm 'bootstrap_5_layout.html.twig' %}
     {{ form_start(requestForm) }}
     {{ form_row(requestForm.email) }}
     <div>
@@ -18,7 +18,8 @@
             {% endtrans %}
         </small>
     </div>
-
+<br>
     <button class="btn btn-primary float-left">{% trans %}Send password reset email{% endtrans %}</button>
+    <a href="{{ path('app_login') }}" class="btn btn-default float-right">{% trans %}Back to Login{% endtrans %}</a>
     {{ form_end(requestForm) }}
 {% endblock %}

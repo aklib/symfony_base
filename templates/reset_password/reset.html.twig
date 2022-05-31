@@ -3,8 +3,11 @@
 {% block title %}Reset your password{% endblock %}
 
 {% block body %}
+    {% for flash_error in app.flashes('reset_password_error') %}
+        <div class="alert alert-outline-danger" role="alert">{{ flash_error }}</div>
+    {% endfor %}
     <h1>Reset your password</h1>
-
+    {% form_theme requestForm 'bootstrap_5_layout.html.twig' %}
     {{ form_start(resetForm) }}
         {{ form_row(resetForm.plainPassword) }}
         <button class="btn btn-primary">Reset password</button>

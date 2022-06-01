@@ -3,7 +3,7 @@ php ./vendor/doctrine/doctrine-module/bin/doctrine-module orm:schema-tool:update
 php ./vendor/doctrine/doctrine-module/bin/doctrine-module orm:validate
 sudo docker exec -it roi-push_php_1 bash
 
-msgfmt en.po -o en.mo
+msgfmt messages.en.po -o messages.en.mo
 
 token
 36ac75e73305b2301081d06ff269619c9be8e08b

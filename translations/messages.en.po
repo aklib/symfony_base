@@ -29,7 +29,7 @@ msgid "product"
 msgstr "product"
 
 msgid "Product"
-msgstr "ProductRRR"
+msgstr "Product"
 
 #. EasyAdminBundle+intl-icu.en
 msgid "label.form.empty_value"

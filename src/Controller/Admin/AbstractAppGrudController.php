@@ -14,6 +14,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
@@ -31,11 +32,14 @@ abstract class AbstractAppGrudController extends AbstractCrudController
 {
     private EntityManagerInterface $em;
     private TranslatorInterface $translator;
+    private array $mappings;
 
     public function __construct(EntityManagerInterface $em, TranslatorInterface $translator)
     {
         $this->em = $em;
         $this->translator = $translator;
+        $classMetadata = $this->getEntityManager()->getClassMetadata(static::getEntityFqcn());
+        $this->mappings = array_replace_recursive($classMetadata->fieldMappings, $classMetadata->associationMappings);
     }
 
     /**
@@ -55,9 +59,7 @@ abstract class AbstractAppGrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         $fields = [];
-        $classMetadata = $this->getEntityManager()->getClassMetadata(static::getEntityFqcn());
-        $mappings = array_replace_recursive($classMetadata->fieldMappings, $classMetadata->associationMappings);
-        foreach ($mappings as $propertyName => $mapping) {
+        foreach ($this->mappings as $propertyName => $mapping) {
             $label = $this->getTranslator()->trans(ucfirst($propertyName));
             switch ($mapping['type']) {
                 case 'integer':
@@ -104,6 +106,16 @@ abstract class AbstractAppGrudController extends AbstractCrudController
         }
         return $this->postConfigureFields($fields);
     }
+
+    public function configureFilters(Filters $filters): Filters
+    {
+
+        foreach ($this->mappings as $propertyName => $mapping) {
+            $filters->add($propertyName);
+        }
+        return $filters;
+    }
+
 
 
     /**

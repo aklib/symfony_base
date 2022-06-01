@@ -1,8 +1,11 @@
-<?php /** @noinspection PhpUnusedPrivateFieldInspection */
+<?php /** @noinspection PhpUnused */
+
+/** @noinspection PhpUnusedPrivateFieldInspection */
 
 namespace App\Entity;
 
-use App\Entity\Extension\TimestampableTrait;
+use App\Entity\Extension\Traits\BlameableTrait;
+use App\Entity\Extension\Traits\TimestampableTrait;
 use App\Repository\ProductRepository;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
@@ -13,7 +16,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Product
 {
-    use TimestampableTrait;
+    use TimestampableTrait, BlameableTrait;
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -81,38 +84,6 @@ class Product
     }
 
     /**
-     * @return DateTime|null
-     */
-    public function getCreatedAt(): ?DateTime
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * @param DateTime|null $createdAt
-     */
-    public function setCreatedAt(?DateTime $createdAt): void
-    {
-        $this->createdAt = $createdAt;
-    }
-
-    /**
-     * @return DateTime|null
-     */
-    public function getUpdatedAt(): ?DateTime
-    {
-        return $this->updatedAt;
-    }
-
-    /**
-     * @param DateTime|null $updatedAt
-     */
-    public function setUpdatedAt(?DateTime $updatedAt): void
-    {
-        $this->updatedAt = $updatedAt;
-    }
-
-    /**
      * @return bool
      */
     public function isActive(): bool
@@ -128,5 +99,24 @@ class Product
         $this->active = $active;
     }
 
+    /**
+     * @return DateTime|null
+     */
+    public function getCreatedAt(): ?DateTime
+    {
+        return $this->createdAt;
+    }
 
+    /**
+     * @param DateTime|null $createdAt
+     */
+    public function setCreatedAt(?DateTime $createdAt): void
+    {
+        $this->createdAt = $createdAt;
+    }
+
+    public function __toString()
+    {
+        return $this->name;
+    }
 }

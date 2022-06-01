@@ -7,7 +7,7 @@
  * author: alexej@kisselev.de
  */
 
-namespace App\Entity\Extension;
+namespace App\Entity\Extension\Traits;
 
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;

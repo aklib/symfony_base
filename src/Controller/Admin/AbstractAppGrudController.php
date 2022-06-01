@@ -78,7 +78,10 @@ abstract class AbstractAppGrudController extends AbstractCrudController
                     break;
                 case 'datetime':
                 case 'date_immutable':
-                    $fields[$propertyName] = DateTimeField::new($propertyName, $label)->setFormat('y-MM-d hh:mm:ss')->hideOnForm();
+                    $fields[$propertyName] = DateTimeField::new($propertyName, $label)->setFormat('y-MM-d hh:mm:ss');
+                if('createdAt' === $propertyName || 'updatedAt' === $propertyName){
+                    $fields[$propertyName]->hideOnForm();
+                }
                     break;
                 case 'date':
                     $fields[$propertyName] = DateField::new($propertyName, $label)->setFormat('y-MM-d hh:mm:ss')->hideOnForm();
@@ -92,6 +95,9 @@ abstract class AbstractAppGrudController extends AbstractCrudController
                 case ClassMetadataInfo::ONE_TO_MANY:
                 case ClassMetadataInfo::MANY_TO_ONE:
                     $fields[$propertyName] = AssociationField::new($propertyName, $label);
+                    if('createdBy' === $propertyName || 'updatedBy' === $propertyName){
+                        $fields[$propertyName]->hideOnForm();
+                    }
                     break;
                 default:
                     if ($propertyName === 'password') {
@@ -104,7 +110,7 @@ abstract class AbstractAppGrudController extends AbstractCrudController
                     }
             }
         }
-        return $this->postConfigureFields($fields);
+        return $fields;
     }
 
     public function configureFilters(Filters $filters): Filters
@@ -132,12 +138,6 @@ abstract class AbstractAppGrudController extends AbstractCrudController
                 return $action->addCssClass('btn btn-icon btn-sm btn-default')->setIcon('fa fa-trash')->setLabel(false)->setHtmlAttributes(['title' => 'Delete']);
             });
         return $actions;
-    }
-
-
-    protected function postConfigureFields(array $fields): iterable
-    {
-        return $fields;
     }
 
     /**

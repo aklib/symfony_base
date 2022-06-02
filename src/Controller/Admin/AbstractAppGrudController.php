@@ -68,7 +68,7 @@ abstract class AbstractAppGrudController extends AbstractCrudController
     {
         $fields = [];
         foreach ($this->mappings as $propertyName => $mapping) {
-            if(!$this->isVisible($propertyName)) {
+            if(!$this->isVisibleProperty($propertyName)) {
                 continue;
             }
 
@@ -165,7 +165,7 @@ abstract class AbstractAppGrudController extends AbstractCrudController
         return $this->em;
     }
 
-    protected function isVisible(string $propertyName): bool
+    protected function isVisibleProperty(string $propertyName): bool
     {
         return true;
     }

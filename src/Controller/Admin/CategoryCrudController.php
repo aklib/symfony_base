@@ -3,8 +3,6 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Category;
-use App\Repository\CategoryRepository;
-use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 
 class CategoryCrudController extends AbstractAppGrudController
 {
@@ -13,7 +11,7 @@ class CategoryCrudController extends AbstractAppGrudController
         return Category::class;
     }
 
-    protected function isVisible(string $propertyName): bool
+    protected function isVisibleProperty(string $propertyName): bool
     {
         switch ($propertyName){
             case 'lft':
@@ -24,6 +22,6 @@ class CategoryCrudController extends AbstractAppGrudController
             case 'products':
                 return false;
         }
-        return parent::isVisible($propertyName);
+        return parent::isVisibleProperty($propertyName);
     }
 }

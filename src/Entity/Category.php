@@ -34,7 +34,6 @@ class Category
      */
     private Collection $products;
 
-
     /**
      * @Gedmo\TreeLeft
      * @ORM\Column(type="integer")

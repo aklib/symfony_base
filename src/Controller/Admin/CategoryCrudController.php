@@ -20,17 +20,10 @@ class CategoryCrudController extends AbstractAppGrudController
             case 'rgt':
             case 'level':
             case 'root':
+            case 'children':
+            case 'products':
                 return false;
         }
         return parent::isVisible($propertyName);
     }
-
-    /*public function configureFields(string $pageName): iterable
-    {
-        return [
-            TextField::new('name'),
-
-        ];
-    }*/
-
 }

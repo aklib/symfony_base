@@ -2,8 +2,8 @@
 
 namespace App\Entity;
 
-use App\Entity\Extension\Traits\BlameableTrait;
-use App\Entity\Extension\Traits\TimestampableTrait;
+use App\Entity\Extension\Traits\BlameableEntityTrait;
+use App\Entity\Extension\Traits\TimestampableEntityTrait;
 use App\Repository\CategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -14,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Category
 {
-    use TimestampableTrait, BlameableTrait;
+    use TimestampableEntityTrait, BlameableEntityTrait;
     /**
      * @ORM\Id
      * @ORM\GeneratedValue

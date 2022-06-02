@@ -13,7 +13,7 @@ use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
-trait TimestampableTrait
+trait TimestampableEntityTrait
 {
     /**
      * @ORM\Column(type="datetime", nullable=true)

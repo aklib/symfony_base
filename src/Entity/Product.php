@@ -4,8 +4,8 @@
 
 namespace App\Entity;
 
-use App\Entity\Extension\Traits\BlameableTrait;
-use App\Entity\Extension\Traits\TimestampableTrait;
+use App\Entity\Extension\Traits\BlameableEntityTrait;
+use App\Entity\Extension\Traits\TimestampableEntityTrait;
 use App\Repository\ProductRepository;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
@@ -16,7 +16,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Product
 {
-    use TimestampableTrait, BlameableTrait;
+    use TimestampableEntityTrait, BlameableEntityTrait;
     /**
      * @ORM\Id
      * @ORM\GeneratedValue

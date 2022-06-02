@@ -8,8 +8,10 @@ use App\Repository\CategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
+ * @Gedmo\Tree(type="nested")
  * @ORM\Entity(repositoryClass=CategoryRepository::class)
  */
 class Category
@@ -32,6 +34,45 @@ class Category
      */
     private Collection $products;
 
+
+    /**
+     * @Gedmo\TreeLeft
+     * @ORM\Column(type="integer")
+     */
+    private int $lft;
+
+    /**
+     * @Gedmo\TreeRight
+     * @ORM\Column(type="integer")
+     */
+    private int $rgt;
+
+    /**
+     * @Gedmo\TreeParent
+     * @ORM\ManyToOne(targetEntity="App\Entity\Category", inversedBy="children")
+     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
+     */
+    private ?Category $parent = null;
+
+    /**
+     * @Gedmo\TreeRoot
+     * @ORM\ManyToOne(targetEntity="App\Entity\Category")
+     * @ORM\JoinColumn(name="tree_root", referencedColumnName="id", onDelete="CASCADE")
+     */
+    private ?Category $root;
+
+    /**
+     * @Gedmo\TreeLevel
+     * @ORM\Column(name="lvl", type="integer")
+     */
+    private int $level;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Category", mappedBy="parent")
+     * @ORM\OrderBy({"lft" = "ASC"})
+     */
+    private Collection $children;
+    
     public function __construct()
     {
         $this->products = new ArrayCollection();
@@ -90,6 +131,102 @@ class Category
             $products->setCategory(null);
         }
         return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLft(): int
+    {
+        return $this->lft;
+    }
+
+    /**
+     * @param int $lft
+     */
+    public function setLft(int $lft): void
+    {
+        $this->lft = $lft;
+    }
+
+    /**
+     * @return int
+     */
+    public function getRgt(): int
+    {
+        return $this->rgt;
+    }
+
+    /**
+     * @param int $rgt
+     */
+    public function setRgt(int $rgt): void
+    {
+        $this->rgt = $rgt;
+    }
+
+    /**
+     * @return Category|null
+     */
+    public function getParent(): ?Category
+    {
+        return $this->parent;
+    }
+
+    /**
+     * @param Category|null $parent
+     */
+    public function setParent(?Category $parent): void
+    {
+        $this->parent = $parent;
+    }
+
+    /**
+     * @return Category|null
+     */
+    public function getRoot(): ?Category
+    {
+        return $this->root;
+    }
+
+    /**
+     * @param Category|null $root
+     */
+    public function setRoot(?Category $root): void
+    {
+        $this->root = $root;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLevel(): int
+    {
+        return $this->level;
+    }
+
+    /**
+     * @param int $level
+     */
+    public function setLevel(int $level): void
+    {
+        $this->level = $level;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getChildren(): Collection
+    {
+        return $this->children;
+    }
+
+    /**
+     * @param Collection $children
+     */
+    public function setChildren(Collection $children): void
+    {
+        $this->children = $children;
     }
 
     public function __toString()

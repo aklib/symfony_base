@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Category;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 
 /**
  * @extends ServiceEntityRepository<Category>
@@ -14,13 +15,8 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Category[]    findAll()
  * @method Category[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class CategoryRepository extends ServiceEntityRepository
+class CategoryRepository extends NestedTreeRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
-        parent::__construct($registry, Category::class);
-    }
-
     public function add(Category $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);

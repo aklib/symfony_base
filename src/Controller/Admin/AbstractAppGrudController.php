@@ -15,6 +15,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
@@ -42,6 +43,8 @@ abstract class AbstractAppGrudController extends AbstractCrudController
         $this->mappings = array_replace_recursive($classMetadata->fieldMappings, $classMetadata->associationMappings);
     }
 
+
+
     /**
      * Customise action icons view in a table
      * @param Crud $crud
@@ -52,6 +55,11 @@ abstract class AbstractAppGrudController extends AbstractCrudController
         return $crud->showEntityActionsInlined();
     }
 
+    public function index(AdminContext $context)
+    {
+        return parent::index($context);
+    }
+
     /**
      * @param string $pageName
      * @return iterable
@@ -60,6 +68,10 @@ abstract class AbstractAppGrudController extends AbstractCrudController
     {
         $fields = [];
         foreach ($this->mappings as $propertyName => $mapping) {
+            if(!$this->isVisible($propertyName)) {
+                continue;
+            }
+
             $label = $this->getTranslator()->trans(ucfirst($propertyName));
             switch ($mapping['type']) {
                 case 'integer':
@@ -151,5 +163,10 @@ abstract class AbstractAppGrudController extends AbstractCrudController
     protected function getEntityManager(): EntityManagerInterface
     {
         return $this->em;
+    }
+
+    protected function isVisible(string $propertyName): bool
+    {
+        return true;
     }
 }

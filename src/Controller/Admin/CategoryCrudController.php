@@ -3,8 +3,8 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Category;
-use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use App\Repository\CategoryRepository;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 
 class CategoryCrudController extends AbstractAppGrudController
 {
@@ -13,6 +13,17 @@ class CategoryCrudController extends AbstractAppGrudController
         return Category::class;
     }
 
+    protected function isVisible(string $propertyName): bool
+    {
+        switch ($propertyName){
+            case 'lft':
+            case 'rgt':
+            case 'level':
+            case 'root':
+                return false;
+        }
+        return parent::isVisible($propertyName);
+    }
 
     /*public function configureFields(string $pageName): iterable
     {

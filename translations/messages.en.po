@@ -31,6 +31,48 @@ msgstr "product"
 msgid "Product"
 msgstr "Product"
 
+msgid "Name"
+msgstr "Name"
+
+msgid "CreatedAt"
+msgstr "Created"
+
+msgid "UpdatedAt"
+msgstr "Updated"
+
+msgid "Parent"
+msgstr "Parent"
+
+msgid "CreatedBy"
+msgstr "Created by"
+
+msgid "UpdatedBy"
+msgstr "Updated by"
+
+msgid "Dashboard"
+msgstr "Dashboard"
+
+msgid "Products"
+msgstr "Products"
+
+msgid "User"
+msgstr "User"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #. EasyAdminBundle+intl-icu.en
 msgid "label.form.empty_value"
 msgstr "__label.form.empty_value"

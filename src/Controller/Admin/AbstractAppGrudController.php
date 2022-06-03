@@ -15,7 +15,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
-use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
@@ -44,7 +43,6 @@ abstract class AbstractAppGrudController extends AbstractCrudController
     }
 
 
-
     /**
      * Customise action icons view in a table
      * @param Crud $crud
@@ -55,10 +53,10 @@ abstract class AbstractAppGrudController extends AbstractCrudController
         return $crud->showEntityActionsInlined();
     }
 
-    public function index(AdminContext $context)
-    {
-        return parent::index($context);
-    }
+//    public function index(AdminContext $context)
+//    {
+//        return parent::index($context);
+//    }
 
     /**
      * @param string $pageName
@@ -68,11 +66,11 @@ abstract class AbstractAppGrudController extends AbstractCrudController
     {
         $fields = [];
         foreach ($this->mappings as $propertyName => $mapping) {
-            if(!$this->isVisibleProperty($propertyName)) {
+            if (!$this->isVisibleProperty($propertyName)) {
                 continue;
             }
 
-            $label = $this->getTranslator()->trans(ucfirst($propertyName));
+            $label = ucfirst($propertyName);
             switch ($mapping['type']) {
                 case 'integer':
                     if ($propertyName !== 'id') {
@@ -91,9 +89,9 @@ abstract class AbstractAppGrudController extends AbstractCrudController
                 case 'datetime':
                 case 'date_immutable':
                     $fields[$propertyName] = DateTimeField::new($propertyName, $label)->setFormat('y-MM-d hh:mm:ss');
-                if('createdAt' === $propertyName || 'updatedAt' === $propertyName){
-                    $fields[$propertyName]->hideOnForm();
-                }
+                    if ('createdAt' === $propertyName || 'updatedAt' === $propertyName) {
+                        $fields[$propertyName]->hideOnForm();
+                    }
                     break;
                 case 'date':
                     $fields[$propertyName] = DateField::new($propertyName, $label)->setFormat('y-MM-d hh:mm:ss')->hideOnForm();
@@ -107,7 +105,7 @@ abstract class AbstractAppGrudController extends AbstractCrudController
                 case ClassMetadataInfo::ONE_TO_MANY:
                 case ClassMetadataInfo::MANY_TO_ONE:
                     $fields[$propertyName] = AssociationField::new($propertyName, $label);
-                    if('createdBy' === $propertyName || 'updatedBy' === $propertyName){
+                    if ('createdBy' === $propertyName || 'updatedBy' === $propertyName) {
                         $fields[$propertyName]->hideOnForm();
                     }
                     break;
@@ -127,13 +125,11 @@ abstract class AbstractAppGrudController extends AbstractCrudController
 
     public function configureFilters(Filters $filters): Filters
     {
-
         foreach ($this->mappings as $propertyName => $mapping) {
             $filters->add($propertyName);
         }
         return $filters;
     }
-
 
 
     /**
@@ -159,7 +155,7 @@ abstract class AbstractAppGrudController extends AbstractCrudController
     {
         return $this->translator;
     }
-    
+
     protected function getEntityManager(): EntityManagerInterface
     {
         return $this->em;

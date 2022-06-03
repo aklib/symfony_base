@@ -2,6 +2,9 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Attribute;
+use App\Entity\AttributeTab;
+use App\Entity\AttributeType;
 use App\Entity\Category;
 use App\Entity\Product;
 use App\Entity\User;
@@ -47,6 +50,12 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::section('Product');
         yield MenuItem::linkToCrud('Products', 'fas fa-list', Product::class);
         yield MenuItem::linkToCrud('Category', 'fas fa-tree', Category::class);
+
+        yield MenuItem::section('Attribute');
+        yield MenuItem::linkToCrud('Attribute', 'fas fa-list', Attribute::class);
+        yield MenuItem::linkToCrud('Attribute Tabs', 'fas fa-list', AttributeTab::class);
+        yield MenuItem::linkToCrud('Attribute Types', 'fas fa-list', AttributeType::class);
+
         yield MenuItem::section('User');
         yield MenuItem::linkToCrud('User', 'fas fa-list', User::class);
     }

@@ -35,6 +35,22 @@ class Category
     private Collection $products;
 
     /**
+     * @var Collection|null
+     *
+     * @ORM\ManyToMany(targetEntity="App\Entity\Attribute", inversedBy="categories")
+     * @ORM\JoinTable(name="attribute_category_xref",
+     *   joinColumns={
+     *     @ORM\JoinColumn(name="category_id", referencedColumnName="id")
+     *   },
+     *   inverseJoinColumns={
+     *     @ORM\JoinColumn(name="attribute_id", referencedColumnName="id")
+     *   }
+     * )
+     * @ORM\OrderBy({"sortOrder" = "ASC"})
+     */
+    private ?Collection $attributes = null;
+
+    /**
      * @Gedmo\TreeLeft
      * @ORM\Column(type="integer")
      */
@@ -231,5 +247,21 @@ class Category
     public function __toString()
     {
         return $this->name;
+    }
+
+    /**
+     * @return Collection|null
+     */
+    public function getAttributes(): ?Collection
+    {
+        return $this->attributes;
+    }
+
+    /**
+     * @param Collection|null $attributes
+     */
+    public function setAttributes(?Collection $attributes): void
+    {
+        $this->attributes = $attributes;
     }
 }

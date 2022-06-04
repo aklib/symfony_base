@@ -41,7 +41,7 @@ class CategoryCrudController extends AbstractAppGrudController
         return $assets
             ->addCssFile('/js/treegrid/jquery.treegrid.css')
             ->addJsFile('https://code.jquery.com/jquery-3.1.1.min.js')
-            ->addJsFile('/js/treegrid/jquery.treegrid.min.js');
+            ->addJsFile('/js/treegrid/jquery.treegrid.js');
     }
 
 

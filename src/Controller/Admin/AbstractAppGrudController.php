@@ -107,6 +107,19 @@ abstract class AbstractAppGrudController extends AbstractCrudController
                     $fields[$propertyName] = AssociationField::new($propertyName, $label);
                     if ('createdBy' === $propertyName || 'updatedBy' === $propertyName) {
                         $fields[$propertyName]->hideOnForm();
+                    } elseif ($mapping['type'] !== ClassMetadataInfo::MANY_TO_ONE) {
+                        $fields[$propertyName]->formatValue(function ($v, $entity) use ($pageName, $mapping) {
+                            if ($pageName === 'detail') {
+                                $method = 'get' . ucfirst($mapping['fieldName']);
+                                $collection = $entity->$method();
+                                $result = [];
+                                foreach ($collection as $item) {
+                                    $result[] = (string)$item;
+                                }
+                                return implode('<br>', $result);
+                            }
+                            return $v;
+                        });
                     }
                     break;
                 default:
@@ -144,7 +157,12 @@ abstract class AbstractAppGrudController extends AbstractCrudController
         })
             ->update(Crud::PAGE_INDEX, Action::DELETE, function (Action $action) {
                 return $action->addCssClass('btn btn-icon btn-sm btn-default')->setIcon('fa fa-trash')->setLabel(false)->setHtmlAttributes(['title' => 'Delete']);
-            });
+            })
+            ->add(Crud::PAGE_INDEX, Action::DETAIL)
+            ->update(Crud::PAGE_INDEX, Action::DETAIL, function (Action $action) {
+                return $action->addCssClass('btn btn-icon btn-sm btn-default')->setIcon('fa fa-eye')->setLabel(false)->setHtmlAttributes(['title' => 'Details']);
+            })
+            ->reorder(Crud::PAGE_INDEX, [Action::EDIT, Action::DETAIL, Action::DELETE]);
         return $actions;
     }
 

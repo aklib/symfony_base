@@ -91,8 +91,10 @@
          $(document).ready(function() {
              $('table.datagrid').treegrid({
                  treeColumn: 2,
-                 expanderExpandedClass: 'fa fa-minus',
-                 expanderCollapsedClass: 'fa fa-plus'
+                 expanderExpandedClass: ' fas fa-minus',
+                 expanderCollapsedClass: ' fas fa-plus',
+                 expanderTemplate: '<span class="treegrid-expander"></span>',
+                 indentTemplate: '<span class="treegrid-indent"><i></i></span>'
              });
          });
      </script>

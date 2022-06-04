@@ -25,12 +25,6 @@ class Attribute
     private string $name;
 
     /**
-     * @var string
-     * @ORM\Column(name="label", type="string", length=64, nullable=false)
-     */
-    private string $label;
-
-    /**
      * @var string|null
      * @ORM\Column(name="info_text", type="string", length=128, nullable=true)
      */
@@ -73,12 +67,6 @@ class Attribute
     private int $sortOrder = 100;
 
     /**
-     * @var Collection
-     * @ORM\ManyToMany(targetEntity="App\Entity\Category", mappedBy="attributes", fetch="EXTRA_LAZY")
-     */
-    private Collection $categories;
-
-    /**
      * @var AttributeTab
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\AttributeTab", fetch="EXTRA_LAZY")
@@ -106,12 +94,17 @@ class Attribute
     protected Collection $attributeOptions;
 
     /**
+     * @ORM\ManyToMany(targetEntity=Category::class, inversedBy="attributes")
+     */
+    private $categories;
+
+    /**
      * Attribute constructor.
      */
     public function __construct()
     {
         $this->attributeOptions = new ArrayCollection();
-        $this->categories = new ArrayCollection();
+//        $this->categories = new ArrayCollection();
     }
 
     /**
@@ -144,22 +137,6 @@ class Attribute
     public function setName(string $name): void
     {
         $this->name = $name;
-    }
-
-    /**
-     * @return string
-     */
-    public function getLabel(): string
-    {
-        return $this->label;
-    }
-
-    /**
-     * @param string $label
-     */
-    public function setLabel(string $label): void
-    {
-        $this->label = $label;
     }
 
     /**
@@ -274,21 +251,21 @@ class Attribute
         $this->sortOrder = $sortOrder;
     }
 
-    /**
-     * @return Collection
-     */
-    public function getCategories()
-    {
-        return $this->categories;
-    }
-
-    /**
-     * @param Collection $categories
-     */
-    public function setCategories(Collection $categories): void
-    {
-        $this->categories = $categories;
-    }
+//    /**
+//     * @return Collection
+//     */
+//    public function getCategories()
+//    {
+//        return $this->categories;
+//    }
+//
+//    /**
+//     * @param Collection $categories
+//     */
+//    public function setCategories(Collection $categories): void
+//    {
+//        $this->categories = $categories;
+//    }
 
     /**
      * @return AttributeTab
@@ -342,4 +319,31 @@ class Attribute
     {
         return $this->name;
     }
+
+    // ======================= METHODS REQUIRED FOR HYDRATION =======================
+
+    /**
+     * @return Collection<int, Category>
+     */
+    public function getCategories(): Collection
+    {
+        return $this->categories;
+    }
+
+    public function addCategory(Category $category): self
+    {
+        if (!$this->categories->contains($category)) {
+            $this->categories[] = $category;
+        }
+
+        return $this;
+    }
+
+    public function removeCategory(Category $category): self
+    {
+        $this->categories->removeElement($category);
+
+        return $this;
+    }
+
 }

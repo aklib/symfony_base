@@ -515,7 +515,7 @@
                 var $this = $(this);
                 //if parent colapsed we hidden
                 if ($this.treegrid('isOneOfParentsCollapsed')) {
-                    $this.hide();
+                    $this.hide('fast');
                 } else {
                     $this.show();
                 }

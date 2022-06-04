@@ -35,22 +35,6 @@ class Category
     private Collection $products;
 
     /**
-     * @var Collection|null
-     *
-     * @ORM\ManyToMany(targetEntity="App\Entity\Attribute", inversedBy="categories")
-     * @ORM\JoinTable(name="attribute_category_xref",
-     *   joinColumns={
-     *     @ORM\JoinColumn(name="category_id", referencedColumnName="id")
-     *   },
-     *   inverseJoinColumns={
-     *     @ORM\JoinColumn(name="attribute_id", referencedColumnName="id")
-     *   }
-     * )
-     * @ORM\OrderBy({"sortOrder" = "ASC"})
-     */
-    private ?Collection $attributes = null;
-
-    /**
      * @Gedmo\TreeLeft
      * @ORM\Column(type="integer")
      */
@@ -87,10 +71,16 @@ class Category
      * @ORM\OrderBy({"lft" = "ASC"})
      */
     private Collection $children;
-    
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Attribute::class, mappedBy="categories")
+     */
+    private Collection $attributes;
+
     public function __construct()
     {
         $this->products = new ArrayCollection();
+        $this->attributes = new ArrayCollection();
     }
 
     /**
@@ -249,19 +239,71 @@ class Category
         return $this->name;
     }
 
+    // ======================= METHODS REQUIRED FOR HYDRATION =======================
+
+    private ?Collection $attributesFromTree = null;
+
+
+
+
+    public function getAttributesRecursive(): Collection
+    {
+        if ($this->attributesFromTree === null) {
+            $result = [];
+            $parent = $this;
+            do {
+                foreach ($parent->getAttributes() as $attribute) {
+                    if (in_array($attribute, $result, true)) {
+                        continue;
+                    }
+                    $result[] = $attribute;
+                }
+                $parent = $parent->getParent();
+            } while ($parent !== null);
+            usort($result, static function ($a, $b) {
+                return $a->getSortOrder() > $b->getSortOrder();
+            });
+            $this->attributesFromTree = new ArrayCollection($result);
+        }
+        return $this->attributesFromTree;
+    }
+
+    public function resetAttributesRecursive(): void
+    {
+        $this->attributesFromTree = null;
+    }
+
+    public function hasChildren(): bool
+    {
+        return $this->rgt - $this->lft > 1;
+    }
+
     /**
-     * @return Collection|null
+     * @return Collection<int, Attribute>
      */
-    public function getAttributes(): ?Collection
+    public function getAttributes(): Collection
     {
         return $this->attributes;
     }
 
-    /**
-     * @param Collection|null $attributes
-     */
-    public function setAttributes(?Collection $attributes): void
+    public function addAttribute(Attribute $attribute): self
     {
-        $this->attributes = $attributes;
+        if (!$this->attributes->contains($attribute)) {
+            $this->attributes[] = $attribute;
+            $attribute->addCategory($this);
+        }
+
+        return $this;
     }
+
+    public function removeAttribute(Attribute $attribute): self
+    {
+        if ($this->attributes->removeElement($attribute)) {
+            $attribute->removeCategory($this);
+        }
+
+        return $this;
+    }
+
+
 }

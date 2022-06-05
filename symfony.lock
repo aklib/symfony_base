@@ -92,6 +92,15 @@
     "egulias/email-validator": {
         "version": "3.1.2"
     },
+    "elasticsearch/elasticsearch": {
+        "version": "v7.17.0"
+    },
+    "ezimuel/guzzlestreams": {
+        "version": "3.0.1"
+    },
+    "ezimuel/ringphp": {
+        "version": "1.2.0"
+    },
     "friendsofphp/proxy-manager-lts": {
         "version": "v1.0.12"
     },
@@ -106,6 +115,9 @@
     },
     "nikic/php-parser": {
         "version": "v4.13.2"
+    },
+    "nyholm/dsn": {
+        "version": "2.0.1"
     },
     "phar-io/manifest": {
         "version": "2.0.3"
@@ -165,6 +177,12 @@
     },
     "psr/log": {
         "version": "1.1.4"
+    },
+    "react/promise": {
+        "version": "v2.9.0"
+    },
+    "ruflin/elastica": {
+        "version": "7.1.5"
     },
     "sebastian/cli-parser": {
         "version": "1.0.1"

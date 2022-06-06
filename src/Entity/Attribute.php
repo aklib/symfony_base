@@ -18,6 +18,13 @@ class Attribute
      * @ORM\Column(type="integer")
      */
     private int $id;
+
+    /**
+     * @var string
+     * @ORM\Column(name="key", type="string", length=32, nullable=false)
+     */
+    private string $key;
+
     /**
      * @var string
      * @ORM\Column(name="name", type="string", length=32, nullable=false)
@@ -26,21 +33,15 @@ class Attribute
 
     /**
      * @var string|null
-     * @ORM\Column(name="info_text", type="string", length=128, nullable=true)
+     * @ORM\Column(name="help_text", type="string", length=128, nullable=true)
      */
-    private ?string $infoText;
+    private ?string $helpText;
 
     /**
      * @var string|null
      * @ORM\Column(name="placeholder", type="string", length=64, nullable=true)
      */
     private ?string $placeholder;
-
-    /**
-     * @var string|null
-     * @ORM\Column(name="group_name", type="string", length=16, nullable=true)
-     */
-    private ?string $groupName;
 
     /**
      * @var bool
@@ -53,12 +54,6 @@ class Attribute
      * @ORM\Column(name="required", type="boolean", nullable=false)
      */
     private bool $required;
-
-    /**
-     * @var string|null
-     * @ORM\Column(name="pattern", type="string", length=64, nullable=true)
-     */
-    private ?string $pattern;
 
     /**
      * @var int
@@ -142,17 +137,17 @@ class Attribute
     /**
      * @return string|null
      */
-    public function getInfoText(): ?string
+    public function getHelpText(): ?string
     {
-        return $this->infoText;
+        return $this->helpText;
     }
 
     /**
-     * @param string|null $infoText
+     * @param string|null $helpText
      */
-    public function setInfoText(?string $infoText): void
+    public function setHelpText(?string $helpText): void
     {
-        $this->infoText = $infoText;
+        $this->helpText = $helpText;
     }
 
     /**
@@ -313,6 +308,22 @@ class Attribute
     public function setAttributeOptions($attributeOptions): void
     {
         $this->attributeOptions = $attributeOptions;
+    }
+
+    /**
+     * @return string
+     */
+    public function getKey(): string
+    {
+        return $this->key;
+    }
+
+    /**
+     * @param string $key
+     */
+    public function setKey(string $key): void
+    {
+        $this->key = $key;
     }
 
     public function __toString()

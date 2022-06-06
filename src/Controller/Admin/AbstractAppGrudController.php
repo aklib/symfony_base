@@ -25,7 +25,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use Symfony\Component\Translation\TranslatableMessage;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 abstract class AbstractAppGrudController extends AbstractCrudController
@@ -78,6 +81,7 @@ abstract class AbstractAppGrudController extends AbstractCrudController
                     } else {
                         $fields[$propertyName] = IdField::new($propertyName, $label)->hideOnForm();
                     }
+                    $fields[$propertyName]->setHelp('Entity Id');
                     break;
                 case 'float':
                 case 'decimal':
@@ -126,10 +130,22 @@ abstract class AbstractAppGrudController extends AbstractCrudController
                     if ($propertyName === 'password') {
                         continue 2;
                     }
+
                     if ($propertyName === 'email') {
                         $fields[$propertyName] = EmailField::new($propertyName, $label);
                     } else {
-                        $fields[$propertyName] = TextField::new($propertyName, $label);
+                        $length = (int)$mapping['length'];
+                        if($length > 255){
+                            $fields[$propertyName] = TextareaField::new($propertyName, $label);
+                        }
+                        elseif ($length > 0){
+                            $fields[$propertyName] = TextField::new($propertyName, $label);
+                            $help = $this->translator->trans('max. length %count% characters.', ['%count%' => $mapping['length']], 'messages');
+                            $fields[$propertyName]->setHelp($help);
+                        }
+                        else {
+                            $fields[$propertyName] = TextField::new($propertyName, $label);
+                        }
                     }
             }
         }

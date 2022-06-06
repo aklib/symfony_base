@@ -25,7 +25,7 @@ class Product
     private int $id;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=false)
+     * @ORM\Column(type="string", length=64, nullable=false)
      */
     private string $name;
 

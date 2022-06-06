@@ -58,16 +58,20 @@ msgstr "Products"
 msgid "User"
 msgstr "User"
 
+msgid "Attribute"
+msgstr "Attribute"
 
+msgid "Attribute Tabs"
+msgstr "Attribute Tabs"
 
+msgid "Attribute Types"
+msgstr "Attribute Types"
 
+msgid "Active"
+msgstr "Active"
 
-
-
-
-
-
-
+msgid "max. length %count% characters."
+msgstr "max. length %count% characters."
 
 
 

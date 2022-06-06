@@ -104,6 +104,18 @@
     "friendsofphp/proxy-manager-lts": {
         "version": "v1.0.12"
     },
+    "friendsofsymfony/elastica-bundle": {
+        "version": "6.1",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "5.0",
+            "ref": "46c9cd2c1e07f0fcfd97e96f12b03b2e0845c4cd"
+        },
+        "files": [
+            "config/packages/fos_elastica.yaml"
+        ]
+    },
     "gedmo/doctrine-extensions": {
         "version": "v3.7.0"
     },
@@ -118,6 +130,9 @@
     },
     "nyholm/dsn": {
         "version": "2.0.1"
+    },
+    "pagerfanta/pagerfanta": {
+        "version": "v3.6.1"
     },
     "phar-io/manifest": {
         "version": "2.0.3"
@@ -180,6 +195,9 @@
     },
     "react/promise": {
         "version": "v2.9.0"
+    },
+    "roave/security-advisories": {
+        "version": "dev-latest"
     },
     "ruflin/elastica": {
         "version": "7.1.5"

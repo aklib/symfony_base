@@ -21,9 +21,9 @@ class Attribute
 
     /**
      * @var string
-     * @ORM\Column(name="key", type="string", length=32, nullable=false)
+     * @ORM\Column(name="unique_key", type="string", length=32, nullable=false)
      */
-    private string $key;
+    private string $uniqueKey;
 
     /**
      * @var string
@@ -32,16 +32,16 @@ class Attribute
     private string $name;
 
     /**
+     * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="attributes")
+     * @ORM\OrderBy({"lft" = "ASC"})
+     */
+    private Category $category;
+
+    /**
      * @var string|null
      * @ORM\Column(name="help_text", type="string", length=128, nullable=true)
      */
     private ?string $helpText;
-
-    /**
-     * @var string|null
-     * @ORM\Column(name="placeholder", type="string", length=64, nullable=true)
-     */
-    private ?string $placeholder;
 
     /**
      * @var bool
@@ -89,17 +89,11 @@ class Attribute
     protected Collection $attributeOptions;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Category::class, inversedBy="attributes")
-     */
-    private $categories;
-
-    /**
      * Attribute constructor.
      */
     public function __construct()
     {
         $this->attributeOptions = new ArrayCollection();
-//        $this->categories = new ArrayCollection();
     }
 
     /**
@@ -135,6 +129,22 @@ class Attribute
     }
 
     /**
+     * @return Category|null
+     */
+    public function getCategory(): Category
+    {
+        return $this->category;
+    }
+
+    /**
+     * @param Category|null $category
+     */
+    public function setCategory(Category $category): void
+    {
+        $this->category = $category;
+    }
+
+    /**
      * @return string|null
      */
     public function getHelpText(): ?string
@@ -148,38 +158,6 @@ class Attribute
     public function setHelpText(?string $helpText): void
     {
         $this->helpText = $helpText;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getPlaceholder(): ?string
-    {
-        return $this->placeholder;
-    }
-
-    /**
-     * @param string|null $placeholder
-     */
-    public function setPlaceholder(?string $placeholder): void
-    {
-        $this->placeholder = $placeholder;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getGroupName(): ?string
-    {
-        return $this->groupName;
-    }
-
-    /**
-     * @param string|null $groupName
-     */
-    public function setGroupName(?string $groupName): void
-    {
-        $this->groupName = $groupName;
     }
 
     /**
@@ -215,22 +193,6 @@ class Attribute
     }
 
     /**
-     * @return string|null
-     */
-    public function getPattern(): ?string
-    {
-        return $this->pattern;
-    }
-
-    /**
-     * @param string|null $pattern
-     */
-    public function setPattern(?string $pattern): void
-    {
-        $this->pattern = $pattern;
-    }
-
-    /**
      * @return int
      */
     public function getSortOrder(): int
@@ -245,22 +207,6 @@ class Attribute
     {
         $this->sortOrder = $sortOrder;
     }
-
-//    /**
-//     * @return Collection
-//     */
-//    public function getCategories()
-//    {
-//        return $this->categories;
-//    }
-//
-//    /**
-//     * @param Collection $categories
-//     */
-//    public function setCategories(Collection $categories): void
-//    {
-//        $this->categories = $categories;
-//    }
 
     /**
      * @return AttributeTab
@@ -313,17 +259,17 @@ class Attribute
     /**
      * @return string
      */
-    public function getKey(): string
+    public function getUniqueKey(): string
     {
-        return $this->key;
+        return $this->uniqueKey;
     }
 
     /**
-     * @param string $key
+     * @param string $uniqueKey
      */
-    public function setKey(string $key): void
+    public function setUniqueKey(string $uniqueKey): void
     {
-        $this->key = $key;
+        $this->uniqueKey = $uniqueKey;
     }
 
     public function __toString()
@@ -332,29 +278,5 @@ class Attribute
     }
 
     // ======================= METHODS REQUIRED FOR HYDRATION =======================
-
-    /**
-     * @return Collection<int, Category>
-     */
-    public function getCategories(): Collection
-    {
-        return $this->categories;
-    }
-
-    public function addCategory(Category $category): self
-    {
-        if (!$this->categories->contains($category)) {
-            $this->categories[] = $category;
-        }
-
-        return $this;
-    }
-
-    public function removeCategory(Category $category): self
-    {
-        $this->categories->removeElement($category);
-
-        return $this;
-    }
 
 }

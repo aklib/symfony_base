@@ -17,6 +17,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 class Category
 {
     use TimestampableEntityTrait, BlameableEntityTrait;
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -73,7 +74,7 @@ class Category
     private Collection $children;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Attribute::class, mappedBy="categories")
+     * @ORM\OneToMany(targetEntity=Attribute::class, mappedBy="category")
      */
     private Collection $attributes;
 
@@ -243,9 +244,6 @@ class Category
 
     private ?Collection $attributesFromTree = null;
 
-
-
-
     public function getAttributesRecursive(): Collection
     {
         if ($this->attributesFromTree === null) {
@@ -304,6 +302,5 @@ class Category
 
         return $this;
     }
-
-
 }
+   

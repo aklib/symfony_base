@@ -22,7 +22,7 @@ class AttributeTab
      *
      * @ORM\Column(name="label", type="string", length=64, nullable=false)
      */
-    private string $label;
+    private string $name;
 
     /**
      * @var int
@@ -50,17 +50,17 @@ class AttributeTab
     /**
      * @return string
      */
-    public function getLabel(): string
+    public function getName(): string
     {
-        return $this->label;
+        return $this->name;
     }
 
     /**
-     * @param string $label
+     * @param string $name
      */
-    public function setLabel(string $label): void
+    public function setName(string $name): void
     {
-        $this->label = $label;
+        $this->name = $name;
     }
 
     /**
@@ -81,6 +81,6 @@ class AttributeTab
 
     public function __toString()
     {
-        return $this->label;
+        return $this->name;
     }
 }

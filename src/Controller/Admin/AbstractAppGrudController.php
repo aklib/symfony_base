@@ -154,7 +154,6 @@ abstract class AbstractAppGrudController extends AbstractCrudController
                             $fields[$propertyName] = TextareaField::new($propertyName, $label);
                         } elseif ($length > 0) {
                             $fields[$propertyName] = TextField::new($propertyName, $label);
-                            $help = $this->translator->trans('field.max.length', ['%count%' => $mapping['length']], 'messages');
                             $fields[$propertyName]->setHelp('field.max.length')->setTranslationParameters(['%count%' => $mapping['length']]);
                         } else {
                             $fields[$propertyName] = TextField::new($propertyName, $label);

@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Entity\Extension;
+namespace App\Entity\Extension\Traits;
 
 
 use App\Entity\Category;
 use Doctrine\Common\Collections\Collection;
+use FlorianWolters\Component\Core\StringUtils;
 
 
 /**
@@ -52,7 +53,7 @@ trait AttributableEntityTrait
         if ($this->attributeValues === null) {
             $this->attributeValues = [];
             // Attribute\Event\AttributeListener
-            $this->getEventManager()->trigger(Constant::EVENT_GET_ATTRIBUTE_VALUES, $this);
+            //---------temp $this->getEventManager()->trigger(Constant::EVENT_GET_ATTRIBUTE_VALUES, $this);
         }
         return $this->attributeValues;
     }
@@ -69,7 +70,7 @@ trait AttributableEntityTrait
             $array['name'] = $this->getName();
         }
         $array['category']['id'] = $this->getCategory()->getId();
-        $array['category']['name'] = $this->getCategory()->getNodeLabel();
+        $array['category']['name'] = $this->getCategory()->getName();
         if(method_exists($this, 'getStatus')){
             $array['status']['id'] = $this->getStatus()->getId();
             $array['status']['name'] = $this->getStatus()->getName();

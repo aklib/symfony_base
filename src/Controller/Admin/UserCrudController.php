@@ -3,8 +3,6 @@
 namespace App\Controller\Admin;
 
 use App\Entity\User;
-use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
-use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 
 class UserCrudController extends AbstractAppGrudController
 {

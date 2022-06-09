@@ -18,6 +18,7 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use SymfonyCasts\Bundle\ResetPassword\Controller\ResetPasswordControllerTrait;
 use SymfonyCasts\Bundle\ResetPassword\Exception\ResetPasswordExceptionInterface;
@@ -78,7 +79,7 @@ class ResetPasswordController extends AbstractController
     public function checkEmail(): Response
     {
         // Generate a fake token if the user does not exist or someone hit this page directly.
-        // This prevents exposing whether or not a user was found with the given email address or not
+        // This prevents exposing whether a user was found with the given email address or not
         if (null === ($resetToken = $this->getTokenObjectFromSession())) {
             $resetToken = $this->resetPasswordHelper->generateFakeResetToken();
         }
@@ -92,6 +93,7 @@ class ResetPasswordController extends AbstractController
      * Validates and process the reset URL that the user clicked in their email.
      *
      * @Route("/reset/{token}", name="app_reset_password")
+     * @noinspection PhpPossiblePolymorphicInvocationInspection
      */
     public function reset(Request $request, UserPasswordHasherInterface $userPasswordHasher, TranslatorInterface $translator, string $token = null): Response
     {
@@ -129,12 +131,14 @@ class ResetPasswordController extends AbstractController
             $this->resetPasswordHelper->removeResetRequest($token);
 
             // Encode(hash) the plain password, and set it.
-            $encodedPassword = $userPasswordHasher->hashPassword(
-                $user,
-                $form->get('plainPassword')->getData()
-            );
+            if($user instanceof PasswordAuthenticatedUserInterface){
+                $encodedPassword = $userPasswordHasher->hashPassword(
+                    $user,
+                    $form->get('plainPassword')->getData()
+                );
+                $user->setPassword($encodedPassword);
+            }
 
-            $user->setPassword($encodedPassword);
             $this->entityManager->flush();
 
             // The session is cleaned up after the password has been changed.

@@ -3,7 +3,6 @@
 namespace App\Controller\Admin;
 
 use App\Entity\AttributeTab;
-use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 
 class AttributeTabCrudController extends AbstractAppGrudController
 {

@@ -4,7 +4,6 @@ namespace App\Repository;
 
 use App\Entity\Category;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Persistence\ManagerRegistry;
 use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 
 /**

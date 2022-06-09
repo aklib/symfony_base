@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "460723d1a7e284cb3b22d7eb924728f1",
+    "content-hash": "b46f4af4c037e74555239509b2985463",
     "packages": [
         {
             "name": "behat/transliterator",
@@ -1760,6 +1760,65 @@
                 "source": "https://github.com/ezimuel/ringphp/tree/1.2.0"
             },
             "time": "2021-11-16T11:51:30+00:00"
+        },
+        {
+            "name": "florianwolters/component-core-stringutils",
+            "version": "v0.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/FlorianWolters/PHP-Component-Core-StringUtils.git",
+                "reference": "cbac46e5956f6c217d0085923861d99bb3d8338d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/FlorianWolters/PHP-Component-Core-StringUtils/zipball/cbac46e5956f6c217d0085923861d99bb3d8338d",
+                "reference": "cbac46e5956f6c217d0085923861d99bb3d8338d",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "pdepend/pdepend": "2.0.*@dev",
+                "phpdocumentor/phpdocumentor": "2.*",
+                "phpmd/phpmd": "2.0.*@dev",
+                "phpunit/phpunit": "4.1.*",
+                "satooshi/php-coveralls": "dev-master",
+                "sebastian/phpcpd": "2.0.*",
+                "sebastian/phpdcd": "1.0.*",
+                "squizlabs/php_codesniffer": "2.0.*@dev"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "FlorianWolters\\": "src/php/FlorianWolters"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-3.0+"
+            ],
+            "authors": [
+                {
+                    "name": "Florian Wolters",
+                    "email": "wolters.fl@gmail.com",
+                    "homepage": "http://blog.florianwolters.de",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Offers operations on the data type string as a PHP component.",
+            "homepage": "http://github.com/FlorianWolters/PHP-Component-Core-StringUtils",
+            "keywords": [
+                "helper",
+                "language",
+                "string",
+                "wrapper"
+            ],
+            "support": {
+                "issues": "https://github.com/FlorianWolters/PHP-Component-Core-StringUtils/issues",
+                "source": "https://github.com/FlorianWolters/PHP-Component-Core-StringUtils/tree/v0.4.0"
+            },
+            "time": "2014-05-03T16:27:16+00:00"
         },
         {
             "name": "friendsofphp/proxy-manager-lts",

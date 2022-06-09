@@ -3,7 +3,6 @@
 namespace App\Controller\Admin;
 
 use App\Entity\AttributeType;
-use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 
 class AttributeTypeCrudController extends AbstractAppGrudController
 {

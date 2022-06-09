@@ -4,8 +4,6 @@
 
 namespace App\Entity;
 
-use App\Entity\Extension\AttributableEntity;
-use App\Entity\Extension\AttributableEntityTrait;
 use App\Entity\Extension\ElasticaEntity;
 use App\Entity\Extension\Traits\BlameableEntityTrait;
 use App\Entity\Extension\Traits\TimestampableEntityTrait;

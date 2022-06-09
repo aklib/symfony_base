@@ -12,6 +12,7 @@
         "doctrine/doctrine-migrations-bundle": "^3.2",
         "doctrine/orm": "^2.12",
         "easycorp/easyadmin-bundle": "^3.5",
+        "florianwolters/component-core-stringutils": "^0.4.0",
         "friendsofsymfony/elastica-bundle": "^6.1",
         "ruflin/elastica": "^7.1",
         "sensio/framework-extra-bundle": "^6.2",

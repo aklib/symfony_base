@@ -30,6 +30,7 @@ class AttributeEventSubscriber implements EventSubscriber
 //        die(__CLASS__ . ':' .__FUNCTION__);
     }
 
+    /** @noinspection PhpPossiblePolymorphicInvocationInspection */
     public function loadClassMetadata(LoadClassMetadataEventArgs $eventArgs): void
     {
         $classMetadata = $eventArgs->getClassMetadata();

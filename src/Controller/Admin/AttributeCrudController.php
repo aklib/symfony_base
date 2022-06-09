@@ -3,7 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Attribute;
-use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 
 class AttributeCrudController extends AbstractAppGrudController
 {
@@ -12,14 +12,15 @@ class AttributeCrudController extends AbstractAppGrudController
         return Attribute::class;
     }
 
-    /*
+
     public function configureFields(string $pageName): iterable
     {
-        return [
-            IdField::new('id'),
-            TextField::new('title'),
-            TextEditorField::new('description'),
-        ];
+        $fields = parent::configureFields($pageName);
+        $attributeOptionsField = $fields['attributeOptions'] ?? null;
+        if ($attributeOptionsField instanceof AssociationField) {
+            $attributeOptionsField->hideOnIndex();
+        }
+        return $fields;
     }
-    */
+
 }

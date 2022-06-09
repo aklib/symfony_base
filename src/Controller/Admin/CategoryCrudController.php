@@ -31,8 +31,6 @@ class CategoryCrudController extends AbstractAppGrudController
                 $field->setSortable(false);
             }
         }
-
-
         return $fields;
     }
 

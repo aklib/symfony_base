@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Extension\Annotation as AppORM;
 use App\Repository\AttributeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -16,50 +17,31 @@ class Attribute
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @AppORM\Element(sortOrder="1")
      */
     private int $id;
 
     /**
      * @var string
-     * @ORM\Column(name="unique_key", type="string", length=32, nullable=false)
-     */
-    private string $uniqueKey;
-
-    /**
-     * @var string
      * @ORM\Column(name="name", type="string", length=32, nullable=false)
+     * @AppORM\Element(sortOrder="2")
      */
     private string $name;
 
     /**
+     * @var string
+     * @ORM\Column(name="unique_key", type="string", length=32, nullable=false)
+     * @AppORM\Element(sortOrder="3")
+     */
+    private string $uniqueKey;
+
+    /**
      * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="attributes")
+     *
      * @ORM\OrderBy({"lft" = "ASC"})
+     * @AppORM\Element(sortOrder="3")
      */
     private Category $category;
-
-    /**
-     * @var string|null
-     * @ORM\Column(name="help_text", type="string", length=128, nullable=true)
-     */
-    private ?string $helpText;
-
-    /**
-     * @var bool
-     * @ORM\Column(name="multiple", type="boolean", nullable=false)
-     */
-    private bool $multiple;
-
-    /**
-     * @var bool
-     * @ORM\Column(name="required", type="boolean", nullable=false)
-     */
-    private bool $required;
-
-    /**
-     * @var int
-     * @ORM\Column(name="sort_order", type="integer", nullable=false, options={"default"="1"})
-     */
-    private int $sortOrder = 100;
 
     /**
      * @var AttributeTab
@@ -68,6 +50,7 @@ class Attribute
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="tab_id", referencedColumnName="id", nullable=false)
      * })
+     * @AppORM\Element(sortOrder="3")
      */
     private AttributeTab $tab;
 
@@ -78,8 +61,30 @@ class Attribute
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="type_id", referencedColumnName="id", nullable=false)
      * })
+     * @AppORM\Element(sortOrder="3")
      */
     private AttributeType $type;
+
+    /**
+     * @var bool
+     * @ORM\Column(name="multiple", type="boolean", nullable=false)
+     * @AppORM\Element(sortOrder="4")
+     */
+    private bool $multiple;
+
+    /**
+     * @var bool
+     * @ORM\Column(name="required", type="boolean", nullable=false)
+     * @AppORM\Element(sortOrder="5")
+     */
+    private bool $required;
+
+    /**
+     * @var string|null
+     * @ORM\Column(name="help_text", type="string", length=128, nullable=true)
+     * @AppORM\Element(sortOrder="6")
+     */
+    private ?string $helpText;
 
     /**
      *
@@ -87,6 +92,13 @@ class Attribute
      * @ORM\OrderBy({"sortOrder" = "ASC"})
      */
     protected Collection $attributeOptions;
+
+    /**
+     * @var int
+     * @ORM\Column(name="sort_order", type="integer", nullable=false, options={"default"="1"})
+     * @AppORM\Element(sortOrder="7")
+     */
+    private int $sortOrder = 100;
 
     /**
      * Attribute constructor.

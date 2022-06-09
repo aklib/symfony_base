@@ -59,7 +59,7 @@ trait AttributableEntityTrait
 
     public function getAttributes(): Collection
     {
-        return $this->getCategory()->getAttributesRecursive();
+        return $this->getCategory()->getAttributes(true);
     }
 
     public function toArray(): array

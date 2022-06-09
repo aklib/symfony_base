@@ -1,0 +1,40 @@
+<?php
+
+namespace App\Entity\Extension\Annotation;
+
+use Doctrine\ORM\Mapping\Annotation;
+
+/**
+ * @Annotation
+ */
+class Element implements Annotation, CustomDoctrineAnnotation
+{
+    /**
+     * Form element class full name
+     * @var string
+     */
+    public string $type;
+    /**
+     * Attribute tab uniqueKey
+     * @var string
+     */
+    public string $tab;
+
+    /**
+     * @var string
+     */
+    public string $help;
+
+    /**
+     * @var integer
+     */
+    public int $sortOrder;
+
+    public function __construct(array $properties)
+    {
+        $this->type = $properties['type'] ?? 'string';
+        $this->tab = $properties['tab'] ?? 'general';
+        $this->help = $properties['info'] ?? '';
+        $this->sortOrder = $properties['sortOrder'] ?? 100;
+    }
+}

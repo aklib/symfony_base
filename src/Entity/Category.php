@@ -244,7 +244,7 @@ class Category
 
     private ?Collection $attributesFromTree = null;
 
-    public function getAttributesRecursive(): Collection
+    private function getAttributesRecursive(): Collection
     {
         if ($this->attributesFromTree === null) {
             $result = [];
@@ -277,30 +277,15 @@ class Category
     }
 
     /**
+     * @param bool $recursive
      * @return Collection<int, Attribute>
      */
-    public function getAttributes(): Collection
+    public function getAttributes(bool $recursive = false): Collection
     {
+        if($recursive){
+            return $this->getAttributesRecursive();
+        }
         return $this->attributes;
-    }
-
-    public function addAttribute(Attribute $attribute): self
-    {
-        if (!$this->attributes->contains($attribute)) {
-            $this->attributes[] = $attribute;
-            $attribute->addCategory($this);
-        }
-
-        return $this;
-    }
-
-    public function removeAttribute(Attribute $attribute): self
-    {
-        if ($this->attributes->removeElement($attribute)) {
-            $attribute->removeCategory($this);
-        }
-
-        return $this;
     }
 }
    

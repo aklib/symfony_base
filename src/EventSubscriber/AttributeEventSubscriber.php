@@ -2,6 +2,8 @@
 
 namespace App\EventSubscriber;
 
+use App\Entity\Extension\Annotation\CustomDoctrineAnnotation;
+use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\LoadClassMetadataEventArgs;
@@ -10,6 +12,14 @@ use Symfony\Component\HttpKernel\Event\ViewEvent;
 
 class AttributeEventSubscriber implements EventSubscriber
 {
+
+    private AnnotationReader $reader;
+
+    public function __construct()
+    {
+        $this->reader = new AnnotationReader();
+    }
+
     public function postLoad(LifecycleEventArgs $eventArgs): void
     {
 //        die(__CLASS__ . ':' .__FUNCTION__);
@@ -23,18 +33,18 @@ class AttributeEventSubscriber implements EventSubscriber
     public function loadClassMetadata(LoadClassMetadataEventArgs $eventArgs): void
     {
         $classMetadata = $eventArgs->getClassMetadata();
-        //dump($classMetadata);
-       /* foreach ($classMetadata->getReflectionClass()->getProperties() as $property) {
+        foreach ($classMetadata->getReflectionClass()->getProperties() as $property) {
             foreach ($this->reader->getPropertyAnnotations($property) as $annotation) {
-                if ($annotation instanceof DoctrineEventSubscriberInterface) {
+                if ($annotation instanceof CustomDoctrineAnnotation) {
+                    $key = strtolower(substr(strrchr(get_class($annotation), "\\"), 1));
                     if ($classMetadata->hasAssociation($property->getName())) {
-                        $classMetadata->associationMappings[$property->getName()][$annotation->getUniqueKey()] = (array)$annotation;
+                        $classMetadata->associationMappings[$property->getName()][$key] = (array)$annotation;
                     } else {
-                        $classMetadata->fieldMappings[$property->getName()][$annotation->getUniqueKey()] = (array)$annotation;
+                        $classMetadata->fieldMappings[$property->getName()][$key] = (array)$annotation;
                     }
                 }
             }
-        }*/
+        }
     }
 
     public function getSubscribedEvents(): array

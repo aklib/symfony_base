@@ -26,9 +26,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use Symfony\Component\Translation\TranslatableMessage;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 abstract class AbstractAppGrudController extends AbstractCrudController
@@ -42,7 +40,25 @@ abstract class AbstractAppGrudController extends AbstractCrudController
         $this->em = $em;
         $this->translator = $translator;
         $classMetadata = $this->getEntityManager()->getClassMetadata(static::getEntityFqcn());
-        $this->mappings = array_replace_recursive($classMetadata->fieldMappings, $classMetadata->associationMappings);
+        $mappings = array_replace_recursive($classMetadata->fieldMappings, $classMetadata->associationMappings);
+        $count = 1;
+        foreach ($mappings as &$mapping) {
+            if (!array_key_exists('element', $mapping)) {
+                $mapping['element']['sortOrder'] = $count;
+            }
+            elseif(!array_key_exists('sortOrder', $mapping['element'])) {
+                $mapping['element']['sortOrder'] = $count;
+            }
+            else {
+                $count =  $mapping['element']['sortOrder'];
+            }
+            $count++;
+        }
+        unset($mapping);
+        uasort($mappings, static function ($a,$b){
+            return $a['element']['sortOrder'] > $b['element']['sortOrder'];
+        });
+        $this->mappings = $mappings;
     }
 
 
@@ -134,15 +150,13 @@ abstract class AbstractAppGrudController extends AbstractCrudController
                         $fields[$propertyName] = EmailField::new($propertyName, $label);
                     } else {
                         $length = (int)$mapping['length'];
-                        if($length > 255){
+                        if ($length > 255) {
                             $fields[$propertyName] = TextareaField::new($propertyName, $label);
-                        }
-                        elseif ($length > 0){
+                        } elseif ($length > 0) {
                             $fields[$propertyName] = TextField::new($propertyName, $label);
                             $help = $this->translator->trans('field.max.length', ['%count%' => $mapping['length']], 'messages');
                             $fields[$propertyName]->setHelp('field.max.length')->setTranslationParameters(['%count%' => $mapping['length']]);
-                        }
-                        else {
+                        } else {
                             $fields[$propertyName] = TextField::new($propertyName, $label);
                         }
                     }

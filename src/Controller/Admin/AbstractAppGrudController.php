@@ -45,17 +45,15 @@ abstract class AbstractAppGrudController extends AbstractCrudController
         foreach ($mappings as &$mapping) {
             if (!array_key_exists('element', $mapping)) {
                 $mapping['element']['sortOrder'] = $count;
-            }
-            elseif(!array_key_exists('sortOrder', $mapping['element'])) {
+            } elseif (!array_key_exists('sortOrder', $mapping['element'])) {
                 $mapping['element']['sortOrder'] = $count;
-            }
-            else {
-                $count =  $mapping['element']['sortOrder'];
+            } else {
+                $count = $mapping['element']['sortOrder'];
             }
             $count++;
         }
         unset($mapping);
-        uasort($mappings, static function ($a,$b){
+        uasort($mappings, static function ($a, $b) {
             return $a['element']['sortOrder'] > $b['element']['sortOrder'];
         });
         $this->mappings = $mappings;

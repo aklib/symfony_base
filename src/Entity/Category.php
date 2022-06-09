@@ -74,7 +74,7 @@ class Category
     private Collection $children;
 
     /**
-     * @ORM\OneToMany(targetEntity=Attribute::class, mappedBy="category")
+     * @ORM\OneToMany(targetEntity=Attribute::class, mappedBy="category", fetch="EAGER")
      */
     private Collection $attributes;
 

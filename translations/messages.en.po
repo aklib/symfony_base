@@ -70,8 +70,8 @@ msgstr "Attribute Types"
 msgid "Active"
 msgstr "Active"
 
-msgid "max. length %count% characters."
-msgstr "max. length %count% characters."
+msgid "field.max.length"
+msgstr "Max. length %count% characters."
 
 
 

@@ -8,15 +8,29 @@ use App\Entity\AttributeType;
 use App\Entity\Category;
 use App\Entity\Product;
 use App\Entity\User;
+use App\Repository\CategoryRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class DashboardController extends AbstractDashboardController
 {
+
+    private EntityManagerInterface $em;
+    private TranslatorInterface $translator;
+
+    public function __construct(EntityManagerInterface $em, TranslatorInterface $translator)
+    {
+        $this->em = $em;
+        $this->translator = $translator;
+    }
+
+
     /**
      * @Route("/admin", name="admin")
      * @noinspection SenselessProxyMethodInspection
@@ -36,7 +50,6 @@ class DashboardController extends AbstractDashboardController
             // triggers an error. If this causes any issue in your backend, call this method
             // to disable this feature and remove all URL signature checks
             ->disableUrlSignatures()
-
             // by default, all backend URLs are generated as absolute URLs. If you
             // need to generate relative URLs instead, call this method
             ->generateRelativeUrls();
@@ -45,10 +58,21 @@ class DashboardController extends AbstractDashboardController
     public function configureMenuItems(): iterable
     {
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
-        yield MenuItem::section('Product');
-        yield MenuItem::linkToCrud('Products', 'fas fa-list', Product::class);
-        yield MenuItem::linkToCrud('Category', 'fas fa-tree', Category::class);
 
+        /** @var CategoryRepository $dao */
+        $dao = $this->getEntityManager()->getRepository(Category::class);
+        $roots = $dao->getRootNodes();
+        $subItems = [];
+        /** @var Category $root */
+        foreach ($roots as $root) {
+            $subItems[] = MenuItem::linkToCrud($root->getName(), 'fas fa-tree', Category::class);
+            /** @var Category $child */
+            foreach ($root->getChildren() as $child) {
+                $subItems[] = MenuItem::linkToCrud($child->getName(), 'fas fa-list', Product::class);
+            }
+            yield MenuItem::subMenu($root->getName(), 'fa fa-article')->setSubItems($subItems);
+
+        }
         yield MenuItem::section('Attribute');
         yield MenuItem::linkToCrud('Attribute', 'fas fa-list', Attribute::class);
         yield MenuItem::linkToCrud('Attribute Tabs', 'fas fa-list', AttributeTab::class);
@@ -62,5 +86,18 @@ class DashboardController extends AbstractDashboardController
     {
         return parent::configureAssets()
             ->addCssFile('/css/custom.css');
+    }
+
+    /**
+     * @return TranslatorInterface
+     */
+    public function getTranslator(): TranslatorInterface
+    {
+        return $this->translator;
+    }
+
+    protected function getEntityManager(): EntityManagerInterface
+    {
+        return $this->em;
     }
 }

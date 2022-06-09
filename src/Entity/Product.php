@@ -4,6 +4,9 @@
 
 namespace App\Entity;
 
+use App\Entity\Extension\AttributableEntity;
+use App\Entity\Extension\AttributableEntityTrait;
+use App\Entity\Extension\ElasticaEntity;
 use App\Entity\Extension\Traits\BlameableEntityTrait;
 use App\Entity\Extension\Traits\TimestampableEntityTrait;
 use App\Repository\ProductRepository;
@@ -13,8 +16,9 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=ProductRepository::class)
+ * @ORM\HasLifecycleCallbacks()
  */
-class Product
+class Product implements ElasticaEntity
 {
     use TimestampableEntityTrait, BlameableEntityTrait;
     /**
@@ -39,6 +43,7 @@ class Product
      * @ORM\Column(type="boolean", nullable=false)
      */
     private bool $active = true;
+
     /**
      * @return int
      */
@@ -118,5 +123,15 @@ class Product
     public function __toString()
     {
         return $this->name;
+    }
+
+    public function toArray(): array
+    {
+       return  [
+           'product' => [
+               'id' => $this->getId(),
+               'name' => $this->getName()
+           ]
+       ];
     }
 }

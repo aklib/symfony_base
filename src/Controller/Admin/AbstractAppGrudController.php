@@ -81,7 +81,6 @@ abstract class AbstractAppGrudController extends AbstractCrudController
                     } else {
                         $fields[$propertyName] = IdField::new($propertyName, $label)->hideOnForm();
                     }
-                    $fields[$propertyName]->setHelp('Entity Id');
                     break;
                 case 'float':
                 case 'decimal':
@@ -140,8 +139,8 @@ abstract class AbstractAppGrudController extends AbstractCrudController
                         }
                         elseif ($length > 0){
                             $fields[$propertyName] = TextField::new($propertyName, $label);
-                            $help = $this->translator->trans('max. length %count% characters.', ['%count%' => $mapping['length']], 'messages');
-                            $fields[$propertyName]->setHelp($help);
+                            $help = $this->translator->trans('field.max.length', ['%count%' => $mapping['length']], 'messages');
+                            $fields[$propertyName]->setHelp('field.max.length')->setTranslationParameters(['%count%' => $mapping['length']]);
                         }
                         else {
                             $fields[$propertyName] = TextField::new($propertyName, $label);

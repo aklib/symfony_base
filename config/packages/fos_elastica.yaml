@@ -3,4 +3,5 @@ fos_elastica:
     clients:
         default: { url: '%env(ELASTICSEARCH_URL)%' }
     indexes:
-        app: null
+        app:
+            index_name: sb_attribute_value_%kernel.environment%

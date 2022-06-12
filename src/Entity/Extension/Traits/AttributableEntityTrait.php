@@ -4,8 +4,8 @@ namespace App\Entity\Extension\Traits;
 
 
 use App\Entity\Category;
-use Doctrine\Common\Collections\Collection;
-use FlorianWolters\Component\Core\StringUtils;
+use App\Entity\Extension\AttributableEntity;
+use App\EventSubscriber\AttributeHandler;
 
 
 /**
@@ -16,79 +16,54 @@ use FlorianWolters\Component\Core\StringUtils;
  */
 trait AttributableEntityTrait
 {
-    private ?array $attributeValues = null;
+    private array $attributeValues = [];
+    private AttributeHandler $aes;
 
-    private function decamelize($string): string
+    /**
+     * @implements AttributableEntity
+     * @param AttributeHandler $aes
+     */
+    public function setAttributeValueHandler(AttributeHandler $aes): void
     {
-        return strtolower(preg_replace(['/([a-z\d])([A-Z])/', '/([^_])([A-Z][a-z])/'], '$1_$2', $string));
+        $this->aes = $aes;
+    }
+
+    public function getAttributeHandler(): AttributeHandler
+    {
+        return $this->aes;
+    }
+
+    //==================================== HANDLE ATTRIBUTE VALUES ====================================
+    public function __get($name)
+    {
+        // get value
+        $value = $this->getAttributeHandler()->getAttributeValue($name, $this);
+        // overloading property
+        $this->{$name} = $value;
+        // show value
+        return $value;
+    }
+
+    public function __set($name, $value)
+    {
+        $this->attributeValues[$name] = $value;
+    }
+
+    public function __isset($name)
+    {
+        return isset($this->attributeValues[$name]);
     }
 
     /**
-     * @param $getter
-     * @param $args
-     * @return array|string|string[]|null
-     * @noinspection PhpUnusedParameterInspection
+     * @return array
      */
-    private function get($getter, $args)
+    public function getAttributeValues(): array
     {
-        $attributeValues = $this->getAttributeValues();
-        $name = lcfirst(preg_replace('/^get/', '', $getter));
-        if (array_key_exists($name, $attributeValues)) {
-            return $attributeValues[$name];
-        }
-        $name = $this->decamelize($name);
-        return $attributeValues[$name] ?? null;
-    }
-
-    public function __call($name, $args)
-    {
-        if (StringUtils::startsWith($name, 'get')) {
-            return $this->get($name, $args);
-        }
-        return null;
-    }
-
-    final public function getAttributeValues(): array
-    {
-        if ($this->attributeValues === null) {
-            $this->attributeValues = [];
-            // Attribute\Event\AttributeListener
-            //---------temp $this->getEventManager()->trigger(Constant::EVENT_GET_ATTRIBUTE_VALUES, $this);
-        }
         return $this->attributeValues;
-    }
-
-    public function getAttributes(): Collection
-    {
-        return $this->getCategory()->getAttributes(true);
-    }
-
-    public function toArray(): array
-    {
-        $array['id'] = $this->getId();
-        if(method_exists($this, 'getName')){
-            $array['name'] = $this->getName();
-        }
-        $array['category']['id'] = $this->getCategory()->getId();
-        $array['category']['name'] = $this->getCategory()->getName();
-        if(method_exists($this, 'getStatus')){
-            $array['status']['id'] = $this->getStatus()->getId();
-            $array['status']['name'] = $this->getStatus()->getName();
-        }
-        return array_merge_recursive($array, $this->addArray());
-    }
-
-
-    /**
-     * @param array $attributeValues
-     */
-    public function setAttributeValues(array $attributeValues): void
-    {
-        $this->attributeValues = $attributeValues;
     }
 
     abstract public function getId(): int;
 
     abstract public function getCategory(): Category;
-    abstract protected function addArray(): array;
+    //abstract protected function addArray(): array;
 }

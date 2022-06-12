@@ -2,6 +2,8 @@
 
 namespace App\Entity\Extension;
 
+use App\Entity\Category;
+use App\EventSubscriber\AttributeHandler;
 use Doctrine\Common\Collections\Collection;
 
 /**
@@ -12,11 +14,8 @@ use Doctrine\Common\Collections\Collection;
  */
 interface AttributableEntity extends ElasticaEntity
 {
-    public function getAttributes(): Collection;
-
+    public function getId(): int;
+    public function getCategory(): Category;
+    public function setAttributeValueHandler(AttributeHandler $aes): void;
     public function getAttributeValues(): array;
-
-    public function setAttributeValues(array $attributeValues): void;
-
-
 }

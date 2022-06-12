@@ -27,6 +27,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 abstract class AbstractAppGrudController extends AbstractCrudController
@@ -34,6 +35,7 @@ abstract class AbstractAppGrudController extends AbstractCrudController
     private EntityManagerInterface $em;
     private TranslatorInterface $translator;
     private array $mappings;
+
 
     public function __construct(EntityManagerInterface $em, TranslatorInterface $translator)
     {
@@ -69,11 +71,6 @@ abstract class AbstractAppGrudController extends AbstractCrudController
     {
         return $crud->showEntityActionsInlined();
     }
-
-//    public function index(AdminContext $context)
-//    {
-//        return parent::index($context);
-//    }
 
     /**
      * @param string $pageName
@@ -157,6 +154,7 @@ abstract class AbstractAppGrudController extends AbstractCrudController
                             $fields[$propertyName] = TextField::new($propertyName, $label);
                         }
                     }
+                    $fields[$propertyName]->setCustomOption('sortOrder', $mapping['element']['sortOrder']);
             }
         }
         return $fields;

@@ -4,7 +4,8 @@
 
 namespace App\Entity;
 
-use App\Entity\Extension\ElasticaEntity;
+use App\Entity\Extension\AttributableEntity;
+use App\Entity\Extension\Traits\AttributableEntityTrait;
 use App\Entity\Extension\Traits\BlameableEntityTrait;
 use App\Entity\Extension\Traits\TimestampableEntityTrait;
 use App\Repository\ProductRepository;
@@ -16,9 +17,9 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass=ProductRepository::class)
  * @ORM\HasLifecycleCallbacks()
  */
-class Product implements ElasticaEntity
+class Product implements AttributableEntity
 {
-    use TimestampableEntityTrait, BlameableEntityTrait;
+    use TimestampableEntityTrait, BlameableEntityTrait, AttributableEntityTrait;
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -35,7 +36,7 @@ class Product implements ElasticaEntity
      * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="products", fetch="EAGER")
      * @ORM\JoinColumn(nullable=false)
      */
-    private Category $category;
+    private ?Category $category = null;
 
     /**
      * @ORM\Column(type="boolean", nullable=false)

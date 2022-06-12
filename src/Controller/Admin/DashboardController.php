@@ -68,7 +68,8 @@ class DashboardController extends AbstractDashboardController
             $subItems[] = MenuItem::linkToCrud($root->getName(), 'fas fa-tree', Category::class);
             /** @var Category $child */
             foreach ($root->getChildren() as $child) {
-                $subItems[] = MenuItem::linkToCrud($child->getName(), 'fas fa-list', Product::class);
+                $subItems[] = MenuItem::linkToCrud($child->getName(), 'fas fa-list', Product::class)
+                    ->setQueryParameter('category', $child->getId());
             }
             yield MenuItem::subMenu($root->getName(), 'fa fa-article')->setSubItems($subItems);
 

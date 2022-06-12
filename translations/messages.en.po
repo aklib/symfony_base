@@ -76,6 +76,50 @@ msgstr "Max. length %count% characters."
 msgid "Person"
 msgstr "Person"
 
+msgid "UniqueKey"
+msgstr "Unique Key"
+
+msgid "uniqueKey"
+msgstr "Unique Key"
+
+msgid "Tab"
+msgstr "Tab"
+
+msgid "tab"
+msgstr "Tab"
+
+msgid "Type"
+msgstr "Type"
+
+msgid "type"
+msgstr "Type"
+
+msgid "Multiple"
+msgstr "Multiple"
+
+msgid "multiple"
+msgstr "Multiple"
+
+msgid "Required"
+msgstr "Required"
+
+msgid "required"
+msgstr "Required"
+
+msgid "HelpText"
+msgstr "Help Text"
+
+msgid "helpText"
+msgstr "Help Text"
+
+msgid "SortOrder"
+msgstr "Sort Order"
+
+msgid "sortOrder"
+msgstr "Sort Order"
+
+
+
 #. EasyAdminBundle+intl-icu.en
 msgid "label.form.empty_value"
 msgstr "__label.form.empty_value"

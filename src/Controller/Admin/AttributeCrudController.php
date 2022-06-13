@@ -3,7 +3,6 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Attribute;
-use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 
 class AttributeCrudController extends AbstractAppGrudController

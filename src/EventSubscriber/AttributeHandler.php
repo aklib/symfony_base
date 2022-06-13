@@ -154,7 +154,6 @@ class AttributeHandler implements EventSubscriber
             }
             $this->isLoaded = true;
         }
-        $key = '';
         try {
             $key = $this->getKey($uniqueKey, $entity);
         } catch (Exception $e) {

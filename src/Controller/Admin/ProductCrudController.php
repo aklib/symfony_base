@@ -10,7 +10,6 @@ use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
-use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
@@ -36,11 +35,6 @@ class ProductCrudController extends AbstractAppGrudController
     public static function getEntityFqcn(): string
     {
         return Product::class;
-    }
-
-    public function index(AdminContext $context)
-    {
-        return parent::index($context);
     }
 
     public function configureFields(string $pageName): iterable
@@ -157,7 +151,7 @@ class ProductCrudController extends AbstractAppGrudController
      */
     protected function getCategory(): ?Category
     {
-        if ($this->getContext()->getCrud()->getCurrentAction() === 'new') {
+        if ($this->getContext() !== null && $this->getContext()->getCrud() !== null && $this->getContext()->getCrud()->getCurrentAction() === 'new') {
             return null;
         }
 
@@ -171,6 +165,4 @@ class ProductCrudController extends AbstractAppGrudController
         }
         return $this->category;
     }
-
-
 }

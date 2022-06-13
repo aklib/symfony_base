@@ -16,6 +16,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
@@ -28,6 +29,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use function Webmozart\Assert\Tests\StaticAnalysis\null;
 
 abstract class AbstractAppGrudController extends AbstractCrudController
 {
@@ -78,8 +80,9 @@ abstract class AbstractAppGrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         $fields = [];
+
         foreach ($this->mappings as $propertyName => $mapping) {
-            if (!$this->isVisibleProperty($propertyName)) {
+            if (!$this->isVisibleProperty($propertyName, $pageName)) {
                 continue;
             }
 
@@ -202,8 +205,16 @@ abstract class AbstractAppGrudController extends AbstractCrudController
         return $this->em;
     }
 
-    protected function isVisibleProperty(string $propertyName): bool
+    protected function isVisibleProperty(string $propertyName, string $pagename = null): bool
     {
         return true;
+    }
+
+    protected function getEntity(): ?object
+    {
+        if($this->getContext() !== null && $this->getContext()->getEntity() instanceof EntityDto){
+            return $this->getContext()->getEntity()->getInstance();
+        }
+        return null;
     }
 }

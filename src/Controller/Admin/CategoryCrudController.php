@@ -42,7 +42,7 @@ class CategoryCrudController extends AbstractAppGrudController
             ->addJsFile('/js/treegrid/jquery.treegrid.js');
     }
 
-    protected function isVisibleProperty(string $propertyName): bool
+    protected function isVisibleProperty(string $propertyName, string $pagename = null): bool
     {
         switch ($propertyName) {
             case 'lft':
@@ -53,6 +53,6 @@ class CategoryCrudController extends AbstractAppGrudController
             case 'products':
                 return false;
         }
-        return parent::isVisibleProperty($propertyName);
+        return parent::isVisibleProperty($propertyName, $pagename);
     }
 }

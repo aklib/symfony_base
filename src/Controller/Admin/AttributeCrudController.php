@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Attribute;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 
 class AttributeCrudController extends AbstractAppGrudController
@@ -21,6 +22,15 @@ class AttributeCrudController extends AbstractAppGrudController
             $attributeOptionsField->hideOnIndex();
         }
         return $fields;
+    }
+
+    protected function isVisibleProperty(string $propertyName, string $pagename = null): bool
+    {
+        $entity = $this->getEntity();
+        if($entity instanceof Attribute && $propertyName === 'attributeOptions'){
+            return $entity->getAttributeDefinition()->getType() === 'select';
+        }
+        return parent::isVisibleProperty($propertyName, $pagename);
     }
 
 }

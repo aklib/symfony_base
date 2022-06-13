@@ -34,12 +34,14 @@ class AttributeHandler implements EventSubscriber
     private array $attributeValues = [];
     private IndexManager $indexManager;
     private bool $isLoaded = false;
+    private Collection $attributes;
 
     public function __construct(IndexManager $indexManager)
     {
         $this->indexManager = $indexManager;
         $this->reader = new AnnotationReader();
         $this->attributableEntities = new ArrayCollection();
+        $this->attributes = new ArrayCollection();
     }
 
     //============================ DOCTRINE ============================
@@ -71,29 +73,20 @@ class AttributeHandler implements EventSubscriber
         if ($this->attributableEntities->isEmpty()) {
             return;
         }
-        $attributes = new ArrayCollection();
-        /** @var AttributableEntity $entity */
-        foreach ($this->attributableEntities as $entity) {
-            if($entity->getCategory() === null){
-                continue;
-            }
-            foreach ($entity->getCategory()->getAttributes(true) as $attribute) {
-                if (!$attributes->contains($attribute)) {
-                    $attributes->add($attribute);
-                }
-            }
-        }
+
         $documents = [];
         foreach ($this->attributableEntities as $entity) {
             foreach ($entity->getAttributeValues() as $uniqueKey => $attributeValue) {
-                $attribute = $this->getAttribute($uniqueKey, $attributes);
+                $attribute = $this->getAttribute($uniqueKey);
                 if ($attribute === null) {
                     continue;
                 }
                 $document = $this->getDocument($this->getScope($entity), $entity->getId(), $uniqueKey);
                 if ($document instanceof Document) {
                     $docData = $document->getData();
-                    if($docData[$attribute->getAttributeDefinition()->getType()] === $attributeValue){
+                    $type = $attribute->getAttributeDefinition()->getType();
+
+                    if (array_key_exists($type, $docData) && $docData[$type] === $attributeValue) {
                         continue;
                     }
                     $docData['type'] = $attribute->getAttributeDefinition()->getType();
@@ -107,6 +100,7 @@ class AttributeHandler implements EventSubscriber
                         'scope'                                         => $this->getScope($entity),
                         'type'                                          => $attribute->getAttributeDefinition()->getType(),
                         'uniqueKey'                                     => $attribute->getUniqueKey(),
+                        'multiple'                                      => $attribute->isMultiple(),
                         'attribute'                                     => [
                             'id'   => $attribute->getId(),
                             'name' => $attribute->getName()
@@ -150,7 +144,13 @@ class AttributeHandler implements EventSubscriber
                     continue;
                 }
                 // by unique attributable class (scope) entity id and attribute unique key
-                $this->attributeValues[$key] = $docData[$docData['type']];
+                $attribute = $this->getAttribute($docData['uniqueKey']);
+                if($attribute !== null && $attribute->isMultiple()){
+                    $this->attributeValues[$key] = (array)$docData[$docData['type']];
+                }
+                else {
+                    $this->attributeValues[$key] = $docData[$docData['type']];
+                }
             }
             $this->isLoaded = true;
         }
@@ -203,9 +203,22 @@ class AttributeHandler implements EventSubscriber
 
     //============================ ELASTICSEARCH ============================
 
-    public function getAttribute(string $uniqueKey, Collection $attributes): ?Attribute
+    public function getAttribute(string $uniqueKey): ?Attribute
     {
-        $result = $attributes->filter(static function (Attribute $attribute) use ($uniqueKey) {
+        if ($this->attributes->isEmpty()) {
+            /** @var AttributableEntity $entity */
+            foreach ($this->attributableEntities as $entity) {
+                if ($entity->getCategory() === null) {
+                    continue;
+                }
+                foreach ($entity->getCategory()->getAttributes(true) as $attribute) {
+                    if (!$this->attributes->contains($attribute)) {
+                        $this->attributes->add($attribute);
+                    }
+                }
+            }
+        }
+        $result = $this->attributes->filter(static function (Attribute $attribute) use ($uniqueKey) {
             // filter by unique key
             if ($attribute->getUniqueKey() === $uniqueKey) {
                 return $attribute;

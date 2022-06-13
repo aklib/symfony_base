@@ -24,6 +24,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\UrlField;
 use InvalidArgumentException;
@@ -59,8 +60,14 @@ abstract class AbstractAttributableEntityController extends AbstractAppGrudContr
                 case 'text':
                     $fields[$attribute->getUniqueKey()] = TextareaField::new($attribute->getUniqueKey(), $attribute->getName());
                     break;
+                case 'html':
+                    $fields[$attribute->getUniqueKey()] = TextEditorField::new($attribute->getUniqueKey(), $attribute->getName());
+                    break;
                 case 'country':
-                    $fields[$attribute->getUniqueKey()] = CountryField::new($attribute->getUniqueKey(), $attribute->getName());
+                    $fields[$attribute->getUniqueKey()] = CountryField::new($attribute->getUniqueKey(), $attribute->getName())->showName(false);
+                    if($attribute->isMultiple()){
+                        $fields[$attribute->getUniqueKey()]->setFormTypeOption('multiple', true);
+                    }
                     break;
                 case 'integer':
                     $fields[$attribute->getUniqueKey()] = IntegerField::new($attribute->getUniqueKey(), $attribute->getName());
@@ -92,6 +99,9 @@ abstract class AbstractAttributableEntityController extends AbstractAppGrudContr
                         $choices[$attributeOption->getName()] = $attributeOption->getId();
                     }
                     $fields[$attribute->getUniqueKey()]->setChoices($choices);
+                    if($attribute->isMultiple()){
+                        $fields[$attribute->getUniqueKey()]->allowMultipleChoices(true);
+                    }
                     break;
                 default:
                     throw new InvalidArgumentException(sprintf('Unknown attribute type %s', $attribute->getAttributeDefinition()->getType()));

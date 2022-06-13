@@ -3,8 +3,9 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Attribute;
+use App\Entity\AttributeOption;
 use App\Entity\AttributeTab;
-use App\Entity\AttributeType;
+use App\Entity\AttributeDefinition;
 use App\Entity\Category;
 use App\Entity\Product;
 use App\Entity\User;
@@ -77,7 +78,8 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::section('Attribute');
         yield MenuItem::linkToCrud('Attribute', 'fas fa-list', Attribute::class);
         yield MenuItem::linkToCrud('Attribute Tabs', 'fas fa-list', AttributeTab::class);
-        yield MenuItem::linkToCrud('Attribute Types', 'fas fa-list', AttributeType::class);
+        yield MenuItem::linkToCrud('Attribute Types', 'fas fa-list', AttributeDefinition::class);
+        yield MenuItem::linkToCrud('Attribute Options', 'fas fa-list', AttributeOption::class);
 
         yield MenuItem::section('User');
         yield MenuItem::linkToCrud('User', 'fas fa-list', User::class);

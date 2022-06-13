@@ -49,7 +49,7 @@ class AttributeHandler implements EventSubscriber
         return [
             Events::loadClassMetadata,
             Events::postLoad,
-            Events::prePersist,
+//            Events::prePersist,
             Events::postFlush,
         ];
     }
@@ -64,17 +64,6 @@ class AttributeHandler implements EventSubscriber
         }
     }
 
-    public function prePersist(LifecycleEventArgs $eventArgs): void
-    {
-
-        $entity = $eventArgs->getEntity();
-        if ($entity instanceof AttributableEntity) {
-            if ($this->attributableEntities->contains($entity)) {
-                die('contents');
-            }
-        }
-    }
-
     /** @noinspection PhpUnusedParameterInspection
      */
     public function postFlush(PostFlushEventArgs $eventArgs): void
@@ -85,6 +74,9 @@ class AttributeHandler implements EventSubscriber
         $attributes = new ArrayCollection();
         /** @var AttributableEntity $entity */
         foreach ($this->attributableEntities as $entity) {
+            if($entity->getCategory() === null){
+                continue;
+            }
             foreach ($entity->getCategory()->getAttributes(true) as $attribute) {
                 if (!$attributes->contains($attribute)) {
                     $attributes->add($attribute);
@@ -101,29 +93,30 @@ class AttributeHandler implements EventSubscriber
                 $document = $this->getDocument($this->getScope($entity), $entity->getId(), $uniqueKey);
                 if ($document instanceof Document) {
                     $docData = $document->getData();
-//                    if($docData[$attribute->getType()->getType()] === $attributeValue){
-//                        continue;
-//                    }
-                    $docData[$attribute->getType()->getType()] = $attributeValue;
+                    if($docData[$attribute->getAttributeDefinition()->getType()] === $attributeValue){
+                        continue;
+                    }
+                    $docData['type'] = $attribute->getAttributeDefinition()->getType();
+                    $docData['uniqueKey'] = $attribute->getUniqueKey();
+                    $docData[$attribute->getAttributeDefinition()->getType()] = $attributeValue;
                     $document->setData($docData);
 //                    dump($docData);
-                    $documents[] = $document;
                 } else {
                     $docData = [
-                        'id'                             => $entity->getId(),
-                        'scope'                          => $this->getScope($entity),
-                        'type'                           => $attribute->getType()->getType(),
-                        'uniqueKey'                      => $attribute->getUniqueKey(),
-                        'attribute'                      => [
+                        'id'                                            => $entity->getId(),
+                        'scope'                                         => $this->getScope($entity),
+                        'type'                                          => $attribute->getAttributeDefinition()->getType(),
+                        'uniqueKey'                                     => $attribute->getUniqueKey(),
+                        'attribute'                                     => [
                             'id'   => $attribute->getId(),
                             'name' => $attribute->getName()
                         ],
-                        $attribute->getType()->getType() => $attributeValue
+                        $attribute->getAttributeDefinition()->getType() => $attributeValue
                     ];
 //                    dump($docData);
                     $document = new Document('', $docData, $this->indexManager->getDefaultIndex());
-                    $documents[] = $document;
                 }
+                $documents[] = $document;
             }
         }
         if (empty($documents)) {
@@ -149,7 +142,6 @@ class AttributeHandler implements EventSubscriber
             $documents = $this->getDocuments($this->attributableEntities);
             /** @var Document $document */
             foreach ($documents as $document) {
-                $key = '';
                 $docData = $document->getData();
                 try {
                     $key = $this->getKey($docData['uniqueKey'], null, $docData);

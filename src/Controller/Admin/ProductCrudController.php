@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Attribute;
+use App\Entity\AttributeOption;
 use App\Entity\Category;
 use App\Entity\Product;
 use Doctrine\ORM\QueryBuilder;
@@ -12,16 +13,15 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
-use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CountryField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\UrlField;
 use InvalidArgumentException;
-use function Webmozart\Assert\Tests\StaticAnalysis\null;
 
 /**
  * Class ProductCrudController  * @package App\Controller\Admin
@@ -41,6 +41,91 @@ class ProductCrudController extends AbstractAppGrudController
     public function index(AdminContext $context)
     {
         return parent::index($context);
+    }
+
+    public function configureFields(string $pageName): iterable
+    {
+        $fields = parent::configureFields($pageName);
+        if ($pageName === Crud::PAGE_NEW) {
+            return $fields;
+        }
+        $category = $this->getCategory();
+        if ($pageName !== Crud::PAGE_INDEX) {
+            $entityDto = $this->getContext() !== null ? $this->getContext()->getEntity() : null;
+            /** @var EntityDto $entityDto */
+            if ($entityDto !== null && $entityDto->getInstance() !== null) {
+                $category = $entityDto->getInstance()->getCategory();
+            }
+        }
+        if ($category === null) {
+            return $fields;
+        }
+
+        /** @var Attribute $attribute */
+        foreach ($category->getAttributes(true) as $attribute) {
+            switch ($attribute->getAttributeDefinition()->getType()) {
+                case 'string':
+                    $fields[$attribute->getUniqueKey()] = TextField::new($attribute->getUniqueKey(), $attribute->getName());
+                    break;
+                case 'text':
+                    $fields[$attribute->getUniqueKey()] = TextareaField::new($attribute->getUniqueKey(), $attribute->getName());
+                    break;
+                case 'country':
+                    $fields[$attribute->getUniqueKey()] = CountryField::new($attribute->getUniqueKey(), $attribute->getName());
+                    break;
+                case 'integer':
+                    $fields[$attribute->getUniqueKey()] = IntegerField::new($attribute->getUniqueKey(), $attribute->getName());
+                    break;
+                case 'float':
+                case 'decimal':
+                    $fields[$attribute->getUniqueKey()] = NumberField::new($attribute->getUniqueKey(), $attribute->getName());
+                    break;
+                case 'boolean':
+                    $fields[$attribute->getUniqueKey()] = ChoiceField::new($attribute->getUniqueKey(), $attribute->getName());
+                    $fields[$attribute->getUniqueKey()]->setChoices(
+                        [
+                            'yes'   => true,
+                            'no'    => false,
+                            'maybe' => null
+                        ]);
+                    break;
+                case 'email':
+                    $fields[$attribute->getUniqueKey()] = EmailField::new($attribute->getUniqueKey(), $attribute->getName());
+                    break;
+                case 'url':
+                    $fields[$attribute->getUniqueKey()] = UrlField::new($attribute->getUniqueKey(), $attribute->getName());
+                    break;
+                case 'select':
+                    $fields[$attribute->getUniqueKey()] = ChoiceField::new($attribute->getUniqueKey(), $attribute->getName())->setRequired(true);
+                    $choices = [];
+                    /** @var AttributeOption $attributeOption */
+                    foreach ($attribute->getAttributeOptions() as $attributeOption) {
+                        $choices[$attributeOption->getName()] = $attributeOption->getId();
+                    }
+                    $fields[$attribute->getUniqueKey()]->setChoices($choices);
+                    break;
+                default:
+                    throw new InvalidArgumentException(sprintf('Unknown attribute type %s', $attribute->getAttributeDefinition()->getType()));
+            }
+            if ($attribute->isRequired()) {
+                $fields[$attribute->getUniqueKey()]->setRequired(true);
+            }
+            $fields[$attribute->getUniqueKey()]->setCustomOption('sortOrder', $attribute->getSortOrder());
+        }
+//        uasort($fields, static function ($a, $b) {
+//            return $a->getAsDto()->getCustomOption('sortOrder') > $b->getAsDto()->getCustomOption('sortOrder');
+//        });
+        return $fields;
+    }
+
+    /**
+     * Avoid action "Add Product" for categories
+     * @param Crud $crud
+     * @return Crud
+     */
+    public function configureCrud(Crud $crud): Crud
+    {
+        return parent::configureCrud($crud)->setEntityLabelInSingular('Item');
     }
 
     /**
@@ -66,67 +151,16 @@ class ProductCrudController extends AbstractAppGrudController
         return $qb;
     }
 
-    public function configureFields(string $pageName): iterable
-    {
-        $fields = parent::configureFields($pageName);
-        $category = $this->getCategory();
-        if ($pageName !== Crud::PAGE_INDEX) {
-            $entityDto = $this->getContext() !== null ? $this->getContext()->getEntity() : null;
-            /** @var EntityDto $entityDto */
-            if ($entityDto !== null && $entityDto->getInstance() !== null) {
-                $category = $entityDto->getInstance()->getCategory();
-            }
-        }
-        if ($category === null) {
-            return $fields;
-        }
-
-        /** @var Attribute $attribute */
-        foreach ($category->getAttributes(true) as $attribute) {
-            switch ($attribute->getType()->getType()) {
-                case 'string':
-                    $fields[$attribute->getUniqueKey()] = TextField::new($attribute->getUniqueKey(), $attribute->getName());
-                    break;
-                case 'text':
-                    $fields[$attribute->getUniqueKey()] = TextareaField::new($attribute->getUniqueKey(), $attribute->getName());
-                    break;
-                case 'country':
-                    $fields[$attribute->getUniqueKey()] = CountryField::new($attribute->getUniqueKey(), $attribute->getName());
-                    break;
-                case 'integer':
-                    $fields[$attribute->getUniqueKey()] = IntegerField::new($attribute->getUniqueKey(), $attribute->getName());
-                    break;
-                case 'float':
-                case 'decimal':
-                    $fields[$attribute->getUniqueKey()] = NumberField::new($attribute->getUniqueKey(), $attribute->getName());
-                    break;
-                case 'boolean':
-                    $fields[$attribute->getUniqueKey()] = BooleanField::new($attribute->getUniqueKey(), $attribute->getName());
-                    break;
-                case 'email':
-                    $fields[$attribute->getUniqueKey()] = EmailField::new($attribute->getUniqueKey(), $attribute->getName());
-                    break;
-                case 'select':
-                    $fields[$attribute->getUniqueKey()] = CollectionField::new($attribute->getUniqueKey(), $attribute->getName());
-                    break;
-                default:
-                    throw new InvalidArgumentException(sprintf('Unknown attribute type %s', $attribute->getType()->getType()));
-            }
-            if ($attribute->isRequired()) {
-                $fields[$attribute->getUniqueKey()]->setRequired(true);
-            }
-
-            $fields[$attribute->getUniqueKey()]->setCustomOption('sortOrder', $attribute->getSortOrder());
-        }
-
-//        uasort($fields, static function ($a, $b) {
-//            return $a->getAsDto()->getCustomOption('sortOrder') > $b->getAsDto()->getCustomOption('sortOrder');
-//        });
-        return $fields;
-    }
-
+    /**
+     * Finds a category set in a dashboard controller
+     * @return Category|null
+     */
     protected function getCategory(): ?Category
     {
+        if ($this->getContext()->getCrud()->getCurrentAction() === 'new') {
+            return null;
+        }
+
         if ($this->category === null) {
             $request = $this->getContext() !== null ? $this->getContext()->getRequest() : null;
             if ($request === null) {
@@ -136,17 +170,6 @@ class ProductCrudController extends AbstractAppGrudController
             $this->category = $this->getEntityManager()->getRepository(Category::class)->find($categoryId);
         }
         return $this->category;
-    }
-
-
-    /**
-     * Avoid action "Add Product" for categories
-     * @param Crud $crud
-     * @return Crud
-     */
-    public function configureCrud(Crud $crud): Crud
-    {
-        return parent::configureCrud($crud)->setEntityLabelInSingular('Item');
     }
 
 

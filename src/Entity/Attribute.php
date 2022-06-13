@@ -55,15 +55,15 @@ class Attribute
     private AttributeTab $tab;
 
     /**
-     * @var AttributeType
+     * @var AttributeDefinition
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\AttributeType", fetch="EXTRA_LAZY")
+     * @ORM\ManyToOne(targetEntity="AttributeDefinition", fetch="EXTRA_LAZY")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="type_id", referencedColumnName="id", nullable=false)
+     *   @ORM\JoinColumn(name="attribute_definition_id", referencedColumnName="id", nullable=false)
      * })
      * @AppORM\Element(sortOrder="3")
      */
-    private AttributeType $type;
+    private AttributeDefinition $attributeDefinition;
 
     /**
      * @var bool
@@ -237,19 +237,19 @@ class Attribute
     }
 
     /**
-     * @return AttributeType
+     * @return AttributeDefinition
      */
-    public function getType(): AttributeType
+    public function getAttributeDefinition(): AttributeDefinition
     {
-        return $this->type;
+        return $this->attributeDefinition;
     }
 
     /**
-     * @param AttributeType $type
+     * @param AttributeDefinition $attributeDefinition
      */
-    public function setType(AttributeType $type): void
+    public function setAttributeDefinition(AttributeDefinition $attributeDefinition): void
     {
-        $this->type = $type;
+        $this->attributeDefinition = $attributeDefinition;
     }
 
     /**

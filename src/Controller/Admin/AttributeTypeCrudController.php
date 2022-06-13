@@ -2,13 +2,13 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\AttributeType;
+use App\Entity\AttributeDefinition;
 
 class AttributeTypeCrudController extends AbstractAppGrudController
 {
     public static function getEntityFqcn(): string
     {
-        return AttributeType::class;
+        return AttributeDefinition::class;
     }
 
     /*

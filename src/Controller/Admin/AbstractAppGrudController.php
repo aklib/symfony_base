@@ -9,6 +9,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Category;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
@@ -102,7 +103,7 @@ abstract class AbstractAppGrudController extends AbstractCrudController
                     break;
                 case 'datetime':
                 case 'date_immutable':
-                    $fields[$propertyName] = DateTimeField::new($propertyName, $label)->setFormat('y-MM-d hh:mm:ss');
+                    $fields[$propertyName] = DateTimeField::new($propertyName, $label)->setFormat('y-MM-dd hh:mm:ss');
                     if ('createdAt' === $propertyName || 'updatedAt' === $propertyName) {
                         $fields[$propertyName]->hideOnForm();
                     }

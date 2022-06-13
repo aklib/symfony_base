@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\AttributeTypeRepository;
+use App\Repository\AttributeDefinitionRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=AttributeTypeRepository::class)
+ * @ORM\Entity(repositoryClass=AttributeDefinitionRepository::class)
  */
-class AttributeType
+class AttributeDefinition
 {
     /**
      * @ORM\Id

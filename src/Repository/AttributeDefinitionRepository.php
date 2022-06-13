@@ -2,26 +2,26 @@
 
 namespace App\Repository;
 
-use App\Entity\AttributeType;
+use App\Entity\AttributeDefinition;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<AttributeType>
+ * @extends ServiceEntityRepository<AttributeDefinition>
  *
- * @method AttributeType|null find($id, $lockMode = null, $lockVersion = null)
- * @method AttributeType|null findOneBy(array $criteria, array $orderBy = null)
- * @method AttributeType[]    findAll()
- * @method AttributeType[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method AttributeDefinition|null find($id, $lockMode = null, $lockVersion = null)
+ * @method AttributeDefinition|null findOneBy(array $criteria, array $orderBy = null)
+ * @method AttributeDefinition[]    findAll()
+ * @method AttributeDefinition[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class AttributeTypeRepository extends ServiceEntityRepository
+class AttributeDefinitionRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, AttributeType::class);
+        parent::__construct($registry, AttributeDefinition::class);
     }
 
-    public function add(AttributeType $entity, bool $flush = false): void
+    public function add(AttributeDefinition $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -30,7 +30,7 @@ class AttributeTypeRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(AttributeType $entity, bool $flush = false): void
+    public function remove(AttributeDefinition $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 

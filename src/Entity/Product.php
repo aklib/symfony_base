@@ -75,7 +75,7 @@ class Product implements AttributableEntity
         $this->name = $name;
     }
 
-    public function getCategory(): Category
+    public function getCategory(): ?Category
     {
         return $this->category;
     }

@@ -2,12 +2,12 @@
 
 namespace App\Entity\Extension\Annotation;
 
-use Doctrine\ORM\Mapping\Annotation;
+use Doctrine\Common\Annotations\Annotation;
 
 /**
  * @Annotation
  */
-class Element implements Annotation, CustomDoctrineAnnotation
+class Element implements CustomDoctrineAnnotation
 {
     /**
      * Form element class full name

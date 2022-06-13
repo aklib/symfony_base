@@ -118,7 +118,53 @@ msgstr "Sort Order"
 msgid "sortOrder"
 msgstr "Sort Order"
 
+msgid "Gender"
+msgstr "Gender"
 
+msgid "gender"
+msgstr "gender"
+
+msgid "Female"
+msgstr "Female"
+
+msgid "female"
+msgstr "female"
+
+msgid "Male"
+msgstr "Male"
+
+msgid "male"
+msgstr "male"
+
+msgid "Address"
+msgstr "Address"
+
+msgid "address"
+msgstr "address"
+
+msgid "Attribute Options"
+msgstr "Attribute Options"
+
+msgid "Country"
+msgstr "Country"
+
+msgid "country"
+msgstr "country"
+
+msgid "item"
+msgstr "item"
+
+msgid "Item"
+msgstr "Item"
+
+msgid "Article Number"
+msgstr "Article Number"
+
+msgid "AttributeDefinition"
+msgstr "Attribute Definition"
+
+msgid "attributeDefinition"
+msgstr "Attribute Definition"
 
 #. EasyAdminBundle+intl-icu.en
 msgid "label.form.empty_value"

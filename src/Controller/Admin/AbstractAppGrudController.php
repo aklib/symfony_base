@@ -205,7 +205,7 @@ abstract class AbstractAppGrudController extends AbstractCrudController
         return $this->em;
     }
 
-    protected function isVisibleProperty(string $propertyName, string $pagename = null): bool
+    protected function isVisibleProperty(string $propertyName, string $pageName = null): bool
     {
         return true;
     }

@@ -64,7 +64,7 @@ abstract class AbstractAttributableEntityController extends AbstractAppGrudContr
                     $fields[$attribute->getUniqueKey()] = TextEditorField::new($attribute->getUniqueKey(), $attribute->getName());
                     break;
                 case 'country':
-                    $fields[$attribute->getUniqueKey()] = CountryField::new($attribute->getUniqueKey(), $attribute->getName())->showName(false);
+                    $fields[$attribute->getUniqueKey()] = CountryField::new($attribute->getUniqueKey(), $attribute->getName());
                     if($attribute->isMultiple()){
                         $fields[$attribute->getUniqueKey()]->setFormTypeOption('multiple', true);
                     }

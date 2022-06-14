@@ -51,9 +51,14 @@ class AttributeHandler implements EventSubscriber
         return [
             Events::loadClassMetadata,
             Events::postLoad,
-//            Events::prePersist,
+            Events::preUpdate,
             Events::postFlush,
         ];
+    }
+
+    public function preUpdate(LifecycleEventArgs $eventArgs): void
+    {
+
     }
 
     public function postLoad(LifecycleEventArgs $eventArgs): void
@@ -122,6 +127,8 @@ class AttributeHandler implements EventSubscriber
             $bulk->addDocument($document);
         }
         $bulk->send();
+        $this->attributableEntities->clear();
+        sleep(1);
         // save attribute values
     }
 

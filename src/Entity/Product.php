@@ -20,6 +20,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Product implements AttributableEntity
 {
     use TimestampableEntityTrait, BlameableEntityTrait, AttributableEntityTrait;
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -126,11 +127,11 @@ class Product implements AttributableEntity
 
     public function toArray(): array
     {
-       return  [
-           'product' => [
-               'id' => $this->getId(),
-               'name' => $this->getName()
-           ]
-       ];
+        return [
+            'product' => [
+                'id'   => $this->getId(),
+                'name' => $this->getName()
+            ]
+        ];
     }
 }

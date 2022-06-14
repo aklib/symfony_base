@@ -282,7 +282,7 @@ class Category
      */
     public function getAttributes(bool $recursive = false): Collection
     {
-        if($recursive){
+        if ($recursive) {
             return $this->getAttributesRecursive();
         }
         return $this->attributes;

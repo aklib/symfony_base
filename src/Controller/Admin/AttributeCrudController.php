@@ -13,7 +13,6 @@ class AttributeCrudController extends AbstractAppGrudController
         return Attribute::class;
     }
 
-
     public function configureFields(string $pageName): iterable
     {
         $fields = parent::configureFields($pageName);
@@ -28,7 +27,7 @@ class AttributeCrudController extends AbstractAppGrudController
     {
 
         $entity = $this->getEntity();
-        if($entity instanceof Attribute && $propertyName === 'attributeOptions'){
+        if ($entity instanceof Attribute && $propertyName === 'attributeOptions') {
             if ($pageName === Crud::PAGE_NEW) {
                 return false;
             }

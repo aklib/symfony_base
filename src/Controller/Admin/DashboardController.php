@@ -3,9 +3,9 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Attribute;
+use App\Entity\AttributeDefinition;
 use App\Entity\AttributeOption;
 use App\Entity\AttributeTab;
-use App\Entity\AttributeDefinition;
 use App\Entity\Category;
 use App\Entity\Product;
 use App\Entity\User;

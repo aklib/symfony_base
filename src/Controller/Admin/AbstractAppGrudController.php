@@ -29,7 +29,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use function Webmozart\Assert\Tests\StaticAnalysis\null;
 
 abstract class AbstractAppGrudController extends AbstractCrudController
 {
@@ -212,7 +211,7 @@ abstract class AbstractAppGrudController extends AbstractCrudController
 
     protected function getEntity(): ?object
     {
-        if($this->getContext() !== null && $this->getContext()->getEntity() instanceof EntityDto){
+        if ($this->getContext() !== null && $this->getContext()->getEntity() instanceof EntityDto) {
             return $this->getContext()->getEntity()->getInstance();
         }
         return null;

@@ -152,10 +152,9 @@ class AttributeHandler implements EventSubscriber
                 }
                 // by unique attributable class (scope) entity id and attribute unique key
                 $attribute = $this->getAttribute($docData['uniqueKey']);
-                if($attribute !== null && $attribute->isMultiple()){
+                if ($attribute !== null && $attribute->isMultiple()) {
                     $this->attributeValues[$key] = (array)$docData[$docData['type']];
-                }
-                else {
+                } else {
                     $this->attributeValues[$key] = $docData[$docData['type']];
                 }
             }

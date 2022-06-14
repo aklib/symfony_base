@@ -65,7 +65,7 @@ abstract class AbstractAttributableEntityController extends AbstractAppGrudContr
                     break;
                 case 'country':
                     $fields[$attribute->getUniqueKey()] = CountryField::new($attribute->getUniqueKey(), $attribute->getName());
-                    if($attribute->isMultiple()){
+                    if ($attribute->isMultiple()) {
                         $fields[$attribute->getUniqueKey()]->setFormTypeOption('multiple', true);
                     }
                     break;
@@ -99,7 +99,7 @@ abstract class AbstractAttributableEntityController extends AbstractAppGrudContr
                         $choices[$attributeOption->getName()] = $attributeOption->getId();
                     }
                     $fields[$attribute->getUniqueKey()]->setChoices($choices);
-                    if($attribute->isMultiple()){
+                    if ($attribute->isMultiple()) {
                         $fields[$attribute->getUniqueKey()]->allowMultipleChoices(true);
                     }
                     break;

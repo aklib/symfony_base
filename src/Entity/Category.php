@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use App\Entity\Extension\Annotation as AppORM;
 
 /**
  * @Gedmo\Tree(type="nested")
@@ -27,6 +28,7 @@ class Category
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @AppORM\Element(sortOrder="2")
      */
     private string $name;
 
@@ -75,6 +77,8 @@ class Category
 
     /**
      * @ORM\OneToMany(targetEntity=Attribute::class, mappedBy="category")
+     * @ORM\OrderBy({"sortOrder" = "ASC"})
+     * @AppORM\Element(sortOrder="2")
      */
     private Collection $attributes;
 

@@ -22,6 +22,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CountryField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
@@ -76,6 +77,9 @@ abstract class AbstractAttributableEntityController extends AbstractAppGrudContr
                 case 'decimal':
                     $fields[$attribute->getUniqueKey()] = NumberField::new($attribute->getUniqueKey(), $attribute->getName());
                     break;
+                case 'price':
+                    $fields[$attribute->getUniqueKey()] = MoneyField::new($attribute->getUniqueKey(), $attribute->getName())->setCurrency('EUR');
+                    break;
                 case 'boolean':
                     $fields[$attribute->getUniqueKey()] = ChoiceField::new($attribute->getUniqueKey(), $attribute->getName());
                     $fields[$attribute->getUniqueKey()]->setChoices(
@@ -99,8 +103,8 @@ abstract class AbstractAttributableEntityController extends AbstractAppGrudContr
                         $choices[$attributeOption->getName()] = $attributeOption->getId();
                     }
                     $fields[$attribute->getUniqueKey()]->setChoices($choices);
-                    if ($attribute->isMultiple()) {
-                        $fields[$attribute->getUniqueKey()]->allowMultipleChoices(true);
+                    if (!$attribute->isMultiple()) {
+                        $fields[$attribute->getUniqueKey()]->allowMultipleChoices(false);
                     }
                     break;
                 default:
@@ -117,15 +121,7 @@ abstract class AbstractAttributableEntityController extends AbstractAppGrudContr
         return $fields;
     }
 
-    /**
-     * Avoid action "Add Product" for categories
-     * @param Crud $crud
-     * @return Crud
-     */
-    public function configureCrud(Crud $crud): Crud
-    {
-        return parent::configureCrud($crud)->setEntityLabelInSingular('Item');
-    }
+
 
     /**
      * Called only by index action

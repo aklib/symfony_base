@@ -121,3 +121,12 @@ table.datagrid {
 .show {
     visibility: visible;
 }
+
+
+td.field-association .accordion-button::after {
+    background-size: 1rem;
+}
+
+td.field-association .accordion-item, td.field-association .accordion-button {
+    background-color: transparent;
+}

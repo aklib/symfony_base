@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Category;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FieldTrait;
 
 class CategoryCrudController extends AbstractAppGrudController
@@ -24,12 +25,15 @@ class CategoryCrudController extends AbstractAppGrudController
 
     public function configureFields(string $pageName): iterable
     {
-        $fields = parent::configureFields($pageName);
+        $fields = (array)parent::configureFields($pageName);
         if ($pageName === 'index') {
             /** @var FieldTrait $field */
             foreach ($fields as $field) {
                 $field->setSortable(false);
             }
+        }
+        if (array_key_exists('attributes', $fields) && $fields['attributes'] instanceof AssociationField) {
+            $fields['attributes']->setTemplatePath('bundles/EasyAdminBundle/crud/field/attribute_accordion.html.twig');
         }
         return $fields;
     }

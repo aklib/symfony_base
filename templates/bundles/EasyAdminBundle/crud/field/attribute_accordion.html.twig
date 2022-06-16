@@ -1,0 +1,28 @@
+{% set category = entity.getInstance() %}
+{% if category.attributes(true).count > 0 %}
+    <div class="accordion-item border-0">
+        <h6 class="accordion-header">
+            <a class="accordion-button collapsed px-0" type="button" data-bs-toggle="collapse"
+               data-bs-target="#contents-{{ category.id }}">
+                <span class="badge badge-secondary">{{ category.attributes(true).count }}</span>
+            </a>
+        </h6>
+        <div id="contents-{{ category.id }}" class="accordion-collapse collapse">
+            <ul class="list-unstyled">
+                {% for attribute in category.attributes(true) %}
+                    <li>
+                        {% if attribute.category.id != category.id %}
+                            <small class="text-muted" title="inherited from parent"><i class="fa fa-code-fork"></i>&nbsp;</small>
+                        {% else %}
+                            <small class="text-muted" title="inherited from parent"><i class="fa fa-home"></i>&nbsp;</small>
+                        {% endif %}
+                        <small class="text-muted" style="font-style: italic">{{ attribute }}</small>
+
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% else %}
+    <span class="badge badge-secondary">0</span>
+{% endif %}

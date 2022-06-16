@@ -29,11 +29,6 @@ class Product implements AttributableEntity
     private int $id;
 
     /**
-     * @ORM\Column(type="string", length=64, nullable=false)
-     */
-    private string $name;
-
-    /**
      * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="products", fetch="EAGER")
      * @ORM\JoinColumn(nullable=false)
      */
@@ -58,22 +53,6 @@ class Product implements AttributableEntity
     public function setId(int $id): void
     {
         $this->id = $id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param string $name
-     */
-    public function setName(string $name): void
-    {
-        $this->name = $name;
     }
 
     public function getCategory(): ?Category
@@ -122,7 +101,7 @@ class Product implements AttributableEntity
 
     public function __toString()
     {
-        return $this->name;
+        return $this->name . '';
     }
 
     public function toArray(): array

@@ -1,4 +1,5 @@
-<?php
+<?php /** @noinspection PhpUnused */
+
 /**
  * Class AbstractAppGrudController
  * @package App\Controller\Admin
@@ -20,6 +21,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\CurrencyField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
@@ -98,6 +100,9 @@ abstract class AbstractAppGrudController extends AbstractCrudController
                 case 'decimal':
                     $fields[$propertyName] = NumberField::new($propertyName, $label);
                     break;
+                case 'price':
+                    $fields[$propertyName] = CurrencyField::new($propertyName, $label);
+                    break;
                 case 'boolean':
                     $fields[$propertyName] = BooleanField::new($propertyName, $label);
                     break;
@@ -121,8 +126,10 @@ abstract class AbstractAppGrudController extends AbstractCrudController
                 case ClassMetadataInfo::MANY_TO_ONE:
                     $fields[$propertyName] = AssociationField::new($propertyName, $label);
                     if ('createdBy' === $propertyName || 'updatedBy' === $propertyName) {
+                        // user
                         $fields[$propertyName]->hideOnForm();
-                    } elseif ($mapping['type'] !== ClassMetadataInfo::MANY_TO_ONE) {
+                    }
+                    if ($mapping['type'] !== ClassMetadataInfo::MANY_TO_ONE) {
                         $fields[$propertyName]->formatValue(function ($v, $entity) use ($pageName, $mapping) {
                             if ($pageName === 'detail') {
                                 $method = 'get' . ucfirst($mapping['fieldName']);

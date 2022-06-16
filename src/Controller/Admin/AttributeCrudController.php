@@ -16,10 +16,9 @@ class AttributeCrudController extends AbstractAppGrudController
     public function configureFields(string $pageName): iterable
     {
         $fields = parent::configureFields($pageName);
-        $attributeOptionsField = $fields['attributeOptions'] ?? null;
-        if ($attributeOptionsField instanceof AssociationField) {
-            $attributeOptionsField->hideOnIndex();
-        }
+
+        $fields['attributeOptions'] = AssociationField::new('attributeOptions', 'Attribute Options');
+//        dump($fields['attributeOptions']);die;
         return $fields;
     }
 

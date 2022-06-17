@@ -5,6 +5,8 @@ namespace App\EventSubscriber;
 use App\Entity\Attribute;
 use App\Entity\Extension\Annotation\CustomDoctrineAnnotation;
 use App\Entity\Extension\AttributableEntity;
+use DateTime;
+use DateTimeZone;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -165,7 +167,36 @@ class AttributeHandler implements EventSubscriber
         } catch (Exception $e) {
             return null;
         }
+        $attribute = $this->getAttribute($uniqueKey);
+       if($attribute instanceof Attribute){
+           $this->attributeValues[$key] = $this->formatAttributeValue($attribute, $this->attributeValues[$key]);
+       }
         return $this->attributeValues[$key] ?? null;
+    }
+
+    /**
+     * @param Attribute $attribute
+     * @param $value
+     * @return DateTime|null
+     * @noinspection ReturnTypeCanBeDeclaredInspection
+     * @noinspection PhpMissingReturnTypeInspection
+     */
+    protected function formatAttributeValue(Attribute $attribute, $value)
+    {
+        $formattedValue = $value;
+        switch ($attribute->getAttributeDefinition()->getType()) {
+            case 'date':
+            case 'datetime':
+                try {
+                    if (is_array($value)) {
+                        $formattedValue = new DateTime($value['date'], new DateTimeZone($value['timezone']));
+                    }
+                } catch (Exception $e) {
+                    $formattedValue = null;
+                }
+                break;
+        }
+        return $formattedValue;
     }
 
     /**

@@ -11,7 +11,7 @@ use App\Entity\Extension\Traits\TimestampableEntityTrait;
 use App\Repository\ProductRepository;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-
+use App\Entity\Extension\Annotation as AppORM;
 
 /**
  * @ORM\Entity(repositoryClass=ProductRepository::class)
@@ -31,6 +31,7 @@ class Product implements AttributableEntity
     /**
      * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="products", fetch="EAGER")
      * @ORM\JoinColumn(nullable=false)
+     * @AppORM\Element(sortOrder="2")
      */
     private ?Category $category = null;
 
@@ -101,7 +102,7 @@ class Product implements AttributableEntity
 
     public function __toString()
     {
-        return $this->name . '';
+        return  (string)($this->name  ?? 'unknown');
     }
 
     public function toArray(): array
@@ -109,7 +110,7 @@ class Product implements AttributableEntity
         return [
             'product' => [
                 'id'   => $this->getId(),
-                'name' => $this->getName()
+                'name' => $this->name ?? 'unknown'
             ]
         ];
     }

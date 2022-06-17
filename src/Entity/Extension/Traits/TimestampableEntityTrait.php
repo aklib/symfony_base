@@ -12,18 +12,21 @@ namespace App\Entity\Extension\Traits;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use App\Entity\Extension\Annotation as AppORM;
 
 trait TimestampableEntityTrait
 {
     /**
      * @ORM\Column(type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="create")
+     * @AppORM\Element(sortOrder="100")
      */
     private ?DateTime $createdAt;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
      * @Gedmo\Timestampable(on="update")
+     * @AppORM\Element(sortOrder="101")
      */
     private ?DateTime $updatedAt;
 

@@ -20,6 +20,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CountryField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
@@ -33,6 +35,8 @@ use InvalidArgumentException;
 abstract class AbstractAttributableEntityController extends AbstractAppGrudController
 {
     private ?Category $category = null;
+    public const DATE_FORMAT_DEFAULT = 'dd.MM.yyyy';
+    public const DATETIME_FORMAT_DEFAULT = 'dd.MM.yyyy ';
 
     public function configureFields(string $pageName): iterable
     {
@@ -95,6 +99,12 @@ abstract class AbstractAttributableEntityController extends AbstractAppGrudContr
                 case 'url':
                     $fields[$attribute->getUniqueKey()] = UrlField::new($attribute->getUniqueKey(), $attribute->getName());
                     break;
+                case 'date':
+                    $fields[$attribute->getUniqueKey()] = DateField::new($attribute->getUniqueKey(), $attribute->getName())->setFormat(self::DATE_FORMAT_DEFAULT);
+                    break;
+                case 'datetime':
+                    $fields[$attribute->getUniqueKey()] = DateTimeField::new($attribute->getUniqueKey(), $attribute->getName())->setFormat(self::DATETIME_FORMAT_DEFAULT);
+                    break;
                 case 'select':
                     $fields[$attribute->getUniqueKey()] = ChoiceField::new($attribute->getUniqueKey(), $attribute->getName())->setRequired(true);
                     $choices = [];
@@ -113,14 +123,20 @@ abstract class AbstractAttributableEntityController extends AbstractAppGrudContr
             if ($attribute->isRequired()) {
                 $fields[$attribute->getUniqueKey()]->setRequired(true);
             }
-            $fields[$attribute->getUniqueKey()]->setCustomOption('sortOrder', $attribute->getSortOrder());
+            $fields[$attribute->getUniqueKey()]->setCustomOption(self::OPTION_SORT_ORDER, $attribute->getSortOrder());
         }
-//        uasort($fields, static function ($a, $b) {
-//            return $a->getAsDto()->getCustomOption('sortOrder') > $b->getAsDto()->getCustomOption('sortOrder');
-//        });
+        $this->postConfigureFields($fields, $pageName);
         return $fields;
     }
 
+    public function postConfigureFields(iterable &$fields, string $pageName): void
+    {
+        if(is_array($fields)){
+            uasort($fields, static function ($a, $b) {
+                return $a->getAsDto()->getCustomOption(self::OPTION_SORT_ORDER) > $b->getAsDto()->getCustomOption(self::OPTION_SORT_ORDER);
+            });
+        }
+    }
 
 
     /**

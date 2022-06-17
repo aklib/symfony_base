@@ -4,7 +4,6 @@ namespace App\Controller\Admin;
 
 use App\Entity\Attribute;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
-use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 
 class AttributeCrudController extends AbstractAppGrudController
 {
@@ -13,18 +12,8 @@ class AttributeCrudController extends AbstractAppGrudController
         return Attribute::class;
     }
 
-    public function configureFields(string $pageName): iterable
-    {
-        $fields = parent::configureFields($pageName);
-
-        $fields['attributeOptions'] = AssociationField::new('attributeOptions', 'Attribute Options');
-//        dump($fields['attributeOptions']);die;
-        return $fields;
-    }
-
     protected function isVisibleProperty(string $propertyName, string $pageName = null): bool
     {
-
         $entity = $this->getEntity();
         if ($entity instanceof Attribute && $propertyName === 'attributeOptions') {
             if ($pageName === Crud::PAGE_NEW) {

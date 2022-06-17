@@ -37,7 +37,7 @@ abstract class AbstractAppGrudController extends AbstractCrudController
     private EntityManagerInterface $em;
     private TranslatorInterface $translator;
     private array $mappings;
-
+    protected const OPTION_SORT_ORDER = 'sortOrder';
 
     public function __construct(EntityManagerInterface $em, TranslatorInterface $translator)
     {
@@ -48,17 +48,17 @@ abstract class AbstractAppGrudController extends AbstractCrudController
         $count = 1;
         foreach ($mappings as &$mapping) {
             if (!array_key_exists('element', $mapping)) {
-                $mapping['element']['sortOrder'] = $count;
-            } elseif (!array_key_exists('sortOrder', $mapping['element'])) {
-                $mapping['element']['sortOrder'] = $count;
+                $mapping['element'][self::OPTION_SORT_ORDER] = $count;
+            } elseif (!array_key_exists(self::OPTION_SORT_ORDER, $mapping['element'])) {
+                $mapping['element'][self::OPTION_SORT_ORDER] = $count;
             } else {
-                $count = $mapping['element']['sortOrder'];
+                $count = $mapping['element'][self::OPTION_SORT_ORDER];
             }
             $count++;
         }
         unset($mapping);
         uasort($mappings, static function ($a, $b) {
-            return $a['element']['sortOrder'] > $b['element']['sortOrder'];
+            return $a['element'][self::OPTION_SORT_ORDER] > $b['element'][self::OPTION_SORT_ORDER];
         });
         $this->mappings = $mappings;
     }
@@ -81,12 +81,10 @@ abstract class AbstractAppGrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         $fields = [];
-
         foreach ($this->mappings as $propertyName => $mapping) {
             if (!$this->isVisibleProperty($propertyName, $pageName)) {
                 continue;
             }
-
             $label = ucfirst($propertyName);
             switch ($mapping['type']) {
                 case 'integer':
@@ -148,7 +146,6 @@ abstract class AbstractAppGrudController extends AbstractCrudController
                     if ($propertyName === 'password') {
                         continue 2;
                     }
-
                     if ($propertyName === 'email') {
                         $fields[$propertyName] = EmailField::new($propertyName, $label);
                     } else {
@@ -162,10 +159,21 @@ abstract class AbstractAppGrudController extends AbstractCrudController
                             $fields[$propertyName] = TextField::new($propertyName, $label);
                         }
                     }
-                    $fields[$propertyName]->setCustomOption('sortOrder', $mapping['element']['sortOrder']);
             }
+            $fields[$propertyName]->setCustomOption(self::OPTION_SORT_ORDER, $mapping['element'][self::OPTION_SORT_ORDER]);
         }
+        $this->postConfigureFields($fields, $pageName);
         return $fields;
+    }
+
+
+    public function postConfigureFields(iterable &$fields, string $pageName): void
+    {
+        if (is_array($fields)) {
+            uasort($fields, static function ($a, $b) {
+                return $a->getAsDto()->getCustomOption(self::OPTION_SORT_ORDER) > $b->getAsDto()->getCustomOption(self::OPTION_SORT_ORDER);
+            });
+        }
     }
 
     public function configureFilters(Filters $filters): Filters
@@ -175,7 +183,6 @@ abstract class AbstractAppGrudController extends AbstractCrudController
         }
         return $filters;
     }
-
 
     /**
      * Customise action icons

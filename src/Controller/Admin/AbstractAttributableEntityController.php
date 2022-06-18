@@ -35,8 +35,6 @@ use InvalidArgumentException;
 abstract class AbstractAttributableEntityController extends AbstractAppGrudController
 {
     private ?Category $category = null;
-    public const DATE_FORMAT_DEFAULT = 'dd.MM.yyyy';
-    public const DATETIME_FORMAT_DEFAULT = 'dd.MM.yyyy ';
 
     public function configureFields(string $pageName): iterable
     {
@@ -100,10 +98,10 @@ abstract class AbstractAttributableEntityController extends AbstractAppGrudContr
                     $fields[$attribute->getUniqueKey()] = UrlField::new($attribute->getUniqueKey(), $attribute->getName());
                     break;
                 case 'date':
-                    $fields[$attribute->getUniqueKey()] = DateField::new($attribute->getUniqueKey(), $attribute->getName())->setFormat(self::DATE_FORMAT_DEFAULT);
+                    $fields[$attribute->getUniqueKey()] = DateField::new($attribute->getUniqueKey(), $attribute->getName());
                     break;
                 case 'datetime':
-                    $fields[$attribute->getUniqueKey()] = DateTimeField::new($attribute->getUniqueKey(), $attribute->getName())->setFormat(self::DATETIME_FORMAT_DEFAULT);
+                    $fields[$attribute->getUniqueKey()] = DateTimeField::new($attribute->getUniqueKey(), $attribute->getName());
                     break;
                 case 'select':
                     $fields[$attribute->getUniqueKey()] = ChoiceField::new($attribute->getUniqueKey(), $attribute->getName())->setRequired(true);

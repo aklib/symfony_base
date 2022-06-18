@@ -12,6 +12,7 @@ use App\Repository\ProductRepository;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Extension\Annotation as AppORM;
+use function Webmozart\Assert\Tests\StaticAnalysis\null;
 
 /**
  * @ORM\Entity(repositoryClass=ProductRepository::class)
@@ -102,7 +103,10 @@ class Product implements AttributableEntity
 
     public function __toString()
     {
-        return  (string)($this->name  ?? 'unknown');
+        if($this->category === null){
+            return  (string)($this->name  ?? 'unknown');
+        }
+        return  $this->category->getName() ?? 'unknown';
     }
 
     public function toArray(): array

@@ -168,9 +168,12 @@ class AttributeHandler implements EventSubscriber
             return null;
         }
         $attribute = $this->getAttribute($uniqueKey);
-       if($attribute instanceof Attribute){
-           $this->attributeValues[$key] = $this->formatAttributeValue($attribute, $this->attributeValues[$key]);
-       }
+        if(!array_key_exists($key, $this->attributeValues)){
+            return null;
+        }
+        if ($attribute instanceof Attribute) {
+            $this->attributeValues[$key] = $this->formatAttributeValue($attribute, $this->attributeValues[$key]);
+        }
         return $this->attributeValues[$key] ?? null;
     }
 

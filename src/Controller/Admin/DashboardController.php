@@ -12,6 +12,7 @@ use App\Entity\User;
 use App\Repository\CategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
@@ -22,6 +23,8 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class DashboardController extends AbstractDashboardController
 {
 
+    public const DATE_FORMAT_DEFAULT = 'y-MM-dd';
+    public const DATETIME_FORMAT_DEFAULT = 'y-MM-dd hh:mm:ss';
     private EntityManagerInterface $em;
     private TranslatorInterface $translator;
 
@@ -31,6 +34,15 @@ class DashboardController extends AbstractDashboardController
         $this->translator = $translator;
     }
 
+    public function configureCrud(): Crud
+    {
+        return parent::configureCrud()
+            ->setDateFormat(self::DATE_FORMAT_DEFAULT)
+            ->setDateTimeFormat(self::DATETIME_FORMAT_DEFAULT)
+            ->setTimezone('Europe/Berlin')
+            ;
+
+    }
 
     /**
      * @Route("/admin", name="admin")

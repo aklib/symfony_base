@@ -106,7 +106,7 @@ abstract class AbstractAppGrudController extends AbstractCrudController
                     break;
                 case 'datetime':
                 case 'date_immutable':
-                    $fields[$propertyName] = DateTimeField::new($propertyName, $label)->setFormat('y-MM-dd hh:mm:ss');
+                    $fields[$propertyName] = DateTimeField::new($propertyName, $label);//->setFormat('y-MM-dd hh:mm:ss');
                     if ('createdAt' === $propertyName || 'updatedAt' === $propertyName) {
                         $fields[$propertyName]->hideOnForm();
                     }

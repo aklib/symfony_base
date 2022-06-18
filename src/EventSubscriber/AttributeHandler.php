@@ -10,7 +10,9 @@ use DateTimeZone;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\EventArgs;
 use Doctrine\Common\EventSubscriber;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\LoadClassMetadataEventArgs;
 use Doctrine\ORM\Event\PostFlushEventArgs;
@@ -24,6 +26,7 @@ use Exception;
 use FlorianWolters\Component\Core\StringUtils;
 use FOS\ElasticaBundle\Index\IndexManager;
 use InvalidArgumentException;
+use Symfony\Component\Security\Core\Security;
 use Throwable;
 
 class AttributeHandler implements EventSubscriber
@@ -35,12 +38,14 @@ class AttributeHandler implements EventSubscriber
      */
     private array $attributeValues = [];
     private IndexManager $indexManager;
+    private Security $security;
     private bool $isLoaded = false;
     private Collection $attributes;
 
-    public function __construct(IndexManager $indexManager)
+    public function __construct(IndexManager $indexManager, Security $security)
     {
         $this->indexManager = $indexManager;
+        $this->security = $security;
         $this->reader = new AnnotationReader();
         $this->attributableEntities = new ArrayCollection();
         $this->attributes = new ArrayCollection();
@@ -73,8 +78,6 @@ class AttributeHandler implements EventSubscriber
         }
     }
 
-    /** @noinspection PhpUnusedParameterInspection
-     */
     public function postFlush(PostFlushEventArgs $eventArgs): void
     {
         if ($this->attributableEntities->isEmpty()) {
@@ -90,7 +93,7 @@ class AttributeHandler implements EventSubscriber
                 }
                 $document = $this->getDocument($this->getScope($entity), $entity->getId(), $uniqueKey);
                 if ($document instanceof Document) {
-                    $docData = $document->getData();
+                    $docData = $rawData = $document->getData();
                     $type = $attribute->getAttributeDefinition()->getType();
 
                     if (array_key_exists($type, $docData) && $docData[$type] === $attributeValue) {
@@ -100,7 +103,13 @@ class AttributeHandler implements EventSubscriber
                     $docData['uniqueKey'] = $attribute->getUniqueKey();
                     $docData[$attribute->getAttributeDefinition()->getType()] = $attributeValue;
                     $document->setData($docData);
-//                    dump($docData);
+
+                    try {
+                        if (json_encode($rawData, JSON_THROW_ON_ERROR) !== json_encode($docData, JSON_THROW_ON_ERROR)) {
+                            $this->setUpdateData($entity, $eventArgs->getEntityManager());
+                        }
+                    } catch (Exception $e) {
+                    }
                 } else {
                     $docData = [
                         'id'                                            => $entity->getId(),
@@ -116,6 +125,7 @@ class AttributeHandler implements EventSubscriber
                     ];
 //                    dump($docData);
                     $document = new Document('', $docData, $this->indexManager->getDefaultIndex());
+                    $this->setUpdateData($entity, $eventArgs->getEntityManager());
                 }
                 $documents[] = $document;
             }
@@ -130,6 +140,7 @@ class AttributeHandler implements EventSubscriber
         }
         $bulk->send();
         $this->attributableEntities->clear();
+        $eventArgs->getEntityManager()->flush();
         sleep(1);
         // save attribute values
     }
@@ -168,7 +179,7 @@ class AttributeHandler implements EventSubscriber
             return null;
         }
         $attribute = $this->getAttribute($uniqueKey);
-        if(!array_key_exists($key, $this->attributeValues)){
+        if (!array_key_exists($key, $this->attributeValues)) {
             return null;
         }
         if ($attribute instanceof Attribute) {
@@ -219,6 +230,18 @@ class AttributeHandler implements EventSubscriber
             throw new InvalidArgumentException('No document data to create a key');
         }
         return $docData['scope'] . '|' . $docData['id'] . '|' . $uniqueKey;
+    }
+
+    private function setUpdateData(AttributableEntity $entity, EntityManagerInterface $entityManager): void
+    {
+        if (method_exists($entity, 'setUpdatedAt')) {
+            $entity->setUpdatedAt(new DateTime('now'));
+        }
+
+        if (method_exists($entity, 'setUpdatedBy')) {
+            $entity->setUpdatedBy($this->security->getUser());
+        }
+        $entityManager->persist($entity);
     }
 
     //============================ CUSTOM ANNOTATIONS ============================

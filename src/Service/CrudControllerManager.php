@@ -24,12 +24,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CountryField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\CurrencyField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
@@ -46,7 +46,6 @@ class CrudControllerManager
     {
         $this->em = $em;
     }
-
 
     public function configureFields(CrudControllerManagerInterface $controller, string $pageName): iterable
     {
@@ -78,7 +77,7 @@ class CrudControllerManager
     protected function createField(array $mapping, string $pageName, Attribute $attribute = null): ?FieldInterface
     {
         $propertyName = $mapping['fieldName'];
-        $label = ucfirst($propertyName);
+        $label = $attribute === null ? ucfirst($propertyName) : $attribute->getName();
         $type = $mapping['type'];
         if (!empty($mapping['element']['type'])) {
             // overridden from annotation e.g. email
@@ -98,7 +97,7 @@ class CrudControllerManager
                 $field = NumberField::new($propertyName, $label);
                 break;
             case 'price':
-                $field = CurrencyField::new($propertyName, $label);
+                $field = MoneyField::new($propertyName, $label)->setCurrency('EUR');
                 break;
             case 'boolean':
                 if ($attribute === null) {

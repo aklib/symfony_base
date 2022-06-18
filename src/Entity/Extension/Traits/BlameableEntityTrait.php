@@ -13,18 +13,19 @@ use App\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use App\Entity\Extension\Annotation as AppORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 trait BlameableEntityTrait
 {
     /**
-     * @var User|null
+     * @var UserInterface|null
      *
      * @Gedmo\Blameable(on="create")
      * @ORM\ManyToOne(targetEntity="App\Entity\User")
      * @ORM\JoinColumn(name="created_by", referencedColumnName="id")
      * @AppORM\Element(sortOrder="100")
      */
-    protected ?User $createdBy;
+    protected ?UserInterface $createdBy;
 
     /**
      * @var User|null
@@ -34,12 +35,12 @@ trait BlameableEntityTrait
      * @ORM\JoinColumn(name="updated_by", referencedColumnName="id")
      * @AppORM\Element(sortOrder="101")
      */
-    protected ?User $updatedBy;
+    protected ?UserInterface $updatedBy;
 
     /**
      * @return User|null
      */
-    public function getCreatedBy(): ?User
+    public function getCreatedBy(): ?UserInterface
     {
         return $this->createdBy;
     }
@@ -47,7 +48,7 @@ trait BlameableEntityTrait
     /**
      * @param User|null $createdBy
      */
-    public function setCreatedBy(?User $createdBy): void
+    public function setCreatedBy(?UserInterface $createdBy): void
     {
         $this->createdBy = $createdBy;
     }
@@ -55,7 +56,7 @@ trait BlameableEntityTrait
     /**
      * @return User|null
      */
-    public function getUpdatedBy(): ?User
+    public function getUpdatedBy(): ?UserInterface
     {
         return $this->updatedBy;
     }
@@ -63,7 +64,7 @@ trait BlameableEntityTrait
     /**
      * @param User|null $updatedBy
      */
-    public function setUpdatedBy(?User $updatedBy): void
+    public function setUpdatedBy(?UserInterface $updatedBy): void
     {
         $this->updatedBy = $updatedBy;
     }

@@ -3,8 +3,6 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Product;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 
 /**
  * Class ProductCrudController
@@ -18,16 +16,5 @@ class ProductCrudController extends AbstractAttributableEntityController
     public static function getEntityFqcn(): string
     {
         return Product::class;
-    }
-
-    public function configureCrud(Crud $crud): Crud
-    {
-        $category = $this->getCategory();
-        if($category === null){
-            return parent::configureCrud($crud);
-        }
-        // handle nestedset
-        return parent::configureCrud($crud)
-            ->setEntityLabelInSingular($category->getName());
     }
 }

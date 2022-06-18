@@ -12,6 +12,7 @@ namespace App\Controller\Admin;
 use App\Entity\Attribute;
 use App\Entity\AttributeOption;
 use App\Entity\Category;
+use App\Entity\Product;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
@@ -129,13 +130,12 @@ abstract class AbstractAttributableEntityController extends AbstractAppGrudContr
 
     public function postConfigureFields(iterable &$fields, string $pageName): void
     {
-        if(is_array($fields)){
+        if (is_array($fields)) {
             uasort($fields, static function ($a, $b) {
                 return $a->getAsDto()->getCustomOption(self::OPTION_SORT_ORDER) > $b->getAsDto()->getCustomOption(self::OPTION_SORT_ORDER);
             });
         }
     }
-
 
     /**
      * Called only by index action
@@ -149,7 +149,7 @@ abstract class AbstractAttributableEntityController extends AbstractAppGrudContr
     {
         $qb = parent::createIndexQueryBuilder($searchDto, $entityDto, $fields, $filters);
         $category = $this->getCategory();
-        if ($category instanceof Category) {
+        if($category !== null){
             $expr = $qb->expr()->between('category.lft', $category->getLft(), $category->getRgt());
             $qb->innerJoin('entity.category', 'category')->andWhere($expr);
             $crudDto = $this->getContext() !== null ? $this->getContext()->getCrud() : null;
@@ -160,23 +160,50 @@ abstract class AbstractAttributableEntityController extends AbstractAppGrudContr
         return $qb;
     }
 
+    public function configureCrud(Crud $crud): Crud
+    {
+        $category = $this->getCategory();
+        if($category !== null){
+            return parent::configureCrud($crud)->setEntityLabelInSingular($category->getName());
+        }
+        return parent::configureCrud($crud);
+    }
+
     /**
      * Finds a category set in a dashboard controller
      * @return Category|null
      */
     protected function getCategory(): ?Category
     {
-        if ($this->getContext() !== null && $this->getContext()->getCrud() !== null && $this->getContext()->getCrud()->getCurrentAction() === 'new') {
-            return null;
-        }
-
         if ($this->category === null) {
-            $request = $this->getContext() !== null ? $this->getContext()->getRequest() : null;
-            if ($request === null) {
+            parse_str($_SERVER['QUERY_STRING'], $params);
+            if (array_key_exists('category', $params)) {
+                // index
+                $categoryId = (int)$params['category'];
+                $this->category = $this->getEntityManager()->getRepository(Category::class)->find($categoryId);
+            }
+            elseif (array_key_exists('entityId', $params)) {
+                // edit
+                $productId = (int)$params['entityId'];
+                $product = $this->getEntityManager()->getRepository(Product::class)->find($productId);
+                if ($product instanceof Product) {
+                    $category = $product->getCategory();
+                    if ($category === null) {
+                        return null;
+                    }
+                    do {
+                        if ($category->getParent() !== null) {
+                            $category = $category->getParent();
+                        }
+                    }
+                    while ($category->getParent() !== null);
+                    $this->category = $category;
+                }
+
+            } else {
+                //  new
                 return null;
             }
-            $categoryId = (int)$request->query->get('category');
-            $this->category = $this->getEntityManager()->getRepository(Category::class)->find($categoryId);
         }
         return $this->category;
     }

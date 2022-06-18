@@ -90,6 +90,7 @@ class Attribute
      *
      * @ORM\OneToMany(targetEntity="App\Entity\AttributeOption", mappedBy="attribute", cascade={"persist","remove"}, orphanRemoval=true, fetch="EXTRA_LAZY")
      * @ORM\OrderBy({"sortOrder" = "ASC"})
+     * @AppORM\Element(sortOrder="2")
      */
     protected Collection $attributeOptions;
 

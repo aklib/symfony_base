@@ -290,6 +290,35 @@ class Attribute
         return $this->name;
     }
 
+    public function toMapping(): array
+    {
+        $mapping = [
+            'fieldName' => $this->getUniqueKey(),
+            'type'      => $this->getAttributeDefinition()->getType(),
+            'scale'     => null,
+            'length'    => null,
+            'unique'    => !$this->isMultiple(),
+            'nullable'  => !$this->isRequired(),
+            'precision' => null,
+            'element'   => [
+                'type'      => $this->getAttributeDefinition()->getType(),
+                'tab'       => $this->getAttributeDefinition()->getType(),
+                'help'      => $this->getHelpText(),
+                'sortOrder' => $this->getSortOrder(),
+            ]
+
+        ];
+        switch ($this->getAttributeDefinition()->getType()) {
+            case 'string':
+                $mapping['length'] = 255;
+                break;
+            case 'text':
+                $mapping['length'] = 65535;
+                break;
+        }
+        return $mapping;
+    }
+
     // ======================= METHODS REQUIRED FOR HYDRATION =======================
 
 }

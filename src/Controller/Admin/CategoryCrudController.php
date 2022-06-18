@@ -46,7 +46,7 @@ class CategoryCrudController extends AbstractAppGrudController
             ->addJsFile('/js/treegrid/jquery.treegrid.js');
     }
 
-    protected function isVisibleProperty(string $propertyName, string $pageName = null): bool
+    public function isVisibleProperty(string $propertyName, string $pageName = null): bool
     {
         switch ($propertyName) {
             case 'lft':

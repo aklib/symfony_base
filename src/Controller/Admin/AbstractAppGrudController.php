@@ -10,57 +10,28 @@
 
 namespace App\Controller\Admin;
 
+use App\Service\CrudControllerManager;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
-use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\CurrencyField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-abstract class AbstractAppGrudController extends AbstractCrudController
+abstract class AbstractAppGrudController extends AbstractCrudController implements CrudControllerManagerInterface
 {
     private EntityManagerInterface $em;
     private TranslatorInterface $translator;
-    private array $mappings;
+    private CrudControllerManager $controllerManager;
     protected const OPTION_SORT_ORDER = 'sortOrder';
 
-    public function __construct(EntityManagerInterface $em, TranslatorInterface $translator)
+    public function __construct(EntityManagerInterface $em, TranslatorInterface $translator, CrudControllerManager $controllerManager)
     {
         $this->em = $em;
         $this->translator = $translator;
-        $classMetadata = $this->getEntityManager()->getClassMetadata(static::getEntityFqcn());
-        $mappings = array_replace_recursive($classMetadata->fieldMappings, $classMetadata->associationMappings);
-        $count = 1;
-        foreach ($mappings as &$mapping) {
-            if (!array_key_exists('element', $mapping)) {
-                $mapping['element'][self::OPTION_SORT_ORDER] = $count;
-            } elseif (!array_key_exists(self::OPTION_SORT_ORDER, $mapping['element'])) {
-                $mapping['element'][self::OPTION_SORT_ORDER] = $count;
-            } else {
-                $count = $mapping['element'][self::OPTION_SORT_ORDER];
-            }
-            $count++;
-        }
-        unset($mapping);
-        uasort($mappings, static function ($a, $b) {
-            return $a['element'][self::OPTION_SORT_ORDER] > $b['element'][self::OPTION_SORT_ORDER];
-        });
-        $this->mappings = $mappings;
+        $this->controllerManager = $controllerManager;
     }
 
 
@@ -80,105 +51,12 @@ abstract class AbstractAppGrudController extends AbstractCrudController
      */
     public function configureFields(string $pageName): iterable
     {
-        $fields = [];
-        foreach ($this->mappings as $propertyName => $mapping) {
-            if (!$this->isVisibleProperty($propertyName, $pageName)) {
-                continue;
-            }
-            $label = ucfirst($propertyName);
-            switch ($mapping['type']) {
-                case 'integer':
-                    if ($propertyName !== 'id') {
-                        $fields[$propertyName] = IntegerField::new($propertyName, $label);
-                    } else {
-                        $fields[$propertyName] = IdField::new($propertyName, $label)->hideOnForm();
-                    }
-                    break;
-                case 'float':
-                case 'decimal':
-                    $fields[$propertyName] = NumberField::new($propertyName, $label);
-                    break;
-                case 'price':
-                    $fields[$propertyName] = CurrencyField::new($propertyName, $label);
-                    break;
-                case 'boolean':
-                    $fields[$propertyName] = BooleanField::new($propertyName, $label);
-                    break;
-                case 'datetime':
-                case 'date_immutable':
-                    $fields[$propertyName] = DateTimeField::new($propertyName, $label);//->setFormat('y-MM-dd hh:mm:ss');
-                    if ('createdAt' === $propertyName || 'updatedAt' === $propertyName) {
-                        $fields[$propertyName]->hideOnForm();
-                    }
-                    break;
-                case 'date':
-                    $fields[$propertyName] = DateField::new($propertyName, $label)->setFormat('y-MM-d hh:mm:ss')->hideOnForm();
-                    break;
-                case 'json':
-                case 'array':
-                case 'array_simple':
-                    $fields[$propertyName] = ArrayField::new($propertyName, $label);
-                    break;
-                case ClassMetadataInfo::MANY_TO_MANY:
-                case ClassMetadataInfo::ONE_TO_MANY:
-                case ClassMetadataInfo::MANY_TO_ONE:
-                    $fields[$propertyName] = AssociationField::new($propertyName, $label);
-                    if ('createdBy' === $propertyName || 'updatedBy' === $propertyName) {
-                        // user
-                        $fields[$propertyName]->hideOnForm();
-                    }
-                    if ($mapping['type'] !== ClassMetadataInfo::MANY_TO_ONE) {
-                        $fields[$propertyName]->formatValue(function ($v, $entity) use ($pageName, $mapping) {
-                            if ($pageName === 'detail') {
-                                $method = 'get' . ucfirst($mapping['fieldName']);
-                                $collection = $entity->$method();
-                                $result = [];
-                                foreach ($collection as $item) {
-                                    $result[] = (string)$item;
-                                }
-                                return implode('<br>', $result);
-                            }
-                            return $v;
-                        });
-                    }
-                    break;
-                default:
-                    if ($propertyName === 'password') {
-                        continue 2;
-                    }
-                    if ($propertyName === 'email') {
-                        $fields[$propertyName] = EmailField::new($propertyName, $label);
-                    } else {
-                        $length = (int)$mapping['length'];
-                        if ($length > 255) {
-                            $fields[$propertyName] = TextareaField::new($propertyName, $label);
-                        } elseif ($length > 0) {
-                            $fields[$propertyName] = TextField::new($propertyName, $label);
-                            $fields[$propertyName]->setHelp('field.max.length')->setTranslationParameters(['%count%' => $mapping['length']]);
-                        } else {
-                            $fields[$propertyName] = TextField::new($propertyName, $label);
-                        }
-                    }
-            }
-            $fields[$propertyName]->setCustomOption(self::OPTION_SORT_ORDER, $mapping['element'][self::OPTION_SORT_ORDER]);
-        }
-        $this->postConfigureFields($fields, $pageName);
-        return $fields;
-    }
-
-
-    public function postConfigureFields(iterable &$fields, string $pageName): void
-    {
-        if (is_array($fields)) {
-            uasort($fields, static function ($a, $b) {
-                return $a->getAsDto()->getCustomOption(self::OPTION_SORT_ORDER) > $b->getAsDto()->getCustomOption(self::OPTION_SORT_ORDER);
-            });
-        }
+        return $this->getControllerManager()->configureFields($this, $pageName);
     }
 
     public function configureFilters(Filters $filters): Filters
     {
-        foreach ($this->mappings as $propertyName => $mapping) {
+        foreach ($this->getControllerManager()->getMappings($this) as $propertyName => $mapping) {
             $filters->add($propertyName);
         }
         return $filters;
@@ -218,7 +96,15 @@ abstract class AbstractAppGrudController extends AbstractCrudController
         return $this->em;
     }
 
-    protected function isVisibleProperty(string $propertyName, string $pageName = null): bool
+    /**
+     * @return CrudControllerManager
+     */
+    public function getControllerManager(): CrudControllerManager
+    {
+        return $this->controllerManager;
+    }
+
+    public function isVisibleProperty(string $propertyName, string $pageName = null): bool
     {
         return true;
     }

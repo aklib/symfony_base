@@ -4,6 +4,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Extension\Annotation as AppORM;
 use App\Entity\Extension\AttributableEntity;
 use App\Entity\Extension\Traits\AttributableEntityTrait;
 use App\Entity\Extension\Traits\BlameableEntityTrait;
@@ -11,8 +12,6 @@ use App\Entity\Extension\Traits\TimestampableEntityTrait;
 use App\Repository\ProductRepository;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use App\Entity\Extension\Annotation as AppORM;
-use function Webmozart\Assert\Tests\StaticAnalysis\null;
 
 /**
  * @ORM\Entity(repositoryClass=ProductRepository::class)

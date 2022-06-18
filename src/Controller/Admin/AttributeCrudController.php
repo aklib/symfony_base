@@ -12,7 +12,7 @@ class AttributeCrudController extends AbstractAppGrudController
         return Attribute::class;
     }
 
-    protected function isVisibleProperty(string $propertyName, string $pageName = null): bool
+    public function isVisibleProperty(string $propertyName, string $pageName = null): bool
     {
         $entity = $this->getEntity();
         if ($entity instanceof Attribute && $propertyName === 'attributeOptions') {

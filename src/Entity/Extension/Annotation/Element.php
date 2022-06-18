@@ -32,7 +32,7 @@ class Element implements CustomDoctrineAnnotation
 
     public function __construct(array $properties)
     {
-        $this->type = $properties['type'] ?? 'string';
+        $this->type = $properties['type'] ?? '';
         $this->tab = $properties['tab'] ?? 'general';
         $this->help = $properties['info'] ?? '';
         $this->sortOrder = $properties['sortOrder'] ?? 100;

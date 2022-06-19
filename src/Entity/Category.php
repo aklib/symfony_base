@@ -33,11 +33,6 @@ class Category
     private string $name;
 
     /**
-     * @ORM\OneToMany(targetEntity=Product::class, mappedBy="category", orphanRemoval=true)
-     */
-    private Collection $products;
-
-    /**
      * @Gedmo\TreeLeft
      * @ORM\Column(type="integer")
      */
@@ -85,7 +80,6 @@ class Category
 
     public function __construct()
     {
-        $this->products = new ArrayCollection();
         $this->attributes = new ArrayCollection();
     }
 
@@ -114,33 +108,6 @@ class Category
     {
         $this->name = $name;
 
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Product>
-     */
-    public function getProducts(): Collection
-    {
-        return $this->products;
-    }
-
-    public function addProducts(Product $products): self
-    {
-        if (!$this->products->contains($products)) {
-            $this->products[] = $products;
-            $products->setCategory($this);
-        }
-
-        return $this;
-    }
-
-    public function removeProducts(Product $products): self
-    {
-        // set the owning side to null (unless already changed)
-        if ($this->products->removeElement($products) && $products->getCategory() === $this) {
-            $products->setCategory(null);
-        }
         return $this;
     }
 

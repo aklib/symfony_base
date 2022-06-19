@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpUnused */
 
 namespace App\Entity\Extension\Traits;
 
@@ -6,7 +6,7 @@ namespace App\Entity\Extension\Traits;
 use App\Entity\Category;
 use App\Entity\Extension\AttributableEntity;
 use App\EventSubscriber\AttributeHandler;
-
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Class AttributeEntityTrait
@@ -18,6 +18,26 @@ trait AttributableEntityTrait
 {
     private array $attributeValues = [];
     private AttributeHandler $aes;
+    /**
+     * @ORM\ManyToOne(targetEntity=Category::class, fetch="EAGER")
+     * @ORM\JoinColumn(nullable=false)
+     * @AppORM\Element(sortOrder="2")
+     */
+    private ?Category $category = null;
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(Category $category): self
+    {
+        $this->category = $category;
+
+        return $this;
+    }
+
+    //==================================== HANDLE ATTRIBUTE VALUES ====================================
 
     /**
      * @implements AttributableEntity
@@ -33,7 +53,7 @@ trait AttributableEntityTrait
         return $this->aes;
     }
 
-    //==================================== HANDLE ATTRIBUTE VALUES ====================================
+
     public function __get($name)
     {
         // get value
@@ -63,6 +83,4 @@ trait AttributableEntityTrait
     }
 
     abstract public function getId(): int;
-
-    abstract public function getCategory(): Category;
 }

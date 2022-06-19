@@ -29,13 +29,6 @@ class Product implements AttributableEntity
     private int $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="products", fetch="EAGER")
-     * @ORM\JoinColumn(nullable=false)
-     * @AppORM\Element(sortOrder="2")
-     */
-    private ?Category $category = null;
-
-    /**
      * @ORM\Column(type="boolean", nullable=false)
      */
     private bool $active = true;
@@ -54,18 +47,6 @@ class Product implements AttributableEntity
     public function setId(int $id): void
     {
         $this->id = $id;
-    }
-
-    public function getCategory(): ?Category
-    {
-        return $this->category;
-    }
-
-    public function setCategory(Category $category): self
-    {
-        $this->category = $category;
-
-        return $this;
     }
 
     /**

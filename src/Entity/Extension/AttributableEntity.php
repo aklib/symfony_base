@@ -11,7 +11,7 @@ use App\EventSubscriber\AttributeHandler;
  * since: 16.09.2021
  * author: alexej@kisselev.de
  */
-interface AttributableEntity extends ElasticaEntity
+interface AttributableEntity
 {
     public function getId(): int;
 

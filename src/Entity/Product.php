@@ -108,13 +108,13 @@ class Product implements AttributableEntity
         return  $this->category->getName() ?? 'unknown';
     }
 
-    public function toArray(): array
-    {
-        return [
-            'product' => [
-                'id'   => $this->getId(),
-                'name' => $this->name ?? 'unknown'
-            ]
-        ];
-    }
+//    public function toArray(): array
+//    {
+//        return [
+//            'product' => [
+//                'id'   => $this->getId(),
+//                'name' => $this->name ?? 'unknown'
+//            ]
+//        ];
+//    }
 }

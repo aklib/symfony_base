@@ -65,5 +65,4 @@ trait AttributableEntityTrait
     abstract public function getId(): int;
 
     abstract public function getCategory(): Category;
-    //abstract protected function addArray(): array;
 }

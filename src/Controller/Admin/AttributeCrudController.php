@@ -12,16 +12,18 @@ class AttributeCrudController extends AbstractAppGrudController
         return Attribute::class;
     }
 
-    public function isVisibleProperty(string $propertyName, string $pageName = null): bool
+    public function excludeFields(string $pageName = 'index'): array
     {
+        $fields = parent::excludeFields($pageName);
         $entity = $this->getEntity();
-        if ($entity instanceof Attribute && $propertyName === 'attributeOptions') {
-            if ($pageName === Crud::PAGE_NEW) {
-                return false;
+        if ($entity instanceof Attribute) {
+            if ($pageName === Crud::PAGE_NEW || $entity->getAttributeDefinition()->getType() !== 'select') {
+                $fields[] = 'attributeOptions';
             }
-            return $entity->getAttributeDefinition()->getType() === 'select';
         }
-        return parent::isVisibleProperty($propertyName, $pageName);
+        else {
+            $fields[] = 'attributeOptions';
+        }
+        return $fields;
     }
-
 }

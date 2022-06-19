@@ -51,7 +51,7 @@ class Category
 
     /**
      * @Gedmo\TreeParent
-     * @ORM\ManyToOne(targetEntity="App\Entity\Category", inversedBy="children")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Category", inversedBy="children", fetch="EAGER")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
      * @AppORM\Element(sortOrder="2")
      */
@@ -77,7 +77,7 @@ class Category
     private Collection $children;
 
     /**
-     * @ORM\OneToMany(targetEntity=Attribute::class, mappedBy="category")
+     * @ORM\OneToMany(targetEntity=Attribute::class, mappedBy="category", fetch="EAGER")
      * @ORM\OrderBy({"sortOrder" = "ASC"})
      * @AppORM\Element(sortOrder="2")
      */

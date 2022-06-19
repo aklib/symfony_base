@@ -51,7 +51,7 @@ abstract class AbstractAppGrudController extends AbstractCrudController implemen
      */
     public function configureFields(string $pageName): iterable
     {
-        return $this->getControllerManager()->configureFields($this, $pageName);
+        return $this->getControllerManager()->configureFields($this, $pageName, $this->excludeFields($pageName));
     }
 
     public function configureFilters(Filters $filters): Filters
@@ -104,9 +104,16 @@ abstract class AbstractAppGrudController extends AbstractCrudController implemen
         return $this->controllerManager;
     }
 
-    public function isVisibleProperty(string $propertyName, string $pageName = null): bool
+    public function excludeFields(string $pageName = 'index'): array
     {
-        return true;
+        $fields = [];
+        if($pageName === 'new' || $pageName === 'edit'){
+            $fields[] = 'createdBy';
+            $fields[] = 'updatedBy';
+            $fields[] = 'createdAt';
+            $fields[] = 'updatedAt';
+        }
+        return $fields;
     }
 
     protected function getEntity(): ?object

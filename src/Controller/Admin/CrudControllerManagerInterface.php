@@ -13,5 +13,5 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface
 
 interface CrudControllerManagerInterface extends CrudControllerInterface
 {
-    public function isVisibleProperty(string $propertyName, string $pageName = null): bool;
+    public function excludeFields(string $pageName = 'index'): array;
 }

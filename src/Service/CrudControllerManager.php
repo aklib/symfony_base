@@ -47,12 +47,12 @@ class CrudControllerManager
         $this->em = $em;
     }
 
-    public function configureFields(CrudControllerManagerInterface $controller, string $pageName): iterable
+    public function configureFields(CrudControllerManagerInterface $controller, string $pageName, array $excludeFields = []): iterable
     {
         $mappings = $this->getMappings($controller);
         $fields = [];
         foreach ($mappings as $propertyName => $mapping) {
-            if (!$controller->isVisibleProperty($propertyName, $pageName)) {
+            if(in_array($propertyName, $excludeFields, true)) {
                 continue;
             }
             $field = $this->createField($mapping, $pageName);

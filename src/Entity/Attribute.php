@@ -57,7 +57,7 @@ class Attribute
     /**
      * @var AttributeDefinition
      *
-     * @ORM\ManyToOne(targetEntity="AttributeDefinition", fetch="EXTRA_LAZY")
+     * @ORM\ManyToOne(targetEntity="AttributeDefinition", fetch="EAGER")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="attribute_definition_id", referencedColumnName="id", nullable=false)
      * })

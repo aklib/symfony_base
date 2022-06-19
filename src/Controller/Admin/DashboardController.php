@@ -15,9 +15,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
+use EasyCorp\Bundle\EasyAdminBundle\Config\UserMenu;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
+use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class DashboardController extends AbstractDashboardController
@@ -95,6 +98,30 @@ class DashboardController extends AbstractDashboardController
 
         yield MenuItem::section('User');
         yield MenuItem::linkToCrud('User', 'fas fa-list', User::class);
+    }
+
+    public function configureUserMenu(UserInterface $user): UserMenu
+    {
+        $userMenuItems = [
+            MenuItem::linkToCrud('Profile','fa-id-card',User::class)->setAction('profile')->setEntityId($user->getId()),
+            MenuItem::linkToUrl('Settings','fa-user-cog','/admin/settings'),
+            MenuItem::linkToLogout('__ea__user.sign_out', 'fa-sign-out')
+        ];
+
+        if ($this->isGranted(Permission::EA_EXIT_IMPERSONATION)) {
+            $userMenuItems[] =
+                MenuItem::linkToExitImpersonation(
+                    '__ea__user.exit_impersonation',
+                    'fa-user-lock'
+                );
+        }
+
+        return UserMenu::new()
+            ->displayUserName()
+            ->displayUserAvatar(false)
+            ->setAvatarUrl('https://kisselev.de/images/me_500_square_black.jpg')
+            ->setName(method_exists($user, '__toString') ? (string) $user : $user->getUserIdentifier())
+            ->setMenuItems($userMenuItems);
     }
 
     public function configureAssets(): Assets

@@ -46,17 +46,9 @@ class CategoryCrudController extends AbstractAppGrudController
             ->addJsFile('/js/treegrid/jquery.treegrid.js');
     }
 
-    public function isVisibleProperty(string $propertyName, string $pageName = null): bool
+    public function excludeFields(string $pageName = null): array
     {
-        switch ($propertyName) {
-            case 'lft':
-            case 'rgt':
-            case 'level':
-            case 'root':
-            case 'children':
-            case 'products':
-                return false;
-        }
-        return parent::isVisibleProperty($propertyName, $pageName);
+        $fields = parent::excludeFields($pageName);
+        return array_merge($fields,  ['lft','rgt','level','root','children','products']);
     }
 }

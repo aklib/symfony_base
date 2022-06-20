@@ -9,7 +9,9 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Attribute;
 use App\Entity\Category;
+use App\Entity\Extension\AttributableEntity;
 use App\Entity\Product;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
@@ -74,10 +76,10 @@ abstract class AbstractAttributableEntityController extends AbstractAppGrudContr
                 $this->category = $this->getEntityManager()->getRepository(Category::class)->find($categoryId);
             } elseif (array_key_exists('entityId', $params)) {
                 // edit
-                $productId = (int)$params['entityId'];
-                $product = $this->getEntityManager()->getRepository(Product::class)->find($productId);
-                if ($product instanceof Product) {
-                    $category = $product->getCategory();
+                $entityId = (int)$params['entityId'];
+                $entity = $this->getEntityManager()->getRepository($this->getEntityFqcn())->find($entityId);
+                if ($entity instanceof AttributableEntity) {
+                    $category = $entity->getCategory();
                     if ($category === null) {
                         return null;
                     }

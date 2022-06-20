@@ -43,6 +43,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private bool $active = true;
 
+    /**
+     * @ORM\OneToOne(targetEntity=UserProfile::class, mappedBy="user", cascade={"persist", "remove"})
+     */
+    private $userProfile;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -145,8 +150,46 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // $this->plainPassword = null;
     }
 
+
+    public function getUserProfile(): ?UserProfile
+    {
+        return $this->userProfile;
+    }
+
+    public function setUserProfile(?UserProfile $userProfile): self
+    {
+        // unset the owning side of the relation if necessary
+        if ($userProfile === null && $this->userProfile !== null) {
+            $this->userProfile->setUser(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($userProfile !== null && $userProfile->getUser() !== $this) {
+            $userProfile->setUser($this);
+        }
+
+        $this->userProfile = $userProfile;
+
+        return $this;
+    }
+
     public function __toString()
     {
         return $this->email;
+    }
+
+    /**
+     * Avoid exception "Serialization of 'Closure' is not allowed" because userProfile
+     * @return array
+     */
+    public function __serialize(): array
+    {
+        return [
+            'id'  => $this->id,
+            'email' => $this->email,
+            'roles' => $this->roles,
+            'password' => $this->password,
+            'active' => $this->active,
+        ];
     }
 }

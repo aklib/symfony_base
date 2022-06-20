@@ -33,6 +33,12 @@ class Category
     private string $name;
 
     /**
+     * @ORM\Column(type="string", length=32, unique=true)
+     * @AppORM\Element(sortOrder="2")
+     */
+    private string $uniqueKey;
+
+    /**
      * @Gedmo\TreeLeft
      * @ORM\Column(type="integer")
      */
@@ -110,6 +116,20 @@ class Category
 
         return $this;
     }
+
+    public function getUniqueKey(): ?string
+    {
+        return $this->uniqueKey;
+    }
+
+    public function setUniqueKey(string $uniqueKey): self
+    {
+        $this->uniqueKey = $uniqueKey;
+
+        return $this;
+    }
+
+    // ======================= NESTED SET =======================
 
     /**
      * @return int

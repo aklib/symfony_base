@@ -21,7 +21,7 @@ trait AttributableEntityTrait
     /**
      * @ORM\ManyToOne(targetEntity=Category::class, fetch="EAGER")
      * @ORM\JoinColumn(nullable=false)
-     * @AppORM\Element(sortOrder="2")
+     *
      */
     private ?Category $category = null;
 

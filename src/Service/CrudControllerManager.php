@@ -130,6 +130,7 @@ class CrudControllerManager
             case ClassMetadataInfo::MANY_TO_MANY:
             case ClassMetadataInfo::ONE_TO_MANY:
             case ClassMetadataInfo::MANY_TO_ONE:
+            case ClassMetadataInfo::ONE_TO_ONE:
                 $field = AssociationField::new($propertyName, $label);
                 if ('createdBy' === $propertyName || 'updatedBy' === $propertyName) {
                     // user
@@ -140,11 +141,14 @@ class CrudControllerManager
                         if ($pageName === 'detail') {
                             $method = 'get' . ucfirst($mapping['fieldName']);
                             $collection = $entity->$method();
-                            $result = [];
-                            foreach ($collection as $item) {
-                                $result[] = (string)$item;
+                            if(is_iterable($collection)){
+                                $result = [];
+                                foreach ($collection as $item) {
+                                    $result[] = (string)$item;
+                                }
+                                return implode('<br>', $result);
                             }
-                            return implode('<br>', $result);
+                            return $collection;
                         }
                         return $v;
                     });
@@ -161,6 +165,9 @@ class CrudControllerManager
                 break;
             case 'string':
                 $field = TextField::new($propertyName, $label);
+                if($propertyName === 'uniqueKey'){
+                    $field->renderAsHtml(false);
+                }
                 break;
             case 'password':
                 return null;

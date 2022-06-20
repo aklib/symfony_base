@@ -9,6 +9,7 @@ use App\Entity\AttributeTab;
 use App\Entity\Category;
 use App\Entity\Product;
 use App\Entity\User;
+use App\Entity\UserProfile;
 use App\Repository\CategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
@@ -103,7 +104,7 @@ class DashboardController extends AbstractDashboardController
     public function configureUserMenu(UserInterface $user): UserMenu
     {
         $userMenuItems = [
-            MenuItem::linkToCrud('Profile','fa-id-card',User::class)->setAction('profile')->setEntityId($user->getId()),
+            MenuItem::linkToCrud('Profile','fa-id-card',UserProfile::class)->setAction('edit')->setEntityId($user->getId()),
             MenuItem::linkToUrl('Settings','fa-user-cog','/admin/settings'),
             MenuItem::linkToLogout('__ea__user.sign_out', 'fa-sign-out')
         ];

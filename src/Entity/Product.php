@@ -4,7 +4,6 @@
 
 namespace App\Entity;
 
-use App\Entity\Extension\Annotation as AppORM;
 use App\Entity\Extension\AttributableEntity;
 use App\Entity\Extension\Traits\AttributableEntityTrait;
 use App\Entity\Extension\Traits\BlameableEntityTrait;

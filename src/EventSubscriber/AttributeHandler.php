@@ -96,6 +96,7 @@ class AttributeHandler implements EventSubscriber
                     $type = $attribute->getAttributeDefinition()->getType();
 
                     if (array_key_exists($type, $docData) && $docData[$type] === $attributeValue) {
+                        // the value of the attribute was not changed
                         continue;
                     }
                     $docData['type'] = $attribute->getAttributeDefinition()->getType();
@@ -122,7 +123,7 @@ class AttributeHandler implements EventSubscriber
                         ],
                         $attribute->getAttributeDefinition()->getType() => $attributeValue
                     ];
-//                    dump($docData);
+
                     $document = new Document('', $docData, $this->indexManager->getDefaultIndex());
                     $this->setUpdateData($entity, $eventArgs->getEntityManager());
                 }

@@ -52,7 +52,7 @@ class CrudControllerManager
         $mappings = $this->getMappings($controller);
         $fields = [];
         foreach ($mappings as $propertyName => $mapping) {
-            if(in_array($propertyName, $excludeFields, true)) {
+            if (in_array($propertyName, $excludeFields, true)) {
                 continue;
             }
             $field = $this->createField($mapping, $pageName);
@@ -71,6 +71,10 @@ class CrudControllerManager
                 $fields[$attribute->getUniqueKey()] = $field;
             }
         }
+
+        uasort($fields, static function ($a, $b) {
+            return $a->getAsDto()->getCustomOption(self::OPTION_SORT_ORDER) > $b->getAsDto()->getCustomOption(self::OPTION_SORT_ORDER);
+        });
         return $fields;
     }
 
@@ -141,7 +145,7 @@ class CrudControllerManager
                         if ($pageName === 'detail') {
                             $method = 'get' . ucfirst($mapping['fieldName']);
                             $collection = $entity->$method();
-                            if(is_iterable($collection)){
+                            if (is_iterable($collection)) {
                                 $result = [];
                                 foreach ($collection as $item) {
                                     $result[] = (string)$item;
@@ -161,12 +165,12 @@ class CrudControllerManager
                 break;
             case 'text':
                 $field = TextareaField::new($propertyName, $label);
-                $field->setHelp('field.max.length')->setTranslationParameters(['%count%' => $mapping['length']]);
                 break;
             case 'string':
                 $field = TextField::new($propertyName, $label);
-                if($propertyName === 'uniqueKey'){
-                    $field->renderAsHtml(false);
+                if ($propertyName === 'uniqueKey' && $pageName !== 'new') {
+                    $field->setHelp('');
+                    $field->setDisabled();
                 }
                 break;
             case 'password':
@@ -199,15 +203,20 @@ class CrudControllerManager
                 $field = TextField::new($propertyName, $label);
         }
 
-        if($field === null){
+        if ($field === null) {
             return null;
         }
 
         $length = (int)($mapping['length'] ?? 0);
-        if ($length > 0) {
+        if ($length > 0 && $field->getAsDto()->getHelp() === null) {
             $field->setHelp('field.max.length')->setTranslationParameters(['%count%' => $mapping['length']]);
         }
-        $field->setCustomOption(self::OPTION_SORT_ORDER, $mapping['element'][self::OPTION_SORT_ORDER]);
+        if ($attribute === null) {
+            $field->setCustomOption(self::OPTION_SORT_ORDER, $mapping['element'][self::OPTION_SORT_ORDER]);
+        }
+        else {
+            $field->setCustomOption(self::OPTION_SORT_ORDER, $attribute->getSortOrder());
+        }
         return $field;
     }
 

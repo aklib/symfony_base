@@ -43,8 +43,7 @@ class DashboardController extends AbstractDashboardController
         return parent::configureCrud()
             ->setDateFormat(self::DATE_FORMAT_DEFAULT)
             ->setDateTimeFormat(self::DATETIME_FORMAT_DEFAULT)
-            ->setTimezone('Europe/Berlin')
-            ;
+            ->setTimezone('Europe/Berlin');
 
     }
 
@@ -88,8 +87,9 @@ class DashboardController extends AbstractDashboardController
                 $subItems[] = MenuItem::linkToCrud($child->getName(), 'fas fa-list', Product::class)
                     ->setQueryParameter('category', $child->getId());
             }
-            yield MenuItem::subMenu($root->getName(), 'fa fa-article')->setSubItems($subItems);
-
+            $item = MenuItem::subMenu($root->getName(), 'fa fa-article')->setSubItems($subItems);
+//            $item->getAsDto()->('expanded');
+            yield $item;
         }
         yield MenuItem::section('Attribute');
         yield MenuItem::linkToCrud('Attribute', 'fas fa-list', Attribute::class);
@@ -104,8 +104,8 @@ class DashboardController extends AbstractDashboardController
     public function configureUserMenu(UserInterface $user): UserMenu
     {
         $userMenuItems = [
-            MenuItem::linkToCrud('Profile','fa-id-card',UserProfile::class)->setAction('edit')->setEntityId($user->getId()),
-            MenuItem::linkToUrl('Settings','fa-user-cog','/admin/settings'),
+            MenuItem::linkToCrud('Profile', 'fa-id-card', UserProfile::class)->setAction('edit')->setEntityId($user->getId()),
+            MenuItem::linkToUrl('Settings', 'fa-user-cog', '/admin/settings'),
             MenuItem::linkToLogout('__ea__user.sign_out', 'fa-sign-out')
         ];
 
@@ -121,7 +121,7 @@ class DashboardController extends AbstractDashboardController
             ->displayUserName()
             ->displayUserAvatar(false)
             ->setAvatarUrl('https://kisselev.de/images/me_500_square_black.jpg')
-            ->setName(method_exists($user, '__toString') ? (string) $user : $user->getUserIdentifier())
+            ->setName(method_exists($user, '__toString') ? (string)$user : $user->getUserIdentifier())
             ->setMenuItems($userMenuItems);
     }
 

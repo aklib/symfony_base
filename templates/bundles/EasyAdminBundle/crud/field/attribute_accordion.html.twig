@@ -1,5 +1,14 @@
+
+
 {% set category = entity.getInstance() %}
+{% set show = '' %}
+
 {% if category.attributes(true).count > 0 %}
+    {% if ea.crud.currentAction == 'detail' %}
+        {# show expanded on details#}
+        {% set show = ' show' %}
+    {% endif %}
+
     <div class="accordion-item border-0">
         <h6 class="accordion-header">
             <a class="accordion-button collapsed px-0" type="button" data-bs-toggle="collapse"
@@ -7,7 +16,7 @@
                 <span class="badge badge-secondary">{{ category.attributes(true).count }}</span>
             </a>
         </h6>
-        <div id="contents-{{ category.id }}" class="accordion-collapse collapse">
+        <div id="contents-{{ category.id }}" class="accordion-collapse collapse{{ show }}">
             <ul class="list-unstyled">
                 {% for attribute in category.attributes(true) %}
                     <li>

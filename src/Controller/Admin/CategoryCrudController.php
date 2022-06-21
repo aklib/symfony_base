@@ -33,7 +33,7 @@ class CategoryCrudController extends AbstractAppGrudController
             }
         }
         if (array_key_exists('attributes', $fields) && $fields['attributes'] instanceof AssociationField) {
-            $fields['attributes']->setTemplatePath('bundles/EasyAdminBundle/crud/field/attribute_accordion.html.twig');
+            $fields['attributes']->setTemplatePath('bundles/EasyAdminBundle/crud/field/attribute_accordion.html.twig')->hideOnForm();
         }
         return $fields;
     }

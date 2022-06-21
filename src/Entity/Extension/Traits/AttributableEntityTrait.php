@@ -7,6 +7,8 @@ use App\Entity\Category;
 use App\Entity\Extension\AttributableEntity;
 use App\EventSubscriber\AttributeHandler;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Extension\Annotation as AppORM;
+
 
 /**
  * Class AttributeEntityTrait
@@ -21,6 +23,7 @@ trait AttributableEntityTrait
     /**
      * @ORM\ManyToOne(targetEntity=Category::class, fetch="EAGER")
      * @ORM\JoinColumn(nullable=false)
+     * @AppORM\Element(sortOrder="3")
      *
      */
     private ?Category $category = null;

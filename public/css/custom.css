@@ -123,10 +123,10 @@ table.datagrid {
 }
 
 
-td.field-association .accordion-button::after {
+.field-association .accordion-button::after {
     background-size: 1rem;
 }
 
-td.field-association .accordion-item, td.field-association .accordion-button {
+.field-association .accordion-item, .field-association .accordion-button {
     background-color: transparent;
 }

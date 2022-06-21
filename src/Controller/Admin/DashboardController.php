@@ -94,7 +94,7 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::section('Attribute');
         yield MenuItem::linkToCrud('Attribute', 'fas fa-list', Attribute::class);
         yield MenuItem::linkToCrud('Attribute Tabs', 'fas fa-list', AttributeTab::class);
-        yield MenuItem::linkToCrud('Attribute Types', 'fas fa-list', AttributeDefinition::class);
+        yield MenuItem::linkToCrud('Attribute Definitions', 'fas fa-list', AttributeDefinition::class);
         yield MenuItem::linkToCrud('Attribute Options', 'fas fa-list', AttributeOption::class);
 
         yield MenuItem::section('User');
@@ -104,7 +104,7 @@ class DashboardController extends AbstractDashboardController
     public function configureUserMenu(UserInterface $user): UserMenu
     {
         $userMenuItems = [
-            MenuItem::linkToCrud('Profile', 'fa-id-card', UserProfile::class)->setAction('edit')->setEntityId($user->getId()),
+            MenuItem::linkToCrud('Profile', 'fa-id-card', UserProfile::class)->setAction(Crud::PAGE_DETAIL)->setEntityId($user->getId()),
             MenuItem::linkToUrl('Settings', 'fa-user-cog', '/admin/settings'),
             MenuItem::linkToLogout('__ea__user.sign_out', 'fa-sign-out')
         ];

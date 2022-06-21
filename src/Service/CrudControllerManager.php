@@ -15,6 +15,7 @@ use App\Controller\Admin\CrudControllerManagerInterface;
 use App\Entity\Attribute;
 use App\Entity\AttributeOption;
 use App\Entity\Category;
+use App\Kernel;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
@@ -28,6 +29,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
@@ -118,13 +120,16 @@ class CrudControllerManager
                 break;
             case 'datetime':
             case 'date_immutable':
-                $field = DateTimeField::new($propertyName, $label);//->setFormat('y-MM-dd hh:mm:ss');
+                $field = DateTimeField::new($propertyName, $label)->setFormat('y-MM-dd hh:mm:ss');
                 if ('createdAt' === $propertyName || 'updatedAt' === $propertyName) {
                     $field->hideOnForm();
                 }
                 break;
             case 'date':
-                $field = DateField::new($propertyName, $label)->setFormat('y-MM-d hh:mm:ss')->hideOnForm();
+                $field = DateField::new($propertyName, $label)->setFormat('y-MM-d');
+                if ('createdAt' === $propertyName || 'updatedAt' === $propertyName) {
+                    $field->hideOnForm();
+                }
                 break;
             case 'json':
             case 'array':
@@ -198,6 +203,12 @@ class CrudControllerManager
                 if (!$attribute->isMultiple()) {
                     $field->allowMultipleChoices(false);
                 }
+                break;
+            case 'image':
+                //todo: mkdir if not exists, grant permissions
+                $folder = $attribute === null ? $propertyName : $attribute->getUniqueKey();
+                $path = "public/uploads/images/$folder";
+                $field = ImageField::new($propertyName, $attribute->getName())->setUploadDir($path)->setBasePath(str_replace('public/','', $path));
                 break;
             default:
                 $field = TextField::new($propertyName, $label);

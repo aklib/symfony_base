@@ -42,8 +42,13 @@ class UserProfile implements AttributableEntity
         return $this;
     }
 
+    /** @noinspection PhpUndefinedFieldInspection */
     public function __toString()
     {
+        // check from attributes
+        if(is_string($this->name)){
+            return $this->name . '';
+        }
         return 'profile#'. $this->id;
     }
 }

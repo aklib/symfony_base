@@ -9,10 +9,8 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\Attribute;
 use App\Entity\Category;
 use App\Entity\Extension\AttributableEntity;
-use App\Entity\Product;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
@@ -22,7 +20,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 
 abstract class AbstractAttributableEntityController extends AbstractAppGrudController
 {
-    private ?Category $category = null;
+    protected ?Category $category = null;
 
     /**
      * Set entity name like category

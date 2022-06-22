@@ -25,11 +25,14 @@ use Exception;
 use FlorianWolters\Component\Core\StringUtils;
 use FOS\ElasticaBundle\Index\IndexManager;
 use InvalidArgumentException;
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\Security\Core\Security;
 use Throwable;
+use function Webmozart\Assert\Tests\StaticAnalysis\null;
 
 class AttributeHandler implements EventSubscriber
 {
+    public const JOIN_FIELD = 'attribute_value';
     private AnnotationReader $reader;
     private Collection $attributableEntities;
     private EntityManagerInterface $em;
@@ -39,17 +42,21 @@ class AttributeHandler implements EventSubscriber
     private array $attributeValues = [];
     private IndexManager $indexManager;
     private Security $security;
+    private FlashBagInterface $flashBag;
     private bool $isLoaded = false;
     private Collection $attributes;
+    private Collection $documents;
 
-    public function __construct(IndexManager $indexManager, Security $security, EntityManagerInterface $em)
+    public function __construct(IndexManager $indexManager, Security $security, EntityManagerInterface $em, FlashBagInterface $flashBag)
     {
         $this->indexManager = $indexManager;
         $this->security = $security;
         $this->em = $em;
+        $this->flashBag = $flashBag;
         $this->reader = new AnnotationReader();
         $this->attributableEntities = new ArrayCollection();
         $this->attributes = new ArrayCollection();
+        $this->documents = new ArrayCollection();
     }
 
     //============================ DOCTRINE ============================
@@ -88,13 +95,34 @@ class AttributeHandler implements EventSubscriber
         }
 
         $documents = [];
+        //upsert entity documents
+        foreach ($this->attributableEntities as $entity) {
+            $docId = $this->createEntityDocId($entity);
+            $document = $this->getEntityDocument($docId);
+            if ($document === null) {
+                $docData = $this->createEntityDocData($entity);
+                $document = new Document($docId, $docData, $this->indexManager->getDefaultIndex());
+                $document->setDocAsUpsert(true);
+                $documents[] = $document;
+            }
+
+        }
+        if (!empty($documents)) {
+            $bulk = new Bulk($this->indexManager->getIndex()->getClient());
+            $bulk->setRequestParam('routing', 1);
+            $bulk->setRequestParam('refresh', true);
+            $bulk->addDocuments($documents);
+            $bulk->send();
+            $documents = [];
+        }
+
         foreach ($this->attributableEntities as $entity) {
             foreach ($entity->getAttributeValues() as $uniqueKey => $attributeValue) {
                 $attribute = $this->getAttribute($uniqueKey);
                 if ($attribute === null) {
                     continue;
                 }
-                $document = $this->getDocument($this->getScope($entity), $entity->getId(), $uniqueKey);
+                $document = $this->getAttributeDocument($this->getScope($entity), $entity->getId(), $uniqueKey);
                 if ($document instanceof Document) {
                     $docData = $rawData = $document->getData();
                     $type = $attribute->getAttributeDefinition()->getType();
@@ -115,37 +143,36 @@ class AttributeHandler implements EventSubscriber
                     } catch (Exception $e) {
                     }
                 } else {
-                    $docData = [
-                        'id'                                            => $entity->getId(),
-                        'scope'                                         => $this->getScope($entity),
-                        'type'                                          => $attribute->getAttributeDefinition()->getType(),
-                        'uniqueKey'                                     => $attribute->getUniqueKey(),
-                        'multiple'                                      => $attribute->isMultiple(),
-                        'attribute'                                     => [
-                            'id'   => $attribute->getId(),
-                            'name' => $attribute->getName()
-                        ],
-                        $attribute->getAttributeDefinition()->getType() => $attributeValue
-                    ];
-
+                    $docData = $this->createAttributeDocData($entity, $attribute, $attributeValue);
                     $document = new Document('', $docData, $this->indexManager->getDefaultIndex());
                     $this->setUpdateData($entity, $eventArgs->getEntityManager());
                 }
+                $document->setDocAsUpsert(true);
                 $documents[] = $document;
             }
         }
         if (empty($documents)) {
             return;
         }
+
 //        die('post flush');
+//        dump($documents);die;
         $bulk = new Bulk($this->indexManager->getIndex()->getClient());
-        foreach ($documents as $document) {
-            $bulk->addDocument($document);
+        $bulk->setRequestParam('routing', 1);
+        $bulk->setRequestParam('refresh', true);
+        $bulk->addDocuments($documents);
+        try {
+            $response = $bulk->send();
+            if($response->isOk()){
+                $this->getFlash()->add('success', 'Attributes have been saved');
+            }
+        } catch (Exception $e) {
+            $this->getFlash()->add('success', 'An error occurred during saving');
         }
-        $bulk->send();
+
         $this->attributableEntities->clear();
         $eventArgs->getEntityManager()->flush();
-        sleep(1);
+//        sleep(1);
         // save attribute values
     }
 
@@ -170,7 +197,7 @@ class AttributeHandler implements EventSubscriber
                 // by unique attributable class (scope) entity id and attribute unique key
                 $attribute = $this->getAttribute($docData['uniqueKey']);
                 if ($attribute !== null) {
-                    $this->attributeValues[$key] = (array)$docData[$docData['type']];
+                    $this->attributeValues[$key] = $docData[$docData['type']];
                 }
             }
             $this->isLoaded = true;
@@ -293,24 +320,42 @@ class AttributeHandler implements EventSubscriber
         return $result->first();
     }
 
+    public function getEntityDocument(string $docId): ?Document
+    {
+        $result = $this->getDocuments()->filter(static function (Document $doc) use ($docId) {
+            // filter by unique key
+            if ($doc->getId() === $docId) {
+                return $doc;
+            }
+            return null;
+        });
+        if ($result->isEmpty()) {
+            return null;
+        }
+        return $result->first();
+    }
+
     /**
      * @param string $scope
      * @param int $id
      * @param string $uniqueKey
      * @return Document|null
      */
-    public function getDocument(string $scope, int $id, string $uniqueKey): ?Document
+    public function getAttributeDocument(string $scope, int $id, string $uniqueKey): ?Document
     {
         $result = $this->getDocuments()->filter(static function (Document $doc) use ($scope, $id, $uniqueKey) {
             // filter by unique key
             $docData = $doc->getData();
+            if (!array_key_exists('uniqueKey', $docData)) {
+                // attributable entity
+                return null;
+            }
             if ($docData['scope'] === $scope && $docData['id'] === $id && $docData['uniqueKey'] === $uniqueKey) {
                 return $doc;
             }
             return null;
         });
         if ($result->isEmpty()) {
-            dump($uniqueKey);
             return null;
         }
         return $result->first();
@@ -318,32 +363,34 @@ class AttributeHandler implements EventSubscriber
 
     public function getDocuments(Collection $entities = null): Collection
     {
-        $documents = new ArrayCollection();
-        if ($entities === null) {
-            $entities = $this->attributableEntities;
-        }
-        if ($entities->isEmpty()) {
-            return $documents;
-        }
-        // load documents from elasticsearch
-        $query = $this->getQuery($entities);
-        $query->setSize(9999);
-        try {
-            $results = $this->indexManager->getIndex()->search($query)->getDocuments();
-            foreach ($results as $document) {
-                $documents->add($document);
+        if($this->documents->isEmpty()) {
+
+            if ($entities === null) {
+                $entities = $this->attributableEntities;
             }
-        } catch (Exception $e) {
-            error_log($e);
-            if ($e instanceof ResponseException) {
-                // highly likely the index doesn't exist
-                // create one
-                $this->createIndexIfNotExists();
-                // repeat the method call
-                return $this->getDocuments($entities);
+            if ($entities->isEmpty()) {
+                return $this->documents;
+            }
+            // load documents from elasticsearch
+            $query = $this->getQuery($entities);
+            $query->setSize(9999);
+            try {
+                $results = $this->indexManager->getIndex()->search($query)->getDocuments();
+                foreach ($results as $document) {
+                    $this->documents->add($document);
+                }
+            } catch (Exception $e) {
+                error_log($e);
+                if ($e instanceof ResponseException) {
+                    // highly likely the index doesn't exist
+                    // create one
+                    $this->createIndexIfNotExists();
+                    // repeat the method call
+                    return $this->getDocuments($entities);
+                }
             }
         }
-        return $documents;
+        return $this->documents;
     }
 
     protected function getQuery(Collection $entities): Query
@@ -372,6 +419,51 @@ class AttributeHandler implements EventSubscriber
         return $query;
     }
 
+    protected function createEntityDocId(AttributableEntity $entity): string
+    {
+        return $this->getScope($entity) . '_' . $entity->getId();
+    }
+
+    /**
+     * Creates document array as child for elasticsearch parent-child relations
+     * @param AttributableEntity $entity
+     * @param Attribute $attribute
+     * @param $attributeValue
+     * @return array
+     */
+    protected function createAttributeDocData(AttributableEntity $entity, Attribute $attribute, $attributeValue): array
+    {
+        return [
+            'id'                                            => $entity->getId(),
+            'scope'                                         => $this->getScope($entity),
+            'uniqueKey'                                     => $attribute->getUniqueKey(),
+            'type'                                          => $attribute->getAttributeDefinition()->getType(),
+            'multiple'                                      => $attribute->isMultiple(),
+            'attribute'                                     => [
+                'id'   => $attribute->getId(),
+                'name' => $attribute->getName(),
+            ],
+            $this->getScope($entity)                        => [
+                'id' => $entity->getId()
+            ],
+            $attribute->getAttributeDefinition()->getType() => $this->formatAttributeValue($attribute, $attributeValue),
+            self::JOIN_FIELD                                => [
+                'name'   => 'attribute',
+                'parent' => $this->createEntityDocId($entity)
+            ]
+        ];
+    }
+
+    protected function createEntityDocData(AttributableEntity $entity): array
+    {
+        return [
+            'id'             => $entity->getId(),
+            'scope'          => $this->getScope($entity),
+            self::JOIN_FIELD => 'entity'
+        ];
+    }
+
+
     /**
      * Creates an elasticsearch index if it not exists
      * @return bool
@@ -386,7 +478,12 @@ class AttributeHandler implements EventSubscriber
                 ],
                 'mappings' => [
                     'properties' => [
-                        'attribute_value' => ['type' => 'join']
+                        self::JOIN_FIELD => [
+                            'type'      => 'join',
+                            'relations' => [
+                                'entity' => 'attribute'
+                            ]
+                        ]
                     ]
                 ],
             ]);
@@ -403,5 +500,10 @@ class AttributeHandler implements EventSubscriber
     protected function getEntityManager(): EntityManagerInterface
     {
         return $this->em;
+    }
+
+    protected function getFlash(): FlashBagInterface
+    {
+        return $this->flashBag;
     }
 }

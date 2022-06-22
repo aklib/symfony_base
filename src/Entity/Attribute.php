@@ -70,7 +70,7 @@ class Attribute
      * @ORM\Column(name="multiple", type="boolean", nullable=false)
      * @AppORM\Element(sortOrder="4")
      */
-    private bool $multiple;
+    private bool $multiple = false;
 
     /**
      * @var bool

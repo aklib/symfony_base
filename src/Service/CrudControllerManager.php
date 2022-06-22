@@ -130,7 +130,7 @@ class CrudControllerManager
                 }
                 break;
             case 'date':
-                $field = DateField::new($propertyName, $label)->setFormat('y-MM-d');
+                $field = DateField::new($propertyName, $label)->setFormat('y-MM-dd');
                 if ('createdAt' === $propertyName || 'updatedAt' === $propertyName) {
                     $field->hideOnForm();
                 }

@@ -113,8 +113,6 @@ class DashboardController extends AbstractDashboardController
                 ->setAction(Crud::PAGE_DETAIL)
                 ->setEntityId($user->getUserProfile()->getId());
         }
-        $userMenuItems[] = MenuItem::section();
-        $userMenuItems[] = MenuItem::linkToLogout('__ea__user.sign_out', 'fa-sign-out');
 
         if ($this->isGranted(Permission::EA_EXIT_IMPERSONATION)) {
             $userMenuItems[] =
@@ -123,6 +121,9 @@ class DashboardController extends AbstractDashboardController
                     'fa-user-lock'
                 );
         }
+        // logout
+        $userMenuItems[] = MenuItem::section();
+        $userMenuItems[] = MenuItem::linkToLogout('__ea__user.sign_out', 'fa-sign-out');
 
         $menu = UserMenu::new()
             ->displayUserName()

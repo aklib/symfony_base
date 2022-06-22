@@ -12,7 +12,7 @@ class UserProfileCrudController extends AbstractAttributableEntityController
         return UserProfile::class;
     }
 
-    /** @noinspection PhpUndefinedMethodInspection */
+    /** @noinspection PhpPossiblePolymorphicInvocationInspection */
     public function getCategory(): ?Category
     {
         if($this->category === null){

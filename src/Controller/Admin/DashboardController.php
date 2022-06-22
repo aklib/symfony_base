@@ -23,6 +23,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use function Webmozart\Assert\Tests\StaticAnalysis\null;
 
 class DashboardController extends AbstractDashboardController
 {
@@ -91,23 +92,29 @@ class DashboardController extends AbstractDashboardController
 //            $item->getAsDto()->('expanded');
             yield $item;
         }
-        yield MenuItem::section('Attribute');
-        yield MenuItem::linkToCrud('Attribute', 'fas fa-list', Attribute::class);
-        yield MenuItem::linkToCrud('Attribute Tabs', 'fas fa-list', AttributeTab::class);
-        yield MenuItem::linkToCrud('Attribute Definitions', 'fas fa-list', AttributeDefinition::class);
-        yield MenuItem::linkToCrud('Attribute Options', 'fas fa-list', AttributeOption::class);
+        yield MenuItem::section('Attribute')->setPermission('ROLE_ADMIN');
+        yield MenuItem::linkToCrud('Attribute', 'fas fa-list', Attribute::class)->setPermission('ROLE_ADMIN');
+        yield MenuItem::linkToCrud('Attribute Tabs', 'fas fa-list', AttributeTab::class)->setPermission('ROLE_ADMIN');
+        yield MenuItem::linkToCrud('Attribute Definitions', 'fas fa-list', AttributeDefinition::class)->setPermission('ROLE_ADMIN');
+        yield MenuItem::linkToCrud('Attribute Options', 'fas fa-list', AttributeOption::class)->setPermission('ROLE_ADMIN');
 
-        yield MenuItem::section('User');
-        yield MenuItem::linkToCrud('User', 'fas fa-list', User::class);
+        yield MenuItem::section('User')->setPermission('ROLE_ADMIN');
+        yield MenuItem::linkToCrud('User', 'fas fa-list', User::class)->setPermission('ROLE_ADMIN');
+        yield MenuItem::linkToCrud('UserProfile', 'fas fa-list', UserProfile::class)->setPermission('ROLE_ADMIN');
     }
 
     public function configureUserMenu(UserInterface $user): UserMenu
     {
-        $userMenuItems = [
-            MenuItem::linkToCrud('Profile', 'fa-id-card', UserProfile::class)->setAction(Crud::PAGE_DETAIL)->setEntityId($user->getId()),
-            MenuItem::linkToUrl('Settings', 'fa-user-cog', '/admin/settings'),
-            MenuItem::linkToLogout('__ea__user.sign_out', 'fa-sign-out')
-        ];
+        $userMenuItems = [];
+        $img = null;
+        if ($user instanceof User && $user->getUserProfile() !== null) {
+            $img = $user->getUserProfile()->avatar;
+            $userMenuItems[] = MenuItem::linkToCrud('Profile', 'fa-id-card', UserProfile::class)
+                ->setAction(Crud::PAGE_DETAIL)
+                ->setEntityId($user->getUserProfile()->getId());
+        }
+
+        $userMenuItems[] = MenuItem::linkToLogout('__ea__user.sign_out', 'fa-sign-out');
 
         if ($this->isGranted(Permission::EA_EXIT_IMPERSONATION)) {
             $userMenuItems[] =
@@ -117,12 +124,23 @@ class DashboardController extends AbstractDashboardController
                 );
         }
 
-        return UserMenu::new()
+        $menu = UserMenu::new()
             ->displayUserName()
             ->displayUserAvatar(false)
-            ->setAvatarUrl('https://kisselev.de/images/me_500_square_black.jpg')
             ->setName(method_exists($user, '__toString') ? (string)$user : $user->getUserIdentifier())
             ->setMenuItems($userMenuItems);
+
+        if (!empty($img)) {
+            $base = $this->getParameter('web_base_path');
+            $uploadPath = $this->getParameter('upload_image_path');
+            $path = "$base/$uploadPath/avatar/$img";
+
+            if (file_exists($path)) {
+                $menu->setAvatarUrl("/$uploadPath/avatar/$img");
+            }
+        }
+
+        return $menu;
     }
 
     public function configureAssets(): Assets

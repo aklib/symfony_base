@@ -210,8 +210,10 @@ class CrudControllerManager
                 break;
             case 'image':
                 $folder = $attribute === null ? $propertyName : $attribute->getUniqueKey();
-                $path = $this->getParameter('upload_image_path') . '/' . $folder;
-                $field = ImageField::new($propertyName, $attribute->getName())->setUploadDir($path)->setBasePath(str_replace('public/', '', $path));
+                $imagePath = $this->getParameter('upload_image_path') . '/' . $folder;
+                $field = ImageField::new($propertyName, $attribute->getName())
+                    ->setUploadDir("public/$imagePath")
+                    ->setBasePath($imagePath);
                 break;
             default:
                 $field = TextField::new($propertyName, $label);

@@ -166,6 +166,39 @@ msgstr "Attributes"
 msgid "attributes"
 msgstr "Attributes"
 
+msgid "UserProfile"
+msgstr "User Profile"
+
+msgid "userProfile"
+msgstr "User Profile"
+
+msgid "Avatar"
+msgstr "Avatar"
+
+msgid "avatar"
+msgstr "avatar"
+
+msgid "Birthday"
+msgstr "Birthday"
+
+msgid "birthday"
+msgstr "birthday"
+
+msgid "Profile"
+msgstr "Profile"
+
+msgid "profile"
+msgstr "profile"
+
+msgid "Settings"
+msgstr "Settings"
+
+msgid "settings"
+msgstr "settings"
+
+msgid "Attribute Definitions"
+msgstr "Attribute Definitions"
+
 #. EasyAdminBundle+intl-icu.en
 msgid "label.form.empty_value"
 msgstr "__label.form.empty_value"

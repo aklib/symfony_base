@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpUnused */
 
 namespace App\Entity;
 
@@ -38,6 +38,11 @@ class AttributeDefinition
      * @ORM\Column(name="description", type="string", length=128, nullable=true)
      */
     private string $description;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=false)
+     */
+    private bool $canMultiple = false;
 
     /**
      * @return int
@@ -109,6 +114,18 @@ class AttributeDefinition
     public function getRelatedClass(): ?string
     {
         return $this->relatedClass;
+    }
+
+    public function isCanMultiple(): bool
+    {
+        return $this->canMultiple;
+    }
+
+    public function setCanMultiple(bool $canMultiple): self
+    {
+        $this->canMultiple = $canMultiple;
+
+        return $this;
     }
 
     /**

@@ -32,6 +32,7 @@ class AttributeHandler implements EventSubscriber
 {
     private AnnotationReader $reader;
     private Collection $attributableEntities;
+    private EntityManagerInterface $em;
     /*
      * attributeValues[scope][entity_id][attribute_unique_key]
      */
@@ -41,10 +42,11 @@ class AttributeHandler implements EventSubscriber
     private bool $isLoaded = false;
     private Collection $attributes;
 
-    public function __construct(IndexManager $indexManager, Security $security)
+    public function __construct(IndexManager $indexManager, Security $security, EntityManagerInterface $em)
     {
         $this->indexManager = $indexManager;
         $this->security = $security;
+        $this->em = $em;
         $this->reader = new AnnotationReader();
         $this->attributableEntities = new ArrayCollection();
         $this->attributes = new ArrayCollection();
@@ -74,6 +76,8 @@ class AttributeHandler implements EventSubscriber
         if ($entity instanceof AttributableEntity) {
             $entity->setAttributeValueHandler($this);
             $this->attributableEntities->add($entity);
+        } elseif ($entity instanceof Attribute && !$this->attributes->contains($entity)) {
+            $this->attributes->add($entity);
         }
     }
 
@@ -165,10 +169,8 @@ class AttributeHandler implements EventSubscriber
                 }
                 // by unique attributable class (scope) entity id and attribute unique key
                 $attribute = $this->getAttribute($docData['uniqueKey']);
-                if ($attribute !== null && $attribute->isMultiple()) {
+                if ($attribute !== null) {
                     $this->attributeValues[$key] = (array)$docData[$docData['type']];
-                } else {
-                    $this->attributeValues[$key] = $docData[$docData['type']];
                 }
             }
             $this->isLoaded = true;
@@ -192,8 +194,6 @@ class AttributeHandler implements EventSubscriber
      * @param Attribute $attribute
      * @param $value
      * @return DateTime|null
-     * @noinspection ReturnTypeCanBeDeclaredInspection
-     * @noinspection PhpMissingReturnTypeInspection
      */
     protected function formatAttributeValue(Attribute $attribute, $value)
     {
@@ -209,6 +209,14 @@ class AttributeHandler implements EventSubscriber
                     $formattedValue = null;
                 }
                 break;
+            default:
+                if (!$attribute->isMultiple()) {
+                    if (is_array($value)) {
+                        $formattedValue = array_shift($value);
+                    }
+                } else {
+                    $formattedValue = (array)$value;
+                }
         }
         return $formattedValue;
     }
@@ -268,19 +276,6 @@ class AttributeHandler implements EventSubscriber
 
     public function getAttribute(string $uniqueKey): ?Attribute
     {
-        if ($this->attributes->isEmpty()) {
-            /** @var AttributableEntity $entity */
-            foreach ($this->attributableEntities as $entity) {
-                if ($entity->getCategory() === null) {
-                    continue;
-                }
-                foreach ($entity->getCategory()->getAttributes(true) as $attribute) {
-                    if (!$this->attributes->contains($attribute)) {
-                        $this->attributes->add($attribute);
-                    }
-                }
-            }
-        }
         $result = $this->attributes->filter(static function (Attribute $attribute) use ($uniqueKey) {
             // filter by unique key
             if ($attribute->getUniqueKey() === $uniqueKey) {
@@ -289,11 +284,14 @@ class AttributeHandler implements EventSubscriber
             return null;
         });
         if ($result->isEmpty()) {
-            return null;
+            $attr = $this->getEntityManager()->getRepository(Attribute::class)->findOneByUniqueKey($uniqueKey);
+            if ($attr instanceof Attribute) {
+                $this->attributes->add($attr);
+            }
+            return $attr;
         }
         return $result->first();
     }
-
 
     /**
      * @param string $scope
@@ -312,6 +310,7 @@ class AttributeHandler implements EventSubscriber
             return null;
         });
         if ($result->isEmpty()) {
+            dump($uniqueKey);
             return null;
         }
         return $result->first();
@@ -387,7 +386,7 @@ class AttributeHandler implements EventSubscriber
                 ],
                 'mappings' => [
                     'properties' => [
-                        'attribute' => ['type' => 'nested']
+                        'attribute_value' => ['type' => 'join']
                     ]
                 ],
             ]);
@@ -399,5 +398,10 @@ class AttributeHandler implements EventSubscriber
     protected function getScope(AttributableEntity $entity): string
     {
         return strtolower(StringUtils::substringAfterLast(get_class($entity), "\\"));
+    }
+
+    protected function getEntityManager(): EntityManagerInterface
+    {
+        return $this->em;
     }
 }

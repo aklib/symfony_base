@@ -11,6 +11,7 @@ use Doctrine\Persistence\ManagerRegistry;
  *
  * @method Attribute|null find($id, $lockMode = null, $lockVersion = null)
  * @method Attribute|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Attribute|null findOneByUniqueKey(string $uniqueKey)
  * @method Attribute[]    findAll()
  * @method Attribute[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */

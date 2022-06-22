@@ -15,7 +15,6 @@ use App\Controller\Admin\CrudControllerManagerInterface;
 use App\Entity\Attribute;
 use App\Entity\AttributeOption;
 use App\Entity\Category;
-use App\Kernel;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
@@ -37,16 +36,21 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\UrlField;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 
 class CrudControllerManager
 {
     private EntityManagerInterface $em;
+    private ContainerBagInterface $parameterBug;
     protected const OPTION_SORT_ORDER = 'sortOrder';
     protected string $entityFqcn;
 
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(EntityManagerInterface $em, ContainerBagInterface $parameterBug)
     {
         $this->em = $em;
+        $this->parameterBug = $parameterBug;
     }
 
     public function configureFields(CrudControllerManagerInterface $controller, string $pageName, array $excludeFields = []): iterable
@@ -205,10 +209,9 @@ class CrudControllerManager
                 }
                 break;
             case 'image':
-                //todo: mkdir if not exists, grant permissions
                 $folder = $attribute === null ? $propertyName : $attribute->getUniqueKey();
-                $path = "public/uploads/images/$folder";
-                $field = ImageField::new($propertyName, $attribute->getName())->setUploadDir($path)->setBasePath(str_replace('public/','', $path));
+                $path = $this->getParameter('upload_image_path') . '/' . $folder;
+                $field = ImageField::new($propertyName, $attribute->getName())->setUploadDir($path)->setBasePath(str_replace('public/', '', $path));
                 break;
             default:
                 $field = TextField::new($propertyName, $label);
@@ -224,8 +227,7 @@ class CrudControllerManager
         }
         if ($attribute === null) {
             $field->setCustomOption(self::OPTION_SORT_ORDER, $mapping['element'][self::OPTION_SORT_ORDER]);
-        }
-        else {
+        } else {
             $field->setCustomOption(self::OPTION_SORT_ORDER, $attribute->getSortOrder());
         }
         return $field;
@@ -258,5 +260,15 @@ class CrudControllerManager
     protected function getEntityManager(): EntityManagerInterface
     {
         return $this->em;
+    }
+
+    protected function getParameter(string $name)
+    {
+        try {
+            return $this->parameterBug->get($name);
+        } catch (NotFoundExceptionInterface|ContainerExceptionInterface $e) {
+            error_log($e);
+        }
+        return null;
     }
 }

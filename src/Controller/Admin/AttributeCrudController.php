@@ -20,9 +20,16 @@ class AttributeCrudController extends AbstractAppGrudController
             if ($pageName === Crud::PAGE_NEW || $entity->getAttributeDefinition()->getType() !== 'select') {
                 $fields[] = 'attributeOptions';
             }
-        }
-        else {
+        } else {
             $fields[] = 'attributeOptions';
+        }
+        if ($pageName === 'edit') {
+            $attribute = $this->getEntity();
+            if ($attribute instanceof Attribute && !$attribute->getAttributeDefinition()->isCanMultiple()) {
+                $fields[] = 'multiple';
+            }
+        } else {
+            $fields[] = 'multiple';
         }
         return $fields;
     }

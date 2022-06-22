@@ -69,15 +69,25 @@ abstract class AbstractAppGrudController extends AbstractCrudController implemen
      */
     public function configureActions(Actions $actions): Actions
     {
+        // create icon buttons
         $actions->update(Crud::PAGE_INDEX, Action::EDIT, function (Action $action) {
-            return $action->addCssClass('btn btn-icon btn-sm btn-default')->setIcon('fa fa-pencil')->setLabel(false)->setHtmlAttributes(['title' => 'Edit']);
+            return $action->addCssClass('btn btn-icon btn-sm btn-default')
+                ->setIcon('fa fa-pencil')
+                ->setLabel(false)
+                ->setHtmlAttributes(['title' => 'Edit']);
         })
             ->update(Crud::PAGE_INDEX, Action::DELETE, function (Action $action) {
-                return $action->addCssClass('btn btn-icon btn-sm btn-default')->setIcon('fa fa-trash')->setLabel(false)->setHtmlAttributes(['title' => 'Delete']);
+                return $action->addCssClass('btn btn-icon btn-sm btn-default')
+                    ->setIcon('fa fa-trash')
+                    ->setLabel(false)
+                    ->setHtmlAttributes(['title' => 'Delete']);
             })
             ->add(Crud::PAGE_INDEX, Action::DETAIL)
             ->update(Crud::PAGE_INDEX, Action::DETAIL, function (Action $action) {
-                return $action->addCssClass('btn btn-icon btn-sm btn-default')->setIcon('fa fa-eye')->setLabel(false)->setHtmlAttributes(['title' => 'Details']);
+                return $action->addCssClass('btn btn-icon btn-sm btn-default')
+                    ->setIcon('fa fa-eye')
+                    ->setLabel(false)
+                    ->setHtmlAttributes(['title' => 'Details']);
             })
             ->reorder(Crud::PAGE_INDEX, [Action::EDIT, Action::DETAIL, Action::DELETE]);
         return $actions;

@@ -199,6 +199,9 @@ msgstr "settings"
 msgid "Attribute Definitions"
 msgstr "Attribute Definitions"
 
+msgid "Home Page"
+msgstr "Home Page"
+
 #. EasyAdminBundle+intl-icu.en
 msgid "label.form.empty_value"
 msgstr "__label.form.empty_value"

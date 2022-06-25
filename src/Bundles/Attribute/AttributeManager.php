@@ -12,6 +12,7 @@
 namespace App\Bundles\Attribute;
 
 use App\Bundles\Attribute\Entity\AttributableEntity;
+use App\Bundles\Attribute\Entity\AttributeManagerEntityInterface;
 use App\Entity\Attribute;
 use App\Entity\User;
 use DateTime;

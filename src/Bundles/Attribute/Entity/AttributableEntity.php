@@ -2,7 +2,6 @@
 
 namespace App\Bundles\Attribute\Entity;
 
-use App\Bundles\Attribute\AttributeManagerEntityInterface;
 use App\Entity\Category;
 
 /**

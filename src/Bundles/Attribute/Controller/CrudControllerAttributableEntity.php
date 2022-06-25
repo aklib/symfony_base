@@ -7,7 +7,7 @@
  * author: alexej@kisselev.de
  */
 
-namespace App\Bundles\Attribute;
+namespace App\Bundles\Attribute\Controller;
 
 use App\Entity\Category;
 

@@ -3,7 +3,6 @@
 namespace App\Bundles\Attribute\Entity;
 
 
-use App\Bundles\Attribute\AttributeManagerEntityInterface;
 use App\Bundles\Attribute\AttributeManager;
 use App\Entity\Category;
 use App\Entity\Extension\Annotation as AppORM;

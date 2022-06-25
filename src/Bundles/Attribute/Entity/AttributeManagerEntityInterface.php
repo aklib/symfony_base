@@ -7,9 +7,7 @@
  * author: alexej@kisselev.de
  */
 
-namespace App\Bundles\Attribute;
-
-use App\Bundles\Attribute\Entity\AttributableEntity;
+namespace App\Bundles\Attribute\Entity;
 
 interface AttributeManagerEntityInterface
 {

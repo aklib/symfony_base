@@ -2,8 +2,9 @@
 
 /** @noinspection DuplicatedCode */
 
-namespace App\Bundles\Attribute;
+namespace App\Bundles\Attribute\EventListener;
 
+use App\Bundles\Attribute\AttributeManager;
 use App\Bundles\Attribute\Entity\AttributableEntity;
 use App\Entity\Attribute;
 use App\Entity\Extension\Annotation\CustomDoctrineAnnotation;
@@ -14,7 +15,7 @@ use Doctrine\ORM\Event\LoadClassMetadataEventArgs;
 use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Events;
 
-class AttributableEntityEventListener implements EventSubscriber
+class AttributableEntityListener implements EventSubscriber
 {
     private AnnotationReader $reader;
     private AttributeManager $attributeManager;

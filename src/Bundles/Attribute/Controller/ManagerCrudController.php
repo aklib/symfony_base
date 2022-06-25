@@ -8,7 +8,7 @@
  * author: alexej@kisselev.de
  */
 
-namespace App\Bundles\Attribute;
+namespace App\Bundles\Attribute\Controller;
 
 use App\Controller\Admin\CrudControllerManagerInterface;
 use App\Entity\Attribute;

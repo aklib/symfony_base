@@ -9,7 +9,7 @@
 
 namespace App\Controller\Admin;
 
-use App\Bundles\Attribute\CrudControllerAttributableEntity;
+use App\Bundles\Attribute\Controller\CrudControllerAttributableEntity;
 use App\Bundles\Attribute\Entity\AttributableEntity;
 use App\Entity\Category;
 use Doctrine\ORM\QueryBuilder;

@@ -10,7 +10,7 @@
 
 namespace App\Controller\Admin;
 
-use App\Bundles\Attribute\ManagerCrudController;
+use App\Bundles\Attribute\Controller\ManagerCrudController;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
@@ -107,7 +107,7 @@ abstract class AbstractAppGrudController extends AbstractCrudController implemen
     }
 
     /**
-     * @return ManagerCrudController
+     * @return \App\Bundles\Attribute\Controller\ManagerCrudController
      */
     public function getControllerManager(): ManagerCrudController
     {

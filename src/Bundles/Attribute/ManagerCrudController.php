@@ -8,9 +8,8 @@
  * author: alexej@kisselev.de
  */
 
-namespace App\Service;
+namespace App\Bundles\Attribute;
 
-use App\Controller\Admin\AbstractAttributableEntityController;
 use App\Controller\Admin\CrudControllerManagerInterface;
 use App\Entity\Attribute;
 use App\Entity\AttributeOption;
@@ -40,7 +39,7 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 
-class CrudControllerManager
+class ManagerCrudController
 {
     private EntityManagerInterface $em;
     private ContainerBagInterface $parameterBug;
@@ -67,7 +66,7 @@ class CrudControllerManager
             }
             $fields[$propertyName] = $field;
         }
-        if ($controller instanceof AbstractAttributableEntityController && $controller->getCategory() instanceof Category) {
+        if ($controller instanceof CrudControllerAttributableEntity && $controller->getCategory() instanceof Category) {
             foreach ($controller->getCategory()->getAttributes(true) as $attribute) {
                 $mapping = $attribute->toMapping();
                 $field = $this->createField($mapping, $pageName, $attribute);

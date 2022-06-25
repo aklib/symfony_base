@@ -10,7 +10,7 @@
 
 namespace App\Controller\Admin;
 
-use App\Service\CrudControllerManager;
+use App\Bundles\Attribute\ManagerCrudController;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
@@ -24,10 +24,10 @@ abstract class AbstractAppGrudController extends AbstractCrudController implemen
 {
     private EntityManagerInterface $em;
     private TranslatorInterface $translator;
-    private CrudControllerManager $controllerManager;
+    private ManagerCrudController $controllerManager;
     protected const OPTION_SORT_ORDER = 'sortOrder';
 
-    public function __construct(EntityManagerInterface $em, TranslatorInterface $translator, CrudControllerManager $controllerManager)
+    public function __construct(EntityManagerInterface $em, TranslatorInterface $translator, ManagerCrudController $controllerManager)
     {
         $this->em = $em;
         $this->translator = $translator;
@@ -107,9 +107,9 @@ abstract class AbstractAppGrudController extends AbstractCrudController implemen
     }
 
     /**
-     * @return CrudControllerManager
+     * @return ManagerCrudController
      */
-    public function getControllerManager(): CrudControllerManager
+    public function getControllerManager(): ManagerCrudController
     {
         return $this->controllerManager;
     }

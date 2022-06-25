@@ -2,8 +2,8 @@
 
 namespace App\Entity;
 
-use App\Entity\Extension\AttributableEntity;
-use App\Entity\Extension\Traits\AttributableEntityTrait;
+use App\Bundles\Attribute\Entity\AttributableEntity;
+use App\Bundles\Attribute\Entity\AttributableEntityTrait;
 use App\Repository\UserProfileRepository;
 use Doctrine\ORM\Mapping as ORM;
 

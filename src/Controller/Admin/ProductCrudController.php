@@ -11,7 +11,7 @@ use App\Entity\Product;
  * @since: 09.06.2022
  * @author: alexej@kisselev.de
  */
-class ProductCrudController extends AbstractAttributableEntityController
+class ProductCrudController extends AbstractAttributableEntityCrudController
 {
     public static function getEntityFqcn(): string
     {

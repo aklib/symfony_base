@@ -1,13 +1,13 @@
 <?php /** @noinspection PhpUnused */
 
-namespace App\Entity\Extension\Traits;
+namespace App\Bundles\Attribute\Entity;
 
 
+use App\Bundles\Attribute\AttributeManagerEntityInterface;
+use App\Bundles\Attribute\AttributeManager;
 use App\Entity\Category;
-use App\Entity\Extension\AttributableEntity;
-use App\EventSubscriber\AttributeHandler;
-use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Extension\Annotation as AppORM;
+use Doctrine\ORM\Mapping as ORM;
 
 
 /**
@@ -19,7 +19,7 @@ use App\Entity\Extension\Annotation as AppORM;
 trait AttributableEntityTrait
 {
     private array $attributeValues = [];
-    private AttributeHandler $aes;
+    private AttributeManager $attributeManager;
     /**
      * @ORM\ManyToOne(targetEntity=Category::class, fetch="EAGER")
      * @ORM\JoinColumn(nullable=false)
@@ -44,23 +44,23 @@ trait AttributableEntityTrait
 
     /**
      * @implements AttributableEntity
-     * @param AttributeHandler $aes
+     * @param AttributeManager $manager
      */
-    public function setAttributeValueHandler(AttributeHandler $aes): void
+    public function setAttributeManager(AttributeManagerEntityInterface $manager): void
     {
-        $this->aes = $aes;
+        $this->attributeManager = $manager;
     }
 
-    public function getAttributeHandler(): AttributeHandler
+    public function getAttributeManager(): AttributeManager
     {
-        return $this->aes;
+        return $this->attributeManager;
     }
 
 
     public function __get($name)
     {
         // get value
-        $value = $this->getAttributeHandler()->getAttributeValue($name, $this);
+        $value = $this->getAttributemanager()->getAttributeValue($name, $this);
         // overloading property
         $this->{$name} = $value;
         // show value

@@ -9,8 +9,9 @@
 
 namespace App\Controller\Admin;
 
+use App\Bundles\Attribute\CrudControllerAttributableEntity;
+use App\Bundles\Attribute\Entity\AttributableEntity;
 use App\Entity\Category;
-use App\Entity\Extension\AttributableEntity;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
@@ -18,7 +19,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 
-abstract class AbstractAttributableEntityController extends AbstractAppGrudController
+abstract class AbstractAttributableEntityCrudController extends AbstractAppGrudController implements CrudControllerAttributableEntity
 {
     protected ?Category $category = null;
 
@@ -49,8 +50,8 @@ abstract class AbstractAttributableEntityController extends AbstractAppGrudContr
         $qb = parent::createIndexQueryBuilder($searchDto, $entityDto, $fields, $filters);
         $category = $this->getCategory();
         if ($category !== null) {
-            $expr = $qb->expr()->between('category.lft', $category->getLft(), $category->getRgt());
-            $qb->innerJoin('entity.category', 'category')->andWhere($expr);
+            $expr = $qb->expr()->between('cat.lft', $category->getLft(), $category->getRgt());
+            $qb->innerJoin('entity.category', 'cat')->andWhere($expr);
             $crudDto = $this->getContext() !== null ? $this->getContext()->getCrud() : null;
             if ($crudDto !== null) {
                 $crudDto->setCustomPageTitle(Crud::PAGE_INDEX, $category->getName());

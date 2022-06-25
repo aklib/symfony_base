@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Entity\Extension;
+namespace App\Bundles\Attribute\Entity;
 
+use App\Bundles\Attribute\AttributeManagerEntityInterface;
 use App\Entity\Category;
-use App\EventSubscriber\AttributeHandler;
 
 /**
  * Class AttributeEntityInterface
@@ -17,7 +17,7 @@ interface AttributableEntity
 
     public function getCategory(): ?Category;
 
-    public function setAttributeValueHandler(AttributeHandler $aes): void;
+    public function setAttributeManager(AttributeManagerEntityInterface $manager): void;
 
     public function getAttributeValues(): array;
 }

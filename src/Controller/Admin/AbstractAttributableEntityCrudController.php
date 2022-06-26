@@ -30,10 +30,12 @@ abstract class AbstractAttributableEntityCrudController extends AbstractAppGrudC
      */
     public function configureCrud(Crud $crud): Crud
     {
+        //$crud->setFormThemes(['bundles/EasyAdminBundle/crud/attribute_form_theme.html.twig', '@EasyAdmin/crud/form_theme.html.twig']);
         $category = $this->getCategory();
         if ($category !== null) {
             return parent::configureCrud($crud)->setEntityLabelInSingular($category->getName());
         }
+
         return parent::configureCrud($crud);
     }
 

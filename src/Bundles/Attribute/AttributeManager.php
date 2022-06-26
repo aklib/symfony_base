@@ -15,6 +15,7 @@ use App\Bundles\Attribute\Entity\AttributableEntity;
 use App\Bundles\Attribute\Entity\AttributeManagerEntityInterface;
 use App\Entity\Attribute;
 use App\Entity\User;
+use App\Entity\UserProfile;
 use DateTime;
 use DateTimeZone;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -38,6 +39,7 @@ class AttributeManager implements AttributeManagerEntityInterface
     public const ATTRIBUTE_FIELD = 'attributes';
     private IndexManager $indexManager;
     private Security $security;
+    private EntityManagerInterface $em;
     private Collection $entities;
     private ArrayCollection $documents;
     private ArrayCollection $attributes;
@@ -46,10 +48,11 @@ class AttributeManager implements AttributeManagerEntityInterface
     private array $attributeValues = [];
     private array $user = [];
 
-    public function __construct(IndexManager $indexManager, Security $security, FlashBagInterface $flashBag)
+    public function __construct(IndexManager $indexManager, Security $security, FlashBagInterface $flashBag, EntityManagerInterface $em)
     {
         $this->indexManager = $indexManager;
         $this->security = $security;
+        $this->em = $em;
         $this->flashBag = $flashBag;
         $this->entities = new ArrayCollection();
         $this->documents = new ArrayCollection();
@@ -182,6 +185,7 @@ class AttributeManager implements AttributeManagerEntityInterface
                 }
                 $type = $attribute->getAttributeDefinition()->getType();
                 $val = [
+                    'id'        => $attribute->getId(),
                     'uniqueKey' => $uniqueKey,
                     'type'      => $type,
                     $type       => $this->convertValue($uniqueKey, $attributeValue, false)
@@ -199,7 +203,7 @@ class AttributeManager implements AttributeManagerEntityInterface
                     'scope'               => $this->getScope($entity),
                     self::ATTRIBUTE_FIELD => $attributeValues
                 ];
-                $document = new Document('', $docData, $this->indexManager->getDefaultIndex());
+                $document = new Document($this->createDocId($entity), $docData, $this->indexManager->getDefaultIndex());
             }
             $documents[] = $document;
         }
@@ -239,13 +243,13 @@ class AttributeManager implements AttributeManagerEntityInterface
             }
             return null;
         });
-//        if ($result->isEmpty()) {
-//            $attr = $this->getEntityManager()->getRepository(Attribute::class)->findOneByUniqueKey($uniqueKey);
-//            if ($attr instanceof Attribute) {
-//                $this->attributes->add($attr);
-//            }
-//            return $attr;
-//        }
+        if ($result->isEmpty()) {
+            $attr = $this->getEntityManager()->getRepository(Attribute::class)->findOneByUniqueKey($uniqueKey);
+            if ($attr instanceof Attribute) {
+                $this->attributes->add($attr);
+            }
+            return $attr;
+        }
         return $result->first();
     }
 
@@ -259,10 +263,6 @@ class AttributeManager implements AttributeManagerEntityInterface
         $result = $this->getDocuments()->filter(static function (Document $doc) use ($scope, $id) {
             // filter by unique key
             $docData = $doc->getData();
-            if (!array_key_exists(self::ATTRIBUTE_FIELD, $docData) || !array_key_exists('uniqueKey', $docData[self::ATTRIBUTE_FIELD])) {
-                // attributable entity
-                return null;
-            }
             if ($docData['scope'] === $scope && $docData['id'] === $id) {
                 return $doc;
             }
@@ -273,22 +273,6 @@ class AttributeManager implements AttributeManagerEntityInterface
         }
         return $result->first();
     }
-
-    /**
-     * Unique key for attribute value e.eg. product_20_article_number
-     * @param $uniqueKey
-     * @param AttributableEntity|null $entity
-     * @param array|null $docData
-     * @return string
-     */
-    protected function getKey($uniqueKey, AttributableEntity $entity = null, array $docData = null): string
-    {
-        if ($entity instanceof AttributableEntity) {
-            return $this->getScope($entity) . '|' . $entity->getId() . '|' . $uniqueKey;
-        }
-        return $docData['scope'] . '|' . $docData['id'] . '|' . $uniqueKey;
-    }
-
 
     protected function convertDateTime(DateTime $dateTime = null, bool $includeTimezone = true): string
     {
@@ -350,7 +334,35 @@ class AttributeManager implements AttributeManagerEntityInterface
     }
 
     // =============================== HELP METHODS  ===============================
+    protected function getScope(AttributableEntity $entity): string
+    {
+        return strtolower(StringUtils::substringAfterLast(get_class($entity), "\\"));
+    }
 
+    /**
+     * Unique key for attribute value e.eg. product_20_article_number
+     * @param $uniqueKey
+     * @param AttributableEntity|null $entity
+     * @param array|null $docData
+     * @return string
+     */
+    protected function getKey($uniqueKey, AttributableEntity $entity = null, array $docData = null): string
+    {
+        if ($entity instanceof AttributableEntity) {
+            return $this->getScope($entity) . '|' . $entity->getId() . '|' . $uniqueKey;
+        }
+        return $docData['scope'] . '|' . $docData['id'] . '|' . $uniqueKey;
+    }
+
+    /**
+     * Unique key for document e.g. product_20,  user_profile_1
+     * @param AttributableEntity|null $entity
+     * @return string
+     */
+    protected function createDocId(AttributableEntity $entity): string
+    {
+        return Util::toSnakeCase(substr(strrchr(UserProfile::class, '\\'), 1)) . '_' . $entity->getId();
+    }
 
     /**
      * @return Security
@@ -392,11 +404,6 @@ class AttributeManager implements AttributeManagerEntityInterface
         return $this->indexManager;
     }
 
-    protected function getScope(AttributableEntity $entity): string
-    {
-        return strtolower(StringUtils::substringAfterLast(get_class($entity), "\\"));
-    }
-
     /**
      * @param string $uniqueKey
      * @param $attributeValue
@@ -414,6 +421,7 @@ class AttributeManager implements AttributeManagerEntityInterface
         switch ($type) {
             case 'date':
             case 'datetime':
+            case 'birthday':
                 if ($download) {
                     try {
                         if (is_array($attributeValue)) {
@@ -427,6 +435,9 @@ class AttributeManager implements AttributeManagerEntityInterface
                 } elseif ($attributeValue instanceof DateTime) {
                     $formattedValue = $this->convertDateTime($attributeValue, $type === 'datetime');
                 }
+                break;
+            case 'address':
+                // don't touch!
                 break;
             default:
                 if (!$attribute->isMultiple()) {
@@ -475,4 +486,10 @@ class AttributeManager implements AttributeManagerEntityInterface
         }
         return $this->user;
     }
+
+    protected function getEntityManager(): EntityManagerInterface
+    {
+        return $this->em;
+    }
+
 }

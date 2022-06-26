@@ -18,20 +18,9 @@ class AttributeDefinition
     private int $id;
     /**
      *
-     * @ORM\Column(name="type", type="string", length=16, nullable=false)
+     * @ORM\Column(name="type", type="string", length=16, nullable=false, unique=true)
      */
     private string $type;
-
-    /**
-     *
-     * @ORM\Column(name="related_class", type="string", length=128, nullable=true)
-     */
-    private ?string $relatedClass = null;
-    /**
-     *
-     * @ORM\Column(name="element", type="string", length=16, nullable=false, options={"default"="text"})
-     */
-    private string $element = 'text';
 
     /**
      *
@@ -79,22 +68,6 @@ class AttributeDefinition
     /**
      * @return string
      */
-    public function getElement(): string
-    {
-        return $this->element;
-    }
-
-    /**
-     * @param string $element
-     */
-    public function setElement(string $element): void
-    {
-        $this->element = $element;
-    }
-
-    /**
-     * @return string
-     */
     public function getDescription(): string
     {
         return $this->description;
@@ -108,14 +81,6 @@ class AttributeDefinition
         $this->description = $description;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getRelatedClass(): ?string
-    {
-        return $this->relatedClass;
-    }
-
     public function isCanMultiple(): bool
     {
         return $this->canMultiple;
@@ -126,14 +91,6 @@ class AttributeDefinition
         $this->canMultiple = $canMultiple;
 
         return $this;
-    }
-
-    /**
-     * @param string|null $relatedClass
-     */
-    public function setRelatedClass(?string $relatedClass): void
-    {
-        $this->relatedClass = $relatedClass;
     }
 
     public function __toString()

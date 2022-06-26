@@ -10,6 +10,7 @@
 
 namespace App\Bundles\Attribute\Controller;
 
+use App\Bundles\Attribute\Type\AddressFormEmbed;
 use App\Controller\Admin\CrudControllerManagerInterface;
 use App\Entity\Attribute;
 use App\Entity\AttributeOption;
@@ -22,6 +23,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CountryField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
@@ -38,6 +40,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\UrlField;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
+use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 
 class ManagerCrudController
 {
@@ -213,6 +216,14 @@ class ManagerCrudController
                 $field = ImageField::new($propertyName, $attribute->getName())
                     ->setUploadDir("public/$imagePath")
                     ->setBasePath($imagePath);
+                break;
+            case 'address':
+                $field = CollectionField::new($propertyName, $attribute->getName())
+                    ->setEntryType(AddressFormEmbed::class);
+                break;
+            case 'birthday':
+                $field = DateField::new($propertyName, $label)->setFormat('y-MM-dd');
+                $field->setFormType(BirthdayType::class);
                 break;
             default:
                 $field = TextField::new($propertyName, $label);

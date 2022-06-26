@@ -1,0 +1,62 @@
+{% extends '@!EasyAdmin/crud/form_theme.html.twig' %}
+
+
+
+{% block form_row %}
+    {% set row_attr = row_attr|merge({
+        class: row_attr.class|default('') ~ ' form-group'
+    }) %}
+
+    <div class="{{ form.vars.ea_crud_form.ea_field.columns ?? form.vars.ea_crud_form.ea_field.defaultColumns ?? '' }}">
+        <div {% with { attr: row_attr } %}{{ block('attributes') }}{% endwith %}>
+            {{- form_label(form) -}}
+            <div class="form-widget">
+                {% set has_prepend_html = ea.field.prepend_html|default(null) is not null %}
+                {% set has_append_html = ea.field.append_html|default(null) is not null %}
+                {% set has_input_groups = has_prepend_html or has_append_html %}
+
+                {% if has_input_groups %}
+                <div class="input-group">{% endif %}
+                    {% if has_prepend_html %}
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">{{ ea.field.prepend_html|raw }}</span>
+                        </div>
+                    {% endif %}
+
+                    {{ form_widget(form) }}
+
+                    {% if has_append_html %}
+                        <span class="input-group-text">{{ ea.field.append_html|raw }}</span>
+                    {% endif %}
+                    {% if has_input_groups %}</div>{% endif %}
+
+                {% set nullable_fields_fqcn = [
+                    'EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField',
+                    'EasyCorp\Bundle\EasyAdminBundle\Field\DateField',
+                    'EasyCorp\Bundle\EasyAdminBundle\Field\TimeField',
+                ] %}
+                {% if form.vars.ea_crud_form.ea_field.fieldFqcn|default(false) in nullable_fields_fqcn and ea.field.nullable|default(false) %}
+                    <div class="nullable-control">
+                        <label>
+                            <input type="checkbox" {% if data is null %}checked="checked"{% endif %}>
+                            {{ 'label.nullable_field'|trans({}, 'EasyAdminBundle') }}
+                        </label>
+                    </div>
+                {% endif %}
+
+                {% if ea.field.help ?? false %}
+                    <small class="form-help">{{ ea.field.help|raw }}</small>
+                {% elseif form.vars.help ?? false %}
+                    <small class="form-help">{{ form.vars.help|trans(form.vars.help_translation_parameters, form.vars.translation_domain)|raw }}</small>
+                {% endif %}
+
+                {{- form_errors(form) -}}
+            </div>
+        </div>
+    </div>
+
+    {# if a field doesn't define its columns explicitly, insert a fill element to make the field take the entire row space #}
+    {% if form.vars.ea_crud_form.ea_field.columns|default(null) is null %}
+        <div class="flex-fill"></div>
+    {% endif %}
+{% endblock %}

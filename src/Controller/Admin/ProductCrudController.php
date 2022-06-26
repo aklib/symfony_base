@@ -13,8 +13,46 @@ use App\Entity\Product;
  */
 class ProductCrudController extends AbstractAttributableEntityCrudController
 {
+
     public static function getEntityFqcn(): string
     {
         return Product::class;
     }
+
+
+//    public function index(AdminContext $context)
+//    {
+//        dump(Util::toSnakeCase(substr(strrchr(UserProfile::class, '\\'), 1)));
+//die;
+//        $q = new Query();
+//        $bool = new BoolQuery();
+//        $q->setQuery($bool);
+//        $term = new Term(['scope.keyword' => 'product']);
+//        $bool->addMust($term);
+//
+//
+//        $nested = new Nested();
+//        $nested->setPath('attributes');
+//        $boolQuery = new BoolQuery();
+//
+//        $queryString = new QueryString('anna');
+//
+//        $boolQuery->addMust($queryString);
+//        $nested->setQuery($boolQuery);
+//
+//        $bool->addMust($nested);
+//
+//        $terms = new Terms('scope');
+//        $terms->setField('id');
+//        $q->addAggregation($terms);
+//
+//        $result = $this->indexManager->getDefaultIndex()->search($q);
+//        $this->printQuery($q);
+//
+//        return parent::index($context);
+//    }
+
+
 }
+
+

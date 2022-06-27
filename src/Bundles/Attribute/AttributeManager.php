@@ -171,10 +171,7 @@ class AttributeManager implements AttributeManagerEntityInterface
             $this->logger->debug("\t> no entities\n");
             return;
         }
-        $start = microtime(true);
-        print_r("start\n");
         $documents = [];
-        $documentMaster = new Document('', [], $this->indexManager->getDefaultIndex());
         //upsert entity documents
 
         /** @var AttributableEntity $entity */
@@ -208,12 +205,10 @@ class AttributeManager implements AttributeManagerEntityInterface
                     self::ATTRIBUTE_FIELD => $attributeValues
                 ];
                 $document = new Document($this->createDocId($entity), $docData, $this->indexManager->getDefaultIndex());
-                //$document->setId($this->createDocId($entity));
             }
             $document->setData($docData);
             $documents[] = $document;
         }
-        print_r("\tfor " . (microtime(true) - $start) . "\n");
         if (empty($documents)) {
             return;
         }
@@ -225,7 +220,6 @@ class AttributeManager implements AttributeManagerEntityInterface
                 $bulk->setRequestParam('refresh', true);
             }
             $bulk->addDocuments($docs);
-            print_r("\tsend " . count($docs) . ' ' . (microtime(true) - $start) . "\n");
             try {
                 $response = $bulk->send();
                 if ($response->isOk()) {
@@ -236,12 +230,7 @@ class AttributeManager implements AttributeManagerEntityInterface
                 $this->getFlashBag()->add('info', $e->getMessage());
             }
         }
-
-        print_r("end " . (microtime(true) - $start) . "\n");
         $this->entities->clear();
-//        $eventArgs->getEntityManager()->flush();
-//        sleep(1);
-        // save attribute values
     }
 
     public function getAttribute(string $uniqueKey): ?Attribute

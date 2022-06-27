@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Product;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 
 /**
  * Class ProductCrudController
@@ -17,6 +18,11 @@ class ProductCrudController extends AbstractAttributableEntityCrudController
     public static function getEntityFqcn(): string
     {
         return Product::class;
+    }
+
+    public function configureCrud(Crud $crud): Crud
+    {
+        return parent::configureCrud($crud)->setPaginatorPageSize(50);
     }
 
 

@@ -35,12 +35,32 @@ class AttributableEntityListener implements EventSubscriber
             Events::postLoad,
             Events::preUpdate,
             Events::postFlush,
+            Events::postPersist,
+            Events::preRemove
         ];
     }
 
     public function preUpdate(LifecycleEventArgs $eventArgs): void
     {
 
+    }
+
+    /**
+     * It will be invoked after the database insert operations.
+     * @param LifecycleEventArgs $eventArgs
+     * @return void
+     */
+    public function postPersist(LifecycleEventArgs $eventArgs): void
+    {
+        $this->postLoad($eventArgs);
+    }
+
+    public function preRemove(LifecycleEventArgs $eventArgs): void
+    {
+        $entity = $eventArgs->getEntity();
+        if ($entity instanceof AttributableEntity) {
+            $this->attributeManager->removeEntity($entity);
+        }
     }
 
     public function postLoad(LifecycleEventArgs $eventArgs): void

@@ -15,7 +15,6 @@ use App\Bundles\Attribute\Entity\AttributableEntity;
 use App\Bundles\Attribute\Entity\AttributeManagerEntityInterface;
 use App\Entity\Attribute;
 use App\Entity\User;
-use App\Entity\UserProfile;
 use DateTime;
 use DateTimeZone;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -30,6 +29,7 @@ use Elastica\Util;
 use Exception;
 use FlorianWolters\Component\Core\StringUtils;
 use FOS\ElasticaBundle\Index\IndexManager;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\Security\Core\Security;
 use Throwable;
@@ -40,6 +40,7 @@ class AttributeManager implements AttributeManagerEntityInterface
     private IndexManager $indexManager;
     private Security $security;
     private EntityManagerInterface $em;
+    private LoggerInterface $logger;
     private Collection $entities;
     private ArrayCollection $documents;
     private ArrayCollection $attributes;
@@ -48,11 +49,12 @@ class AttributeManager implements AttributeManagerEntityInterface
     private array $attributeValues = [];
     private array $user = [];
 
-    public function __construct(IndexManager $indexManager, Security $security, FlashBagInterface $flashBag, EntityManagerInterface $em)
+    public function __construct(IndexManager $indexManager, Security $security, FlashBagInterface $flashBag, EntityManagerInterface $em, LoggerInterface $logger)
     {
         $this->indexManager = $indexManager;
         $this->security = $security;
         $this->em = $em;
+        $this->logger = $logger;
         $this->flashBag = $flashBag;
         $this->entities = new ArrayCollection();
         $this->documents = new ArrayCollection();
@@ -114,7 +116,6 @@ class AttributeManager implements AttributeManagerEntityInterface
         if ($entities->isEmpty()) {
             return $this->documents;
         }
-
         // load documents from elasticsearch
         $query = $this->getQuery($entities);
         $query->setSize(9999);
@@ -167,11 +168,15 @@ class AttributeManager implements AttributeManagerEntityInterface
     public function flush(): void
     {
         if ($this->entities->isEmpty()) {
+            $this->logger->debug("\t> no entities\n");
             return;
         }
-
+        $start = microtime(true);
+        print_r("start\n");
         $documents = [];
+        $documentMaster = new Document('', [], $this->indexManager->getDefaultIndex());
         //upsert entity documents
+
         /** @var AttributableEntity $entity */
         foreach ($this->entities as $entity) {
             $attributeValues = [];
@@ -196,7 +201,6 @@ class AttributeManager implements AttributeManagerEntityInterface
             if ($document instanceof Document) {
                 $docData = $document->getData();
                 $docData[self::ATTRIBUTE_FIELD] = $attributeValues;
-                $document->setData($docData);
             } else {
                 $docData = [
                     'id'                  => $entity->getId(),
@@ -204,30 +208,36 @@ class AttributeManager implements AttributeManagerEntityInterface
                     self::ATTRIBUTE_FIELD => $attributeValues
                 ];
                 $document = new Document($this->createDocId($entity), $docData, $this->indexManager->getDefaultIndex());
+                //$document->setId($this->createDocId($entity));
             }
+            $document->setData($docData);
             $documents[] = $document;
         }
-
+        print_r("\tfor " . (microtime(true) - $start) . "\n");
         if (empty($documents)) {
             return;
         }
 
-        $bulk = new Bulk($this->indexManager->getIndex()->getClient());
-//        $bulk->setRequestParam('routing', 1);
-        $bulk->setRequestParam('refresh', true);
-        $bulk->addDocuments($documents);
 
-        try {
-
-            $response = $bulk->send();
-            if ($response->isOk()) {
-                $this->getFlashBag()->add('success', 'Attributes have been saved');
+        foreach (array_chunk($documents, 500) as $docs) {
+            $bulk = new Bulk($this->indexManager->getIndex()->getClient());
+            if (count($documents) < 10) {
+                $bulk->setRequestParam('refresh', true);
             }
-        } catch (Exception $e) {
-            $this->getFlashBag()->add('error', 'An error occurred during saving');
-            $this->getFlashBag()->add('info', $e->getMessage());
+            $bulk->addDocuments($docs);
+            print_r("\tsend " . count($docs) . ' ' . (microtime(true) - $start) . "\n");
+            try {
+                $response = $bulk->send();
+                if ($response->isOk()) {
+                    $this->getFlashBag()->add('success', 'Attributes have been saved');
+                }
+            } catch (Exception $e) {
+                $this->getFlashBag()->add('error', 'An error occurred during saving');
+                $this->getFlashBag()->add('info', $e->getMessage());
+            }
         }
 
+        print_r("end " . (microtime(true) - $start) . "\n");
         $this->entities->clear();
 //        $eventArgs->getEntityManager()->flush();
 //        sleep(1);
@@ -295,6 +305,13 @@ class AttributeManager implements AttributeManagerEntityInterface
         }
     }
 
+    public function removeEntity(AttributableEntity $entity): void
+    {
+        if ($this->entities->contains($entity)) {
+            $this->entities->removeElement($entity);
+        }
+    }
+
     public function addAttribute(Attribute $attribute): void
     {
         if (!$this->attributes->contains($attribute)) {
@@ -358,10 +375,11 @@ class AttributeManager implements AttributeManagerEntityInterface
      * Unique key for document e.g. product_20,  user_profile_1
      * @param AttributableEntity|null $entity
      * @return string
+     * @noinspection GetClassUsageInspection
      */
     protected function createDocId(AttributableEntity $entity): string
     {
-        return Util::toSnakeCase(substr(strrchr(UserProfile::class, '\\'), 1)) . '_' . $entity->getId();
+        return Util::toSnakeCase(substr(strrchr(get_class($entity), '\\'), 1)) . '_' . $entity->getId();
     }
 
     /**

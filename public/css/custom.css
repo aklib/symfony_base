@@ -4,7 +4,7 @@ table.datagrid {
     -o-transition: opacity 2s ease-in;
     -ms-transition: opacity 2s ease-in;
     transition: opacity 2s ease-in;
-}​
+}
 
  .tree-table-wrap {
      width: 100%;
@@ -122,6 +122,9 @@ table.datagrid {
     visibility: visible;
 }
 
+table.datagrid td.actions {
+    white-space: nowrap !important;
+}
 
 .field-association .accordion-button::after {
     background-size: 1rem;

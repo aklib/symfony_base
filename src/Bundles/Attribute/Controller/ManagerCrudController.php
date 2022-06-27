@@ -219,7 +219,9 @@ class ManagerCrudController
                 break;
             case 'address':
                 $field = CollectionField::new($propertyName, $attribute->getName())
-                    ->setEntryType(AddressFormEmbed::class);
+                    ->setEntryType(AddressFormEmbed::class)
+                    ->setTemplatePath('bundles/EasyAdminBundle/crud/field/attribute_address.html.twig');
+
                 break;
             case 'birthday':
                 $field = DateField::new($propertyName, $label)->setFormat('y-MM-dd');

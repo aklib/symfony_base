@@ -7,6 +7,7 @@
     "php": ">=7.4",
     "ext-ctype": "*",
     "ext-iconv": "*",
+    "ext-json": "*",
     "doctrine/annotations": "^1.13",
     "doctrine/doctrine-bundle": "^2.6",
     "doctrine/doctrine-migrations-bundle": "^3.2",
@@ -34,9 +35,9 @@
     "symfony/validator": "5.4.*",
     "symfony/yaml": "5.4.*",
     "symfonycasts/reset-password-bundle": "^1.13",
-    "twig/extra-bundle": "^2.12|^3.0",
-    "twig/twig": "^2.12|^3.0",
-    "ext-json": "*"
+    "twig/extra-bundle": "^3.4",
+    "twig/intl-extra": "^3.4",
+    "twig/twig": "^2.12|^3.0"
   },
   "config": {
     "allow-plugins": {

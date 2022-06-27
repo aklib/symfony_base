@@ -1,0 +1,22 @@
+{% if field.formattedValue > 0 %}
+    {% set addresses = field.value %}
+    {% for address in addresses %}
+        {% if loop.index > 1 and ea.crud.currentAction != 'detail' %}
+            <small class="text-nowrap">...</small>
+        {% else %}
+            {% if loop.index > 1 %}
+                <small class="text-muted">------</small><br>
+            {% endif %}
+
+            <small class="text-nowrap">
+                {{ address.street }} {{ address.house_number }}<br>
+                {{ address.zip_code }} {{ address.city }}, {{ address.country|country_name }}
+                <br>
+            </small>
+        {% endif %}
+    {% endfor %}
+{% else %}
+    <span class="badge badge-secondary">Null</span>
+{% endif %}
+
+

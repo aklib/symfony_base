@@ -107,7 +107,7 @@ abstract class AbstractAppGrudController extends AbstractCrudController implemen
     }
 
     /**
-     * @return \App\Bundles\Attribute\Controller\ManagerCrudController
+     * @return ManagerCrudController
      */
     public function getControllerManager(): ManagerCrudController
     {

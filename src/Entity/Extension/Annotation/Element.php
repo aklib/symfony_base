@@ -34,7 +34,7 @@ class Element implements CustomDoctrineAnnotation
     {
         $this->type = $properties['type'] ?? '';
         $this->tab = $properties['tab'] ?? 'general';
-        $this->help = $properties['info'] ?? '';
+        $this->help = $properties['help'] ?? '';
         $this->sortOrder = $properties['sortOrder'] ?? 100;
     }
 }

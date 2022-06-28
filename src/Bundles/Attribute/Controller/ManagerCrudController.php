@@ -235,10 +235,15 @@ class ManagerCrudController
             return null;
         }
 
-        $length = (int)($mapping['length'] ?? 0);
-        if ($length > 0 && $field->getAsDto()->getHelp() === null) {
-            $field->setHelp('field.max.length')->setTranslationParameters(['%count%' => $mapping['length']]);
+        if (empty($mapping['element']['help'])) {
+            $length = (int)($mapping['length'] ?? 0);
+            if ($length > 0 && $field->getAsDto()->getHelp() === null) {
+                $field->setHelp('field.max.length')->setTranslationParameters(['%count%' => $mapping['length']]);
+            }
+        } else {
+            $field->setHelp($mapping['element']['help']);
         }
+
         if ($attribute === null) {
             $field->setCustomOption(self::OPTION_SORT_ORDER, $mapping['element'][self::OPTION_SORT_ORDER]);
         } else {

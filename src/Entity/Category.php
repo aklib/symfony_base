@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Extension\Annotation as AppORM;
 use App\Entity\Extension\Traits\BlameableEntityTrait;
 use App\Entity\Extension\Traits\TimestampableEntityTrait;
 use App\Repository\CategoryRepository;
@@ -9,11 +10,15 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use App\Entity\Extension\Annotation as AppORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @Gedmo\Tree(type="nested")
  * @ORM\Entity(repositoryClass=CategoryRepository::class)
+ * @UniqueEntity(
+ *     fields={"uniqueKey"},
+ *     message="The name '{{ value }}' is already in use. Please choose any other one."
+ * )
  */
 class Category
 {
@@ -35,6 +40,7 @@ class Category
     /**
      * @ORM\Column(type="string", length=32, unique=true)
      * @AppORM\Element(sortOrder="2")
+     *
      */
     private string $uniqueKey;
 

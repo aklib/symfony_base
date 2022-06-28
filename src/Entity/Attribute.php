@@ -7,9 +7,15 @@ use App\Repository\AttributeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=AttributeRepository::class)
+ * @UniqueEntity(
+ *     fields={"uniqueKey"},
+ *     message="The name '{{ value }}' is already in use. Please choose any other one."
+ * )
  */
 class Attribute
 {
@@ -30,8 +36,11 @@ class Attribute
 
     /**
      * @var string
-     * @ORM\Column(name="unique_key", type="string", length=32, nullable=false)
-     * @AppORM\Element(sortOrder="3")
+     * @ORM\Column(name="unique_key", type="string", length=32, nullable=false, unique=true)
+     * @AppORM\Element(sortOrder="3", help="Only [a-z] characters in lower case and underscore '_'.")
+     * @Assert\Regex(
+     *     pattern     = "/^[a-z_]+$/"
+     * )
      */
     private string $uniqueKey;
 

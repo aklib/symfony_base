@@ -7,10 +7,10 @@ use App\Entity\AttributeDefinition;
 use App\Entity\AttributeOption;
 use App\Entity\AttributeTab;
 use App\Entity\Category;
+use App\Entity\Person;
 use App\Entity\Product;
 use App\Entity\User;
 use App\Entity\UserProfile;
-use App\Repository\CategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -23,7 +23,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use function Webmozart\Assert\Tests\StaticAnalysis\null;
 
 class DashboardController extends AbstractDashboardController
 {
@@ -76,31 +75,20 @@ class DashboardController extends AbstractDashboardController
     {
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
 
-        /** @var CategoryRepository $dao */
-        $dao = $this->getEntityManager()->getRepository(Category::class);
-        $roots = $dao->getRootNodes();
-        $subItems = [];
-        /** @var Category $root */
-        foreach ($roots as $root) {
-            $subItems[] = MenuItem::linkToCrud($root->getName(), 'fas fa-tree', Category::class);
-            /** @var Category $child */
-            foreach ($root->getChildren() as $child) {
-                $subItems[] = MenuItem::linkToCrud($child->getName(), 'fas fa-list', Product::class)
-                    ->setQueryParameter('category', $child->getId());
-            }
-            $item = MenuItem::subMenu($root->getName(), 'fa fa-article')->setSubItems($subItems);
-//            $item->getAsDto()->('expanded');
-            yield $item;
-        }
+        yield MenuItem::section('Managed Objects')->setPermission('ROLE_ADMIN');
+        yield MenuItem::linkToCrud('Category', 'fas fa-stream', Category::class)->setPermission('ROLE_ADMIN');
+        yield MenuItem::linkToCrud('Product', 'fas fa-list', Product::class)->setPermission('ROLE_ADMIN');
+        yield MenuItem::linkToCrud('Person', 'fas fa-list', Person::class)->setPermission('ROLE_ADMIN');
+
         yield MenuItem::section('Attribute')->setPermission('ROLE_ADMIN');
-        yield MenuItem::linkToCrud('Attribute', 'fas fa-list', Attribute::class)->setPermission('ROLE_ADMIN');
-        yield MenuItem::linkToCrud('Attribute Tabs', 'fas fa-list', AttributeTab::class)->setPermission('ROLE_ADMIN');
-        yield MenuItem::linkToCrud('Attribute Definitions', 'fas fa-list', AttributeDefinition::class)->setPermission('ROLE_ADMIN');
-        yield MenuItem::linkToCrud('Attribute Options', 'fas fa-list', AttributeOption::class)->setPermission('ROLE_ADMIN');
+        yield MenuItem::linkToCrud('Attribute', 'fas fa-list-ol', Attribute::class)->setPermission('ROLE_ADMIN');
+        yield MenuItem::linkToCrud('Attribute Tabs', 'fas fa-list-ol', AttributeTab::class)->setPermission('ROLE_ADMIN');
+        yield MenuItem::linkToCrud('Attribute Definitions', 'fas fa-list-ol', AttributeDefinition::class)->setPermission('ROLE_ADMIN');
+        yield MenuItem::linkToCrud('Attribute Options', 'fas fa-list-ol', AttributeOption::class)->setPermission('ROLE_ADMIN');
 
         yield MenuItem::section('User')->setPermission('ROLE_ADMIN');
-        yield MenuItem::linkToCrud('User', 'fas fa-list', User::class)->setPermission('ROLE_ADMIN');
-        yield MenuItem::linkToCrud('UserProfile', 'fas fa-list', UserProfile::class)->setPermission('ROLE_ADMIN');
+        yield MenuItem::linkToCrud('User', 'fas fa-list-ul', User::class)->setPermission('ROLE_ADMIN');
+        yield MenuItem::linkToCrud('UserProfile', 'fas fa-list-ul', UserProfile::class)->setPermission('ROLE_ADMIN');
     }
 
     public function configureUserMenu(UserInterface $user): UserMenu

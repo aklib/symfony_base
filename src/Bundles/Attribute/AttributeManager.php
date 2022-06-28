@@ -27,7 +27,6 @@ use Elastica\Query;
 use Elastica\Query\BoolQuery;
 use Elastica\Util;
 use Exception;
-use FlorianWolters\Component\Core\StringUtils;
 use FOS\ElasticaBundle\Index\IndexManager;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
@@ -342,7 +341,7 @@ class AttributeManager implements AttributeManagerEntityInterface
     // =============================== HELP METHODS  ===============================
     protected function getScope(AttributableEntity $entity): string
     {
-        return strtolower(StringUtils::substringAfterLast(get_class($entity), "\\"));
+        return Util::toSnakeCase(substr(strrchr(get_class($entity), '\\'), 1));
     }
 
     /**
@@ -364,11 +363,10 @@ class AttributeManager implements AttributeManagerEntityInterface
      * Unique key for document e.g. product_20,  user_profile_1
      * @param AttributableEntity|null $entity
      * @return string
-     * @noinspection GetClassUsageInspection
      */
     protected function createDocId(AttributableEntity $entity): string
     {
-        return Util::toSnakeCase(substr(strrchr(get_class($entity), '\\'), 1)) . '_' . $entity->getId();
+        return $this->getScope($entity) . '_' . $entity->getId();
     }
 
     /**

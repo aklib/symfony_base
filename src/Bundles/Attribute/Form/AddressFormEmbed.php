@@ -22,7 +22,7 @@ class AddressFormEmbed extends AbstractType
 
         $builder
             ->add('street', TextType::class, [
-                'attr'        => ['placeholder' => 'street name'],
+                'attr'        => ['placeholder' => 'street name and number'],
                 'row_attr'    => [
                     'class' => 'col-md-12 col-xxl-8',
                 ],
@@ -30,18 +30,6 @@ class AddressFormEmbed extends AbstractType
                 'constraints' => [
                     new NotBlank([
                         'message' => 'Please enter a street name',
-                    ]),
-                ],
-            ])
-            ->add('street_number', TextType::class, [
-                'attr'        => ['placeholder' => 'street number'],
-                'row_attr'    => [
-                    'class' => 'col-md-3 col-xxl-4',
-                ],
-                'label'       => false,
-                'constraints' => [
-                    new NotBlank([
-                        'message' => 'Please enter street number',
                     ]),
                 ],
             ])

@@ -17,6 +17,7 @@ use App\Entity\AttributeOption;
 use App\Entity\Category;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
@@ -63,16 +64,16 @@ class ManagerCrudController
             if (in_array($propertyName, $excludeFields, true)) {
                 continue;
             }
-            $field = $this->createField($mapping, $pageName);
+            $field = $this->createField($mapping, $pageName, $controller);
             if ($field === null) {
                 continue;
             }
             $fields[$propertyName] = $field;
         }
-        if ($controller instanceof CrudControllerAttributableEntity && $controller->getCategory() instanceof Category) {
+        if ($controller instanceof CrudControllerAttributableEntity) {
             foreach ($controller->getCategory()->getAttributes(true) as $attribute) {
                 $mapping = $attribute->toMapping();
-                $field = $this->createField($mapping, $pageName, $attribute);
+                $field = $this->createField($mapping, $pageName, $controller, $attribute);
                 if ($field === null) {
                     continue;
                 }
@@ -86,7 +87,7 @@ class ManagerCrudController
         return $fields;
     }
 
-    protected function createField(array $mapping, string $pageName, Attribute $attribute = null): ?FieldInterface
+    protected function createField(array $mapping, string $pageName, CrudControllerManagerInterface $controller, Attribute $attribute = null): ?FieldInterface
     {
         $propertyName = $mapping['fieldName'];
         $label = $attribute === null ? ucfirst($propertyName) : $attribute->getName();
@@ -168,7 +169,19 @@ class ManagerCrudController
                         return $v;
                     });
                 }
-                break;
+
+            if ($propertyName === 'category' && $controller instanceof CrudControllerAttributableEntity) {
+                /** @var Category $category */
+                $category = $controller->getCategory();
+
+                $field->setQueryBuilder(
+                    fn(QueryBuilder $qb) => $qb
+                        ->andWhere($qb->expr()->between('entity.lft', $category->getLft(), $category->getRgt()))
+                        ->orderBy('entity.lft')
+
+                );
+            }
+            break;
 
             // attributes and custom annotations
             case 'email':

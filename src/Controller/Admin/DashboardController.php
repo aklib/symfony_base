@@ -80,15 +80,15 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Product', 'fas fa-list', Product::class)->setPermission('ROLE_ADMIN');
         yield MenuItem::linkToCrud('Person', 'fas fa-list', Person::class)->setPermission('ROLE_ADMIN');
 
-        yield MenuItem::section('Attribute')->setPermission('ROLE_ADMIN');
+        yield MenuItem::section('Attributes')->setPermission('ROLE_ADMIN');
         yield MenuItem::linkToCrud('Attribute', 'fas fa-list-ol', Attribute::class)->setPermission('ROLE_ADMIN');
         yield MenuItem::linkToCrud('Attribute Tabs', 'fas fa-list-ol', AttributeTab::class)->setPermission('ROLE_ADMIN');
         yield MenuItem::linkToCrud('Attribute Definitions', 'fas fa-list-ol', AttributeDefinition::class)->setPermission('ROLE_ADMIN');
         yield MenuItem::linkToCrud('Attribute Options', 'fas fa-list-ol', AttributeOption::class)->setPermission('ROLE_ADMIN');
 
-        yield MenuItem::section('User')->setPermission('ROLE_ADMIN');
+        yield MenuItem::section('Users')->setPermission('ROLE_ADMIN');
         yield MenuItem::linkToCrud('User', 'fas fa-list-ul', User::class)->setPermission('ROLE_ADMIN');
-        yield MenuItem::linkToCrud('UserProfile', 'fas fa-list-ul', UserProfile::class)->setPermission('ROLE_ADMIN');
+        yield MenuItem::linkToCrud('UserProfile', 'fas fa-list-ul', UserProfile::class)->setPermission('ROLE_USER');
     }
 
     public function configureUserMenu(UserInterface $user): UserMenu

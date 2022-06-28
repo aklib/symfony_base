@@ -13,5 +13,5 @@ use App\Entity\Category;
 
 interface CrudControllerAttributableEntity
 {
-    public function getCategory(): ?Category;
+    public function getCategory(): Category;
 }

@@ -7,7 +7,7 @@
  * author: alexej@kisselev.de
  */
 
-namespace App\Bundles\Attribute\Type;
+namespace App\Bundles\Attribute\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CountryType;
@@ -33,15 +33,15 @@ class AddressFormEmbed extends AbstractType
                     ]),
                 ],
             ])
-            ->add('house_number', TextType::class, [
-                'attr'        => ['placeholder' => 'house number'],
+            ->add('street_number', TextType::class, [
+                'attr'        => ['placeholder' => 'street number'],
                 'row_attr'    => [
                     'class' => 'col-md-3 col-xxl-4',
                 ],
                 'label'       => false,
                 'constraints' => [
                     new NotBlank([
-                        'message' => 'Please enter house number',
+                        'message' => 'Please enter street number',
                     ]),
                 ],
             ])

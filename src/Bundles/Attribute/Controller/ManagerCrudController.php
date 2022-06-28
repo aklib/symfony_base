@@ -10,7 +10,7 @@
 
 namespace App\Bundles\Attribute\Controller;
 
-use App\Bundles\Attribute\Type\AddressFormEmbed;
+use App\Bundles\Attribute\Form\AddressFormEmbed;
 use App\Controller\Admin\CrudControllerManagerInterface;
 use App\Entity\Attribute;
 use App\Entity\AttributeOption;

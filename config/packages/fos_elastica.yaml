@@ -1,7 +1,11 @@
 # Read the documentation: https://github.com/FriendsOfSymfony/FOSElasticaBundle/blob/master/doc/setup.md
 fos_elastica:
-    clients:
-        default: { url: '%env(ELASTICSEARCH_URL)%' }
-    indexes:
-        app:
-            index_name: sb_attribute_value_%kernel.environment%
+  clients:
+    default: { url: '%env(ELASTICSEARCH_URL)%' }
+  indexes:
+    default:
+      index_name: sb_attribute_%kernel.environment%
+    nested:
+      index_name: sb_attribute_nested_%kernel.environment%
+    parent_child:
+      index_name: sb_attribute_parent_child_%kernel.environment%

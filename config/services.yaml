@@ -26,3 +26,13 @@ services:
     App\Bundles\Attribute\EventListener\AttributableEntityListener:
         tags:
             - { name: doctrine.event_subscriber, connection: default }
+
+    app.attribute.nested:
+        class: App\Bundles\Attribute\Manager\AttributeManagerNested
+
+    app.attribute.parent_child:
+        class: App\Bundles\Attribute\Manager\AttributeManagerParentChild
+
+    App\Bundles\Attribute\AttributeManagerInterface: '@app.attribute.nested'
+    App\Bundles\Attribute\AttributeEntityManagerInterface: '@app.attribute.nested'
+    App\Bundles\Attribute\AttributeValueManagerInterface: '@app.attribute.nested'

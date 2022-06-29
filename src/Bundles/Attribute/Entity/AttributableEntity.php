@@ -2,6 +2,7 @@
 
 namespace App\Bundles\Attribute\Entity;
 
+use App\Bundles\Attribute\AttributeValueManagerInterface;
 use App\Entity\Category;
 
 /**
@@ -16,7 +17,7 @@ interface AttributableEntity
 
     public function getCategory(): ?Category;
 
-    public function setAttributeManager(AttributeManagerEntityInterface $manager): void;
+    public function setAttributeManager(AttributeValueManagerInterface $manager): void;
 
     public function getAttributeValues(): array;
 }

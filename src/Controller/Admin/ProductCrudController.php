@@ -22,7 +22,7 @@ class ProductCrudController extends AbstractAttributableEntityCrudController
 
     public function configureCrud(Crud $crud): Crud
     {
-        return parent::configureCrud($crud)->setPaginatorPageSize(50);
+        return parent::configureCrud($crud)->setPaginatorPageSize(200);
     }
 
 

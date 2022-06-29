@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Bundles\Attribute\Entity\AttributableEntity;
 use App\Entity\Attribute;
 use App\Entity\AttributeDefinition;
 use App\Entity\AttributeOption;
@@ -96,10 +97,15 @@ class DashboardController extends AbstractDashboardController
         $userMenuItems = [];
         $img = null;
         if ($user instanceof User && $user->getUserProfile() !== null) {
-            $img = $user->getUserProfile()->avatar;
-            $userMenuItems[] = MenuItem::linkToCrud('Profile', 'fa-id-card', UserProfile::class)
-                ->setAction(Crud::PAGE_DETAIL)
-                ->setEntityId($user->getUserProfile()->getId());
+            $profile = $user->getUserProfile();
+            if ($profile !== null) {
+                $userMenuItems[] = MenuItem::linkToCrud('Profile', 'fa-id-card', UserProfile::class)
+                    ->setAction(Crud::PAGE_DETAIL)
+                    ->setEntityId($user->getUserProfile()->getId());
+            }
+            if ($profile instanceof AttributableEntity) {
+                $img = $profile->avatar ?? null;
+            }
         }
 
         if ($this->isGranted(Permission::EA_EXIT_IMPERSONATION)) {

@@ -3,7 +3,7 @@
 namespace App\Bundles\Attribute\Entity;
 
 
-use App\Bundles\Attribute\AttributeManager;
+use App\Bundles\Attribute\AttributeValueManagerInterface;
 use App\Entity\Category;
 use App\Entity\Extension\Annotation as AppORM;
 use Doctrine\ORM\Mapping as ORM;
@@ -17,8 +17,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 trait AttributableEntityTrait
 {
-    private array $attributeValues = [];
-    private AttributeManager $attributeManager;
+    private ?array $attributeValues = null;
+    private AttributeValueManagerInterface $attributeManager;
     /**
      * @ORM\ManyToOne(targetEntity=Category::class, fetch="EAGER")
      * @ORM\JoinColumn(nullable=false)
@@ -43,27 +43,32 @@ trait AttributableEntityTrait
 
     /**
      * @implements AttributableEntity
-     * @param AttributeManager $manager
+     * @param AttributeValueManagerInterface $manager
      */
-    public function setAttributeManager(AttributeManagerEntityInterface $manager): void
+    public function setAttributeManager(AttributeValueManagerInterface $manager): void
     {
         $this->attributeManager = $manager;
     }
 
-    public function getAttributeManager(): AttributeManager
+    public function getAttributeManager(): AttributeValueManagerInterface
     {
         return $this->attributeManager;
     }
 
+    private function getAttributeValue(string $name)
+    {
+        if ($this->attributeValues === null) {
+            $this->attributeValues = $this->getAttributemanager()->getAttributeValues($this);
+            foreach ($this->attributeValues as $uniqueKey => $attributeValue) {
+                $this->{$uniqueKey} = $attributeValue;
+            }
+        }
+        return $this->attributeValues[$name] ?? null;
+    }
 
     public function __get($name)
     {
-        // get value
-        $value = $this->getAttributemanager()->getAttributeValue($name, $this);
-        // overloading property
-        $this->{$name} = $value;
-        // show value
-        return $value;
+        return $this->getAttributeValue($name);
     }
 
     public function __set($name, $value)
@@ -81,7 +86,7 @@ trait AttributableEntityTrait
      */
     public function getAttributeValues(): array
     {
-        return $this->attributeValues;
+        return $this->attributeValues ?? [];
     }
 
     abstract public function getId(): int;

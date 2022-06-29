@@ -4,11 +4,15 @@ namespace App\DataFixtures;
 
 use App\Entity\Category;
 use App\Entity\Product;
+use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
 class ProductFixtures extends Fixture
 {
+    /** @noinspection PhpUndefinedFieldInspection
+     * @noinspection PhpUndefinedMethodInspection
+     */
     public function load(ObjectManager $manager): void
     {
         // create 20 products! Bam!
@@ -17,15 +21,20 @@ class ProductFixtures extends Fixture
             print_r("no category found\n");
             die("\n");
         }
-
-        for ($i = 0; $i < 2000; $i++) {
+        $user = $manager->getRepository(User::class)->findOneByEmail('alexej.kisselev@gmail.com');
+        for ($i = 0; $i < 1; $i++) {
             $product = new Product();
             $product->setActive(true);
             $product->setCategory($category);
 
             $product->name = 'pFake ' . $i;
-            $product->article_number = 'FAKEART-1964-' . $i;
+            $product->article_number = 'FAKE_ART-1964-' . $i;
             $product->price = (float)$i + 0.45;
+
+            $product->setCreatedAt(new \DateTime('now'));
+            if ($user instanceof User) {
+                $product->setCreatedBy($user);
+            }
             $manager->persist($product);
         }
         $manager->flush();

@@ -4,9 +4,11 @@ namespace App\Bundles\Attribute\Entity;
 
 
 use App\Bundles\Attribute\AttributeValueManagerInterface;
+use App\Entity\Attribute;
 use App\Entity\Category;
 use App\Entity\Extension\Annotation as AppORM;
 use Doctrine\ORM\Mapping as ORM;
+use Elastica\Util;
 
 
 /**
@@ -26,6 +28,7 @@ trait AttributableEntityTrait
      *
      */
     private ?Category $category = null;
+    private ?string $scope = null;
 
     public function getCategory(): ?Category
     {
@@ -87,6 +90,46 @@ trait AttributableEntityTrait
     public function getAttributeValues(): array
     {
         return $this->attributeValues ?? [];
+    }
+
+    public function getScope(): string
+    {
+        if ($this->scope === null) {
+            $this->scope = Util::toSnakeCase(substr(strrchr(get_class($this), '\\'), 1));
+        }
+        return $this->scope;
+    }
+
+    public function createDocData(Attribute $attribute = null): ?array
+    {
+        // create entity doc
+
+        $docData = [
+            'id'    => $this->getId(),
+            'scope' => $this->getScope()
+        ];
+
+        if ($attribute === null) {
+            return $docData;
+        }
+        $uniqueKey = $attribute->getUniqueKey();
+        if (!array_key_exists($uniqueKey, $this->attributeValues) || $this->attributeValues[$uniqueKey]) {
+            return null;
+        }
+        // create attribute value doc
+        $type = $attribute->getAttributeDefinition()->getType();
+        $docData['uniqueKey'] = $uniqueKey;
+        $docData['attribute']['id'] = $attribute->getId();
+        $docData['type'] = $type;
+        $docData[$type] = $this->getAttributeManager()->convertValue($uniqueKey, $this->attributeValues[$uniqueKey], false);
+        return $docData;
+    }
+
+    public function updateDocData(array &$docData, Attribute $attribute = null): bool
+    {
+        $newDocData = $this->createDocData($attribute);
+        $replacements = array_replace_recursive($docData, $newDocData);
+        return !empty($replacements);
     }
 
     abstract public function getId(): int;

@@ -33,6 +33,6 @@ services:
     app.attribute.parent_child:
         class: App\Bundles\Attribute\Manager\AttributeManagerParentChild
 
-    App\Bundles\Attribute\AttributeManagerInterface: '@app.attribute.nested'
-    App\Bundles\Attribute\AttributeEntityManagerInterface: '@app.attribute.nested'
-    App\Bundles\Attribute\AttributeValueManagerInterface: '@app.attribute.nested'
+    App\Bundles\Attribute\AttributeManagerInterface: '@app.attribute.parent_child'
+    App\Bundles\Attribute\AttributeEntityManagerInterface: '@app.attribute.parent_child'
+    App\Bundles\Attribute\AttributeValueManagerInterface: '@app.attribute.parent_child'

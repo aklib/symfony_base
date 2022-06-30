@@ -15,6 +15,7 @@
     "easycorp/easyadmin-bundle": "^3.5",
     "florianwolters/component-core-stringutils": "^0.4.0",
     "friendsofsymfony/elastica-bundle": "^6.1",
+    "laminas/laminas-json": "^3.3",
     "ruflin/elastica": "^7.1",
     "sensio/framework-extra-bundle": "^6.2",
     "stof/doctrine-extensions-bundle": "^1.7",

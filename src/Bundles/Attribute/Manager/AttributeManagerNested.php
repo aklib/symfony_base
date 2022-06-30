@@ -1,4 +1,5 @@
-<?php /** @noinspection ReturnTypeCanBeDeclaredInspection */
+<?php /** @noinspection DuplicatedCode */
+/** @noinspection ReturnTypeCanBeDeclaredInspection */
 /** @noinspection PhpUnused */
 
 /**
@@ -236,7 +237,7 @@ class AttributeManagerNested extends AbstractAttributeManager
      * Creates an elasticsearch index if it not exists
      * @return bool
      */
-    private function createIndexIfNotExists(): bool
+    protected function createIndexIfNotExists(): bool
     {
         if (!$this->getIndex()->exists()) {
             $this->getIndex()->create([

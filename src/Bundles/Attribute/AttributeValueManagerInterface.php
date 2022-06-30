@@ -14,4 +14,6 @@ use App\Bundles\Attribute\Entity\AttributableEntity;
 interface AttributeValueManagerInterface
 {
     public function getAttributeValues(AttributableEntity $entity): array;
+
+    public function convertValue(string $uniqueKey, $attributeValue, bool $download = true);
 }

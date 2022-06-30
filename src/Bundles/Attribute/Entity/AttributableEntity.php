@@ -3,6 +3,7 @@
 namespace App\Bundles\Attribute\Entity;
 
 use App\Bundles\Attribute\AttributeValueManagerInterface;
+use App\Entity\Attribute;
 use App\Entity\Category;
 
 /**
@@ -20,4 +21,8 @@ interface AttributableEntity
     public function setAttributeManager(AttributeValueManagerInterface $manager): void;
 
     public function getAttributeValues(): array;
+
+    public function createDocData(Attribute $attribute = null): ?array;
+
+    public function updateDocData(array &$docData, Attribute $attribute = null): bool;
 }

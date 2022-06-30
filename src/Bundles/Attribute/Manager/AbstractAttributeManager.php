@@ -20,9 +20,11 @@ use DateTimeZone;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Elastica\Index;
+use Elastica\Query;
 use Elastica\Util;
 use Exception;
 use FOS\ElasticaBundle\Index\IndexManager;
+use Laminas\Json\Json;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\Security\Core\Security;
 
@@ -32,11 +34,11 @@ abstract class AbstractAttributeManager implements AttributeManagerInterface
     private IndexManager $indexManager;
     private Security $security;
     private EntityManagerInterface $em;
-    protected ArrayCollection $entities;
     private ArrayCollection $attributes;
     private FlashBagInterface $flashBag;
     protected array $initialisedEntities = [];
     protected ?array $attributeValues = null;
+    protected ArrayCollection $entities;
     private array $user = [];
 
     public function __construct(IndexManager $indexManager, Security $security, FlashBagInterface $flashBag, EntityManagerInterface $em)
@@ -103,9 +105,18 @@ abstract class AbstractAttributeManager implements AttributeManagerInterface
      * @param AttributableEntity|null $entity
      * @return string
      */
-    protected function getDocumentId(AttributableEntity $entity): string
+    protected function getDocumentId(AttributableEntity $entity = null, array $docData = null): string
     {
-        return $this->getScope($entity) . '_' . $entity->getId();
+        if ($entity instanceof AttributableEntity) {
+            return $this->getScope($entity) . '_' . $entity->getId();
+        }
+        if (is_array($docData) && array_key_exists('scope', $docData)) {
+            return $docData['scope'] . '_' . $docData['id'];
+        }
+        if (is_array($docData) && array_key_exists(self::ATTRIBUTE_FIELD, $docData) && array_key_exists('parent', $docData[self::ATTRIBUTE_FIELD])) {
+            return $docData[self::ATTRIBUTE_FIELD]['parent'];
+        }
+        return '';
     }
 
 //============================== ATTRIBUTE VALUES FORMAT/CONVERT ==============================
@@ -127,7 +138,7 @@ abstract class AbstractAttributeManager implements AttributeManagerInterface
      * @param $download true - show in the user interface, false = upload into elasticsearch
      * @return array|DateTime|mixed|null
      */
-    protected function convertValue(string $uniqueKey, $attributeValue, bool $download = true)
+    public function convertValue(string $uniqueKey, $attributeValue, bool $download = true)
     {
         $formattedValue = $attributeValue;
         $attribute = $this->getAttribute($uniqueKey);
@@ -242,5 +253,21 @@ abstract class AbstractAttributeManager implements AttributeManagerInterface
         return $this->em;
     }
 
+    /**
+     * @noinspection PhpUnusedPrivateMethodInspection
+     * @param Query $query
+     */
+    protected function printQuery(Query $query): void
+    {
+        $out = '<pre>';
+        $out .= 'GET ' . $this->getIndex()->getName() . "/_search\n";
+        $json = Json::encode($query->toArray());
+        $out .= Json::prettyPrint($json, ['indent' => '  ']);
+        $out .= '</pre><br>';
+        echo $out;
+    }
+
     abstract protected function getIndex(): Index;
+
+    abstract protected function createIndexIfNotExists(): bool;
 }

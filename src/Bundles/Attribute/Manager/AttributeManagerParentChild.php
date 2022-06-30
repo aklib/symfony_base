@@ -12,7 +12,6 @@ namespace App\Bundles\Attribute\Manager;
 
 use App\Bundles\Attribute\Entity\AttributableEntity;
 use App\Entity\Attribute;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Elastica\Bulk;
 use Elastica\Document;
@@ -23,8 +22,6 @@ use Throwable;
 
 class AttributeManagerParentChild extends AbstractAttributeManager
 {
-    protected array $documents = [];
-
     // =============================== WORKFLOW METHODS  ===============================
 
     public function getAttributeValues(AttributableEntity $entity): array
@@ -34,9 +31,10 @@ class AttributeManagerParentChild extends AbstractAttributeManager
             $this->attributeValues = [];
             // update attribute values. can be lazy loading
             $documents = $this->getDocuments();
-            /** @var Document $document */
-            foreach ($documents as $document) {
-                $docData = $document->getData();
+            foreach ($documents as $docData) {
+                if ($docData instanceof Document) {
+                    $docData = $docData->getData();
+                }
                 $uniqueKey = $docData['uniqueKey'];
                 $this->attributeValues[$this->getDocumentId(null, $docData)][$uniqueKey] = $this->convertValue($uniqueKey, $docData[$docData['type']] ?? null);
             }
@@ -53,48 +51,6 @@ class AttributeManagerParentChild extends AbstractAttributeManager
             }
         }
         return $this->attributeValues[$docId] ?? [];
-    }
-
-    /**
-     * Loads elastica documents.
-     * Documents can be loaded subsequently for lazy loaded entities
-     * @return array
-     */
-    protected function getDocuments(): array
-    {
-        if ($this->entities->isEmpty()) {
-            return $this->documents;
-        }
-        $entities = new ArrayCollection();
-
-        /** @var AttributableEntity $entity */
-        foreach ($this->entities as $entity) {
-            $key = $this->getDocumentId($entity);
-            if (in_array($key, $this->initialisedEntities, true)) {
-                continue;
-            }
-            $entities->add($entity);
-            $this->initialisedEntities[] = $key;
-        }
-        if ($entities->isEmpty()) {
-            return $this->documents;
-        }
-        // load documents from elasticsearch
-        $query = $this->getQuery($entities);
-        $query->setSize(9999);
-        try {
-            $documents = $this->getIndex()->search($query)->getDocuments();
-            foreach ($documents as $document) {
-                $this->documents[$document->getId()] = $document;
-            }
-        } catch (Exception $e) {
-            error_log($e);
-            $created = $this->createIndexIfNotExists();
-            if (!$created) {
-                $this->getFlashBag()->add('warning', 'An error occurred during getting. ' . $e->getMessage());
-            }
-        }
-        return $this->documents;
     }
 
     /**
@@ -126,14 +82,17 @@ class AttributeManagerParentChild extends AbstractAttributeManager
         if ($this->entities->isEmpty()) {
             return;
         }
+
+
         $documents = [];
+        $documentsAll = $this->getDocuments(true);
         //upsert entity documents
 
         /** @var AttributableEntity $entity */
         foreach ($this->entities as $entity) {
             $docId = $this->getDocumentId($entity);
             /** @var Document $document */
-            $document = $this->documents[$docId] ?? null;
+            $document = $documentsAll[$docId] ?? null;
             if ($document instanceof Document) {
                 $docData = $document->getData();
                 if ($entity->updateDocData($docData)) {
@@ -154,7 +113,7 @@ class AttributeManagerParentChild extends AbstractAttributeManager
                     continue;
                 }
                 //=========== CREATE/UPDATE CHILDREN DOCS ===========
-                $document = $this->documents[$docId . '_' . $uniqueKey] ?? null;
+                $document = $documentsAll[$docId . '_' . $uniqueKey] ?? null;
                 if ($document === null) {
                     $docData = $entity->createDocData($attribute);
                     $docData[self::ATTRIBUTE_FIELD] = [

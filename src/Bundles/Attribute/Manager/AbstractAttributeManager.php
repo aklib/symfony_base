@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpUnused */
 /** @noinspection PhpUnusedPrivateMethodInspection */
 
 /**
@@ -18,6 +18,7 @@ use App\Entity\User;
 use DateTime;
 use DateTimeZone;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
 use Elastica\Index;
 use Elastica\Query;
@@ -121,6 +122,59 @@ abstract class AbstractAttributeManager implements AttributeManagerInterface
     }
 
 //============================== ATTRIBUTE VALUES FORMAT/CONVERT ==============================
+
+    /**
+     * Loads elastica documents.
+     * Documents can be loaded subsequently for lazy loaded entities
+     * @param bool $asDocument
+     * @return array
+     */
+    protected function getDocuments(bool $asDocument = false): array
+    {
+        if ($this->entities->isEmpty()) {
+            return [];
+        }
+        $entities = new ArrayCollection();
+
+        /** @var AttributableEntity $entity */
+        foreach ($this->entities as $entity) {
+            $key = $this->getDocumentId($entity);
+            if (in_array($key, $this->initialisedEntities, true)) {
+                continue;
+            }
+            $entities->add($entity);
+            $this->initialisedEntities[] = $key;
+        }
+        if ($entities->isEmpty()) {
+            return [];
+        }
+        $documents = [];
+        // load documents from elasticsearch
+        $query = $this->getQuery($entities);
+        $query->setSize(9999);
+        try {
+            if ($asDocument) {
+                $docs = $this->getIndex()->search($query)->getDocuments();
+                foreach ($docs as $doc) {
+                    $documents[$doc->getId()] = $doc;
+                }
+            } else {
+                $response = $this->getIndex()->search($query)->getResponse();
+                $hits = $response->getData()['hits']['hits'] ?? [];
+                foreach ($hits as $document) {
+                    $documents[$document['_id']] = $document['_source'];
+                }
+            }
+
+        } catch (Exception $e) {
+            error_log($e);
+            $created = $this->createIndexIfNotExists();
+            if (!$created) {
+                $this->getFlashBag()->add('warning', 'An error occurred during getting. ' . $e->getMessage());
+            }
+        }
+        return $documents;
+    }
 
     protected function convertDateTime(DateTime $dateTime = null, bool $includeTimezone = true): string
     {
@@ -255,7 +309,6 @@ abstract class AbstractAttributeManager implements AttributeManagerInterface
     }
 
     /**
-     * @noinspection PhpUnusedPrivateMethodInspection
      * @param Query $query
      */
     protected function printQuery(Query $query): void
@@ -269,6 +322,8 @@ abstract class AbstractAttributeManager implements AttributeManagerInterface
     }
 
     abstract protected function getIndex(): Index;
+
+    abstract protected function getQuery(Collection $entities): Query;
 
     abstract protected function createIndexIfNotExists(): bool;
 }

@@ -14,30 +14,17 @@ namespace App\Bundles\Attribute\Manager;
 
 use App\Bundles\Attribute\Entity\AttributableEntity;
 use App\Entity\Attribute;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\EntityManagerInterface;
 use Elastica\Bulk;
 use Elastica\Document;
-use Elastica\Exception\ResponseException;
 use Elastica\Query;
 use Elastica\Query\BoolQuery;
 use Exception;
 use FOS\ElasticaBundle\Elastica\Index;
-use FOS\ElasticaBundle\Index\IndexManager;
-use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
-use Symfony\Component\Security\Core\Security;
 use Throwable;
 
 class AttributeManagerNested extends AbstractAttributeManager
 {
-    protected ArrayCollection $documents;
-
-    public function __construct(IndexManager $indexManager, Security $security, FlashBagInterface $flashBag, EntityManagerInterface $em)
-    {
-        parent::__construct($indexManager, $security, $flashBag, $em);
-        $this->documents = new ArrayCollection();
-    }
 
     // =============================== WORKFLOW METHODS  ===============================
 
@@ -50,8 +37,8 @@ class AttributeManagerNested extends AbstractAttributeManager
             $documents = $this->getDocuments();
             /** @var Document $document */
             foreach ($documents as $document) {
-                $docData = $document->getData();
-                $documentId = $document->getId();
+                $docData = $document instanceof Document ? $document->getData() : $document;
+                $documentId = $document instanceof Document ? $document->getId() : $this->getDocumentId(null, $docData);
                 $attributes = $docData[self::ATTRIBUTE_FIELD] ?? [];
                 foreach ($attributes as $attrData) {
                     $this->attributeValues[$documentId][$attrData['uniqueKey']] = $this->convertValue($attrData['uniqueKey'], $attrData[$attrData['type']] ?? null);
@@ -70,53 +57,6 @@ class AttributeManagerNested extends AbstractAttributeManager
             }
         }
         return $this->attributeValues[$docId] ?? [];
-    }
-
-    /**
-     * Loads elastica documents.
-     * Documents can be loaded subsequently for lazy loaded entities
-     * @return ArrayCollection
-     */
-    protected function getDocuments(): ArrayCollection
-    {
-        if ($this->entities->isEmpty()) {
-            return $this->documents;
-        }
-        $entities = new ArrayCollection();
-
-        /** @var AttributableEntity $entity */
-        foreach ($this->entities as $entity) {
-            $key = $this->getDocumentId($entity);
-            if (in_array($key, $this->initialisedEntities, true)) {
-                continue;
-            }
-            $entities->add($entity);
-            $this->initialisedEntities[] = $key;
-        }
-        if ($entities->isEmpty()) {
-            return $this->documents;
-        }
-        // load documents from elasticsearch
-        $query = $this->getQuery($entities);
-        $query->setSize(9999);
-        try {
-            $documents = $this->getIndex()->search($query)->getDocuments();
-            foreach ($documents as $document) {
-                $this->documents->add($document);
-            }
-        } catch (Exception $e) {
-            error_log($e);
-            if ($e instanceof ResponseException) {
-                // highly likely the index doesn't exist
-                // create one
-                $created = $this->createIndexIfNotExists();
-                if ($created) {
-                    // return empty collection because the index is new
-                    return $this->documents;
-                }
-            }
-        }
-        return $this->documents;
     }
 
     protected function getQuery(Collection $entities): Query
@@ -150,12 +90,14 @@ class AttributeManagerNested extends AbstractAttributeManager
         if ($this->entities->isEmpty()) {
             return;
         }
+        $documentsAll = $this->getDocuments(true);
         $documents = [];
         //upsert entity documents
 
         /** @var AttributableEntity $entity */
         foreach ($this->entities as $entity) {
             $attributeValues = [];
+            $docId = $this->getDocumentId($entity);
             foreach ($entity->getAttributeValues() as $uniqueKey => $attributeValue) {
                 $attribute = $this->getAttribute($uniqueKey);
                 if ($attribute === null) {
@@ -164,25 +106,17 @@ class AttributeManagerNested extends AbstractAttributeManager
                 if (empty($attributeValue)) {
                     continue;
                 }
-                $type = $attribute->getAttributeDefinition()->getType();
-                $val = [
-                    'id'        => $attribute->getId(),
-                    'uniqueKey' => $uniqueKey,
-                    'type'      => $type,
-                    $type       => $this->convertValue($uniqueKey, $attributeValue, false)
-                ];
+                $val = $entity->createDocData($attribute);
                 $attributeValues[] = $val;
             }
-            $document = $this->getDocument($this->getScope($entity), $entity->getId());
+            $document = $documentsAll[$docId] ?? null;
             if ($document instanceof Document) {
                 $docData = $document->getData();
+                $entity->updateDocData($docData);
                 $docData[self::ATTRIBUTE_FIELD] = $attributeValues;
             } else {
-                $docData = [
-                    'id'                  => $entity->getId(),
-                    'scope'               => $this->getScope($entity),
-                    self::ATTRIBUTE_FIELD => $attributeValues
-                ];
+                $docData = $entity->createDocData();
+                $docData[self::ATTRIBUTE_FIELD] = $attributeValues;
                 $document = new Document($this->getDocumentId($entity), $docData, $this->getIndex());
             }
             $document->setData($docData);
@@ -209,28 +143,6 @@ class AttributeManagerNested extends AbstractAttributeManager
             }
         }
         $this->entities->clear();
-    }
-
-
-    /**
-     * @param string $scope
-     * @param int $id
-     * @return Document|null
-     */
-    public function getDocument(string $scope, int $id): ?Document
-    {
-        $result = $this->getDocuments()->filter(static function (Document $doc) use ($scope, $id) {
-            // filter by unique key
-            $docData = $doc->getData();
-            if ($docData['scope'] === $scope && $docData['id'] === $id) {
-                return $doc;
-            }
-            return null;
-        });
-        if ($result->isEmpty()) {
-            return null;
-        }
-        return $result->first();
     }
 
     /**

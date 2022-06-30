@@ -15,6 +15,9 @@ namespace App\Bundles\Attribute\Manager;
 use App\Bundles\Attribute\Entity\AttributableEntity;
 use App\Entity\Attribute;
 use Doctrine\Common\Collections\Collection;
+use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use Elastica\Bulk;
 use Elastica\Document;
 use Elastica\Query;
@@ -179,5 +182,10 @@ class AttributeManagerNested extends AbstractAttributeManager
     protected function getIndex(): Index
     {
         return $this->getIndexManager()->getIndex('nested');
+    }
+
+    protected function getSearchQuery(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields): ?Query
+    {
+        return null;
     }
 }

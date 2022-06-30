@@ -20,6 +20,11 @@ use DateTimeZone;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\QueryBuilder;
+use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
+use Elastica\Aggregation\Terms;
 use Elastica\Index;
 use Elastica\Query;
 use Elastica\Util;
@@ -268,6 +273,46 @@ abstract class AbstractAttributeManager implements AttributeManagerInterface
         return $this->user;
     }
 
+//============================== CRUD CONTROLLER ==============================
+
+    public function search(QueryBuilder $qb, SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields): void
+    {
+        if (!is_a($entityDto->getFqcn(), AttributableEntity::class, true)) {
+            return;
+        }
+
+
+        /** @var Query $query */
+        $query = $this->getSearchQuery($searchDto, $entityDto, $fields);
+        if ($query === null) {
+            return;
+        }
+        $query->setSize(0);
+        $aggTerm = new Terms('count');
+        $aggTerm->setField('id');
+        $aggTerm->setSize(9999);
+        $query->addAggregation($aggTerm);
+        $resultSet = $this->getIndex()->search($query);
+        $total = $resultSet->getTotalHits();
+        if ($total > 200) {
+            $this->getFlashBag()->add('warning', "The search delivers too many[$total] hits, you may have to repeat searching with a larger number of initials.");
+            return;
+        }
+        $aggregation = $resultSet->getAggregation('count');
+        $ids = array_column($aggregation['buckets'], 'key');
+        if ($total > 0) {
+            $expr = $qb->expr()->in('entity.id', $ids);
+            $qb->andWhere($expr);
+        } else {
+            $expr = $qb->expr()->in('entity.id', [0]);
+        }
+
+
+//        dump($qb->getDQL());
+//        $this->printQuery($query);
+//        die;
+    }
+
 //============================== GETTERS ==============================
 
     /**
@@ -324,6 +369,8 @@ abstract class AbstractAttributeManager implements AttributeManagerInterface
     abstract protected function getIndex(): Index;
 
     abstract protected function getQuery(Collection $entities): Query;
+
+    abstract protected function getSearchQuery(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields): ?Query;
 
     abstract protected function createIndexIfNotExists(): bool;
 }

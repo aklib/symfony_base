@@ -13,9 +13,13 @@ namespace App\Bundles\Attribute\Manager;
 use App\Bundles\Attribute\Entity\AttributableEntity;
 use App\Entity\Attribute;
 use Doctrine\Common\Collections\Collection;
+use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use Elastica\Bulk;
 use Elastica\Document;
 use Elastica\Query;
+use Elastica\Util;
 use Exception;
 use FOS\ElasticaBundle\Elastica\Index;
 use Throwable;
@@ -51,29 +55,6 @@ class AttributeManagerParentChild extends AbstractAttributeManager
             }
         }
         return $this->attributeValues[$docId] ?? [];
-    }
-
-    /**
-     * @param Collection $entities
-     * @return Query
-     */
-    protected function getQuery(Collection $entities): Query
-    {
-        $ids = [];
-        /** @var AttributableEntity $campaign */
-        foreach ($entities as $entity) {
-            try {
-                $ids[] = $this->getDocumentId($entity);
-            } catch (Throwable $e) {
-                // detached/removed entity
-            }
-        }
-        $queryJoin = new Query();
-        $queryJoin->setQuery(new Query\Terms('_id', $ids));
-        $queryTree = new Query\HasParent($queryJoin, 'entity');
-        $query = new Query();
-        $query->setQuery($queryTree);
-        return $query;
     }
 
     /** @noinspection NestedPositiveIfStatementsInspection */
@@ -194,5 +175,54 @@ class AttributeManagerParentChild extends AbstractAttributeManager
             return true;
         }
         return false;
+    }
+
+    /**
+     * @param Collection $entities
+     * @return Query
+     */
+    protected function getQuery(Collection $entities): Query
+    {
+        $ids = [];
+        /** @var AttributableEntity $campaign */
+        foreach ($entities as $entity) {
+            try {
+                $ids[] = $this->getDocumentId($entity);
+            } catch (Throwable $e) {
+                // detached/removed entity
+            }
+        }
+        $queryJoin = new Query();
+        $queryJoin->setQuery(new Query\Terms('_id', $ids));
+        $queryTree = new Query\HasParent($queryJoin, 'entity');
+        $query = new Query();
+        $query->setQuery($queryTree);
+        return $query;
+    }
+
+    protected function getSearchQuery(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields): ?Query
+    {
+        $searchString = $searchDto->getQuery();
+        if (empty($searchString)) {
+            return null;
+        }
+
+        if (!str_contains($searchString, '*')) {
+            $searchString = "*$searchString*";
+        }
+        $scope = Util::toSnakeCase($entityDto->getName());
+
+        $queryBool = new Query\BoolQuery();
+
+        $queryString = new Query\QueryString($searchString);
+        $queryBool->addMust($queryString);
+
+        $term = new Query\Term(['scope' => $scope]);
+        $queryBool->addMust($term);
+
+        $queryTree = new Query\HasChild($queryBool, 'attribute');
+        $query = new Query();
+        $query->setQuery($queryTree);
+        return $query;
     }
 }

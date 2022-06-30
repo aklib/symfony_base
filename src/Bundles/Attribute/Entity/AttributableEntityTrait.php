@@ -113,7 +113,7 @@ trait AttributableEntityTrait
             return $docData;
         }
         $uniqueKey = $attribute->getUniqueKey();
-        if (!array_key_exists($uniqueKey, $this->attributeValues) || $this->attributeValues[$uniqueKey]) {
+        if (!array_key_exists($uniqueKey, $this->attributeValues) || $this->attributeValues[$uniqueKey] === null) {
             return null;
         }
         // create attribute value doc
@@ -128,8 +128,18 @@ trait AttributableEntityTrait
     public function updateDocData(array &$docData, Attribute $attribute = null): bool
     {
         $newDocData = $this->createDocData($attribute);
-        $replacements = array_replace_recursive($docData, $newDocData);
-        return !empty($replacements);
+        if ($newDocData === null) {
+            $docData = [];
+            return true;
+        }
+        $docData2 = array_replace_recursive($docData, $newDocData);
+
+        $changed = false;
+        if ($docData2 !== $docData) {
+            $docData = $docData2;
+            $changed = true;
+        }
+        return $changed;
     }
 
     abstract public function getId(): int;

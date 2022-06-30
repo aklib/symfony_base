@@ -22,7 +22,7 @@ class ProductFixtures extends Fixture
             die("\n");
         }
         $user = $manager->getRepository(User::class)->findOneByEmail('alexej.kisselev@gmail.com');
-        for ($i = 0; $i < 1; $i++) {
+        for ($i = 0; $i < 2000; $i++) {
             $product = new Product();
             $product->setActive(true);
             $product->setCategory($category);

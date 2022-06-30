@@ -103,6 +103,7 @@ abstract class AbstractAttributeManager implements AttributeManagerInterface
     /**
      * Unique key for document e.g. product_20,  user_profile_1
      * @param AttributableEntity|null $entity
+     * @param array|null $docData
      * @return string
      */
     protected function getDocumentId(AttributableEntity $entity = null, array $docData = null): string

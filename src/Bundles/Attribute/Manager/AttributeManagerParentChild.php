@@ -53,17 +53,15 @@ class AttributeManagerParentChild extends AbstractAttributeManager
                 }
             }
         }
-
         return $this->attributeValues[$docId] ?? [];
     }
 
     /**
      * Loads elastica documents.
      * Documents can be loaded subsequently for lazy loaded entities
-     * @param bool $children
      * @return array
      */
-    protected function getDocuments(bool $children = true): array
+    protected function getDocuments(): array
     {
         if ($this->entities->isEmpty()) {
             return $this->documents;
@@ -128,6 +126,7 @@ class AttributeManagerParentChild extends AbstractAttributeManager
         return $query;
     }
 
+    /** @noinspection NestedPositiveIfStatementsInspection */
     public function flush(): void
     {
         if ($this->entities->isEmpty()) {
@@ -139,20 +138,19 @@ class AttributeManagerParentChild extends AbstractAttributeManager
         /** @var AttributableEntity $entity */
         foreach ($this->entities as $entity) {
             $docId = $this->getDocumentId($entity);
-            $scope = $this->getScope($entity);
+            /** @var Document $document */
             $document = $this->documents[$docId] ?? null;
-            if ($document === null) {
+            if ($document instanceof Document) {
+                $docData = $document->getData();
+                if ($entity->updateDocData($docData)) {
+                    $documents[] = $document;
+                }
+            } else {
+                $docData = $entity->createDocData();
                 // =========== CREATE PARENT DOC ===========
-                $docData = [
-                    'id'                  => $entity->getId(),
-                    'scope'               => $scope,
-                    self::ATTRIBUTE_FIELD => [
-                        'name' => 'entity'
-                    ]
-                ];
+                $docData[self::ATTRIBUTE_FIELD] = ['name' => 'entity'];
                 $documents[] = new Document($docId, $docData, $this->getIndex());
             }
-
             foreach ($entity->getAttributeValues() as $uniqueKey => $attributeValue) {
                 $attribute = $this->getAttribute($uniqueKey);
                 if ($attribute === null) {
@@ -162,46 +160,36 @@ class AttributeManagerParentChild extends AbstractAttributeManager
                     continue;
                 }
                 //=========== CREATE/UPDATE CHILDREN DOCS ===========
-                $type = $attribute->getAttributeDefinition()->getType();
-                $document = $this->attributeValues[$docId][$uniqueKey] ?? null;
+                $document = $this->documents[$docId . '_' . $uniqueKey] ?? null;
                 if ($document === null) {
-                    $docData = [
-                        'id'                  => $entity->getId(),
-                        'attribute'           => $attribute->getId(),
-                        'scope'               => $scope,
-                        'uniqueKey'           => $uniqueKey,
-                        'type'                => $type,
-                        $type                 => $this->convertValue($uniqueKey, $attributeValue, false),
-                        self::ATTRIBUTE_FIELD => [
-                            'name'   => 'attribute',
-                            'parent' => $docId
-                        ]
+                    $docData = $entity->createDocData($attribute);
+                    $docData[self::ATTRIBUTE_FIELD] = [
+                        'name'   => 'attribute',
+                        'parent' => $docId
                     ];
                     $documents[] = new Document($docId . '_' . $uniqueKey, $docData, $this->getIndex());
                 } elseif ($document instanceof Document) {
                     $docData = $document->getData();
-                    if ($docData[$type] === $attributeValue) {
-                        continue;
+                    if ($entity->updateDocData($docData, $attribute)) {
+                        //dump($docData);
+                        if (!empty($docData)) {
+                            $document->setData($docData);
+                            $documents[] = $document;
+                        }
+//                        else {
+//                            // remove doc
+//                        }
                     }
-                    $docData['type'] = $type;
-                    $docData['id'] = $entity->getId();
-                    $docData['attribute'] = $attribute->getId();
-                    $docData[$type] = $this->convertValue($uniqueKey, $attributeValue, false);
-                    $document->setData($docData);
-                    $documents[] = $document;
                 }
             }
         }
         if (empty($documents)) {
             return;
         }
-
         foreach (array_chunk($documents, 500) as $docs) {
             $bulk = new Bulk($this->getIndex()->getClient());
             $bulk->setRequestParam('routing', 1);
-            if (count($documents) < 10) {
-                $bulk->setRequestParam('refresh', true);
-            }
+            $bulk->setRequestParam('refresh', true);
             $bulk->addDocuments($docs);
             try {
                 $response = $bulk->send();

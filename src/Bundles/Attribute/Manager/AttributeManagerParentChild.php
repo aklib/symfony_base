@@ -16,7 +16,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Elastica\Bulk;
 use Elastica\Document;
-use Elastica\Exception\ResponseException;
 use Elastica\Query;
 use Exception;
 use FOS\ElasticaBundle\Elastica\Index;
@@ -90,14 +89,9 @@ class AttributeManagerParentChild extends AbstractAttributeManager
             }
         } catch (Exception $e) {
             error_log($e);
-            if ($e instanceof ResponseException) {
-                // highly likely the index doesn't exist
-                // create one
-                $created = $this->createIndexIfNotExists();
-                if ($created) {
-                    // return empty collection because the index is new
-                    return $this->documents;
-                }
+            $created = $this->createIndexIfNotExists();
+            if (!$created) {
+                $this->getFlashBag()->add('warning', 'An error occurred during getting. ' . $e->getMessage());
             }
         }
         return $this->documents;
@@ -193,8 +187,8 @@ class AttributeManagerParentChild extends AbstractAttributeManager
             $bulk->addDocuments($docs);
             try {
                 $response = $bulk->send();
-                if ($response->isOk()) {
-                    $this->getFlashBag()->add('success', 'Attributes have been saved');
+                if (!$response->isOk()) {
+                    $this->getFlashBag()->add('error', 'An error occurred during saving. ' . $response->getErrorMessage());
                 }
             } catch (Exception $e) {
                 $this->getFlashBag()->add('error', 'An error occurred during saving');

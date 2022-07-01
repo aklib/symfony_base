@@ -24,7 +24,7 @@ use Exception;
 use FOS\ElasticaBundle\Elastica\Index;
 use Throwable;
 
-class AttributeManagerParentChild extends AbstractAttributeManager
+class AttributeManagerParentChild extends AbstractElasticaAttributeManager
 {
     // =============================== WORKFLOW METHODS  ===============================
 

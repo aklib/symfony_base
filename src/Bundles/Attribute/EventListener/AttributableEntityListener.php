@@ -94,14 +94,17 @@ class AttributableEntityListener implements EventSubscriber
     public function loadClassMetadata(LoadClassMetadataEventArgs $eventArgs): void
     {
         $classMetadata = $eventArgs->getClassMetadata();
-        foreach ($classMetadata->getReflectionClass()->getProperties() as $property) {
-            foreach ($this->reader->getPropertyAnnotations($property) as $annotation) {
-                if ($annotation instanceof CustomDoctrineAnnotation) {
-                    $key = strtolower(substr(strrchr(get_class($annotation), "\\"), 1));
-                    if ($classMetadata->hasAssociation($property->getName())) {
-                        $classMetadata->associationMappings[$property->getName()][$key] = (array)$annotation;
-                    } else {
-                        $classMetadata->fieldMappings[$property->getName()][$key] = (array)$annotation;
+        $refClass = $classMetadata->getReflectionClass();
+        if ($refClass !== null) {
+            foreach ($classMetadata->getReflectionClass()->getProperties() as $property) {
+                foreach ($this->reader->getPropertyAnnotations($property) as $annotation) {
+                    if ($annotation instanceof CustomDoctrineAnnotation) {
+                        $key = strtolower(substr(strrchr(get_class($annotation), "\\"), 1));
+                        if ($classMetadata->hasAssociation($property->getName())) {
+                            $classMetadata->associationMappings[$property->getName()][$key] = (array)$annotation;
+                        } else {
+                            $classMetadata->fieldMappings[$property->getName()][$key] = (array)$annotation;
+                        }
                     }
                 }
             }

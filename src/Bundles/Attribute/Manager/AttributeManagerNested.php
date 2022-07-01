@@ -22,6 +22,7 @@ use Elastica\Bulk;
 use Elastica\Document;
 use Elastica\Query;
 use Elastica\Query\BoolQuery;
+use Elastica\Util;
 use Exception;
 use FOS\ElasticaBundle\Elastica\Index;
 use Throwable;
@@ -186,6 +187,31 @@ class AttributeManagerNested extends AbstractAttributeManager
 
     protected function getSearchQuery(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields): ?Query
     {
-        return null;
+        $searchString = $searchDto->getQuery();
+        if (empty($searchString)) {
+            return null;
+        }
+
+        if (!str_contains($searchString, '*')) {
+            $searchString = "*$searchString*";
+        }
+        $scope = Util::toSnakeCase($entityDto->getName());
+
+        $queryBool = new Query\BoolQuery();
+
+        $queryString = new Query\QueryString($searchString);
+        $queryBool->addMust($queryString);
+
+        $term = new Query\Term();
+        $term->setTerm(self::ATTRIBUTE_FIELD . '.scope', $scope);
+        $queryBool->addMust($term);
+
+        $queryNested = new Query\Nested();
+        $queryNested->setQuery($queryBool);
+        $queryNested->setPath(self::ATTRIBUTE_FIELD);
+
+        $query = new Query();
+        $query->setQuery($queryNested);
+        return $query;
     }
 }

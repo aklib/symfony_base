@@ -280,13 +280,21 @@ abstract class AbstractAttributeManager implements AttributeManagerInterface
         if (!is_a($entityDto->getFqcn(), AttributableEntity::class, true)) {
             return;
         }
-
+        $searchQuery = $searchDto->getQuery();
+        if (empty($searchQuery)) {
+            return;
+        }
+        if (is_numeric($searchQuery)) {
+            //todo: need to be improved
+            return;
+        }
 
         /** @var Query $query */
         $query = $this->getSearchQuery($searchDto, $entityDto, $fields);
         if ($query === null) {
             return;
         }
+
         $query->setSize(0);
         $aggTerm = new Terms('count');
         $aggTerm->setField('id');
@@ -303,14 +311,9 @@ abstract class AbstractAttributeManager implements AttributeManagerInterface
         if ($total > 0) {
             $expr = $qb->expr()->in('entity.id', $ids);
             $qb->andWhere($expr);
-        } else {
-            $expr = $qb->expr()->in('entity.id', [0]);
         }
 
-
-//        dump($qb->getDQL());
-//        $this->printQuery($query);
-//        die;
+//        $this->printQuery($query);die;
     }
 
 //============================== GETTERS ==============================

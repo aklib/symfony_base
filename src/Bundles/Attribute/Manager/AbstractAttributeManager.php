@@ -35,6 +35,9 @@ abstract class AbstractAttributeManager implements AttributeManagerInterface
     private FlashBagInterface $flashBag;
     protected array $initialisedEntities = [];
     protected ?array $attributeValues = null;
+    /**
+     * @var ArrayCollection<AttributableEntity>
+     */
     protected ArrayCollection $entities;
     private array $user = [];
 
@@ -93,7 +96,12 @@ abstract class AbstractAttributeManager implements AttributeManagerInterface
     // =============================== HELP METHODS  ===============================
     protected function getScope(AttributableEntity $entity): string
     {
-        return Util::toSnakeCase(substr(strrchr(get_class($entity), '\\'), 1));
+        return $this->getScopeFromFqcn(get_class($entity));
+    }
+
+    public function getScopeFromFqcn(string $fqcn): string
+    {
+        return Util::toSnakeCase(substr(strrchr($fqcn, '\\'), 1));
     }
 
     protected function convertDateTime(DateTime $dateTime = null, bool $includeTimezone = true): string
@@ -153,6 +161,7 @@ abstract class AbstractAttributeManager implements AttributeManagerInterface
         }
         return $formattedValue;
     }
+
     /**
      * @param AttributableEntity $entity
      * @param EntityManagerInterface $entityManager
@@ -187,6 +196,33 @@ abstract class AbstractAttributeManager implements AttributeManagerInterface
         return $this->user;
     }
 
+    /**
+     * Unique key for document e.g. product_20,  user_profile_1
+     * @param AttributableEntity|null $entity
+     * @param array|null $docData
+     * @return string
+     */
+    protected function getDocumentId(AttributableEntity $entity = null, array $docData = null): string
+    {
+        if ($entity instanceof AttributableEntity) {
+            return $this->getScope($entity) . '_' . $entity->getId();
+        }
+        if (is_array($docData) && array_key_exists('scope', $docData)) {
+            return $docData['scope'] . '_' . $docData['id'];
+        }
+        return '';
+    }
+
+    protected function setUpdatedData(AttributableEntity $entity): void
+    {
+        if (method_exists($entity, 'setUpdatedAt')) {
+            $entity->setUpdatedAt(new DateTime());
+        }
+
+        if (method_exists($entity, 'setUpdatedBy')) {
+            $entity->setUpdatedBy($this->getSecurity()->getUser());
+        }
+    }
 //============================== GETTERS ==============================
 
     /**
@@ -213,6 +249,7 @@ abstract class AbstractAttributeManager implements AttributeManagerInterface
     {
         return $this->attributes;
     }
+
     protected function getEntityManager(): EntityManagerInterface
     {
         return $this->em;

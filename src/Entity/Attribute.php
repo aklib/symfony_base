@@ -41,6 +41,9 @@ class Attribute
      * @Assert\Regex(
      *     pattern     = "/^[a-z_]+$/"
      * )
+     * @Assert\NotEqualTo("category")
+     * @Assert\NotEqualTo("id")
+     * @Assert\NotEqualTo("active")
      */
     private string $uniqueKey;
 

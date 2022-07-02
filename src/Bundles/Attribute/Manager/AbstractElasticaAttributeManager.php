@@ -32,12 +32,14 @@ abstract class AbstractElasticaAttributeManager extends AbstractAttributeManager
 {
     public const ATTRIBUTE_FIELD = 'attributes';
     private IndexManager $indexManager;
+    private AttributeManagerDatabase $managerDatabase;
+    protected bool $doSynchronize = true;
 
-
-    public function __construct(Security $security, FlashBagInterface $flashBag, EntityManagerInterface $em, IndexManager $indexManager)
+    public function __construct(Security $security, FlashBagInterface $flashBag, EntityManagerInterface $em, IndexManager $indexManager, AttributeManagerDatabase $managerDatabase)
     {
         parent::__construct($security, $flashBag, $em);
         $this->indexManager = $indexManager;
+        $this->managerDatabase = $managerDatabase;
     }
 
     /**
@@ -48,16 +50,11 @@ abstract class AbstractElasticaAttributeManager extends AbstractAttributeManager
      */
     protected function getDocumentId(AttributableEntity $entity = null, array $docData = null): string
     {
-        if ($entity instanceof AttributableEntity) {
-            return $this->getScope($entity) . '_' . $entity->getId();
-        }
-        if (is_array($docData) && array_key_exists('scope', $docData)) {
-            return $docData['scope'] . '_' . $docData['id'];
-        }
+        $docId = parent::getDocumentId($entity, $docData);
         if (is_array($docData) && array_key_exists(self::ATTRIBUTE_FIELD, $docData) && array_key_exists('parent', $docData[self::ATTRIBUTE_FIELD])) {
             return $docData[self::ATTRIBUTE_FIELD]['parent'];
         }
-        return '';
+        return $docId;
     }
 
 //============================== ATTRIBUTE VALUES FORMAT/CONVERT ==============================
@@ -178,6 +175,30 @@ abstract class AbstractElasticaAttributeManager extends AbstractAttributeManager
         $out .= Json::prettyPrint($json, ['indent' => '  ']);
         $out .= '</pre><br>';
         echo $out;
+    }
+
+    /**
+     * @param bool $doSynchronize
+     */
+    public function setDoSynchronize(bool $doSynchronize): void
+    {
+        $this->doSynchronize = $doSynchronize;
+    }
+
+
+    public function synchronizeDatabase(): void
+    {
+        if ($this->entities->isEmpty()) {
+            return;
+        }
+        /** @var AttributableEntity $entity */
+        foreach ($this->entities as $entity) {
+            $this->managerDatabase->addEntity($entity);
+            foreach ($entity->getCategory()->getAttributes() as $attribute) {
+                $this->managerDatabase->addAttribute($attribute);
+            }
+        }
+        $this->managerDatabase->flush();
     }
 
     abstract protected function getIndex(): Index;

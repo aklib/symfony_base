@@ -9,3 +9,4 @@ fos_elastica:
       index_name: sb_attribute_nested_%kernel.environment%
     parent_child:
       index_name: sb_attribute_parent_child_%kernel.environment%
+      #persistence: '@app.attribute.parent_child'

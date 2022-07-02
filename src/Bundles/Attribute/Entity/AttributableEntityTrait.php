@@ -58,14 +58,23 @@ trait AttributableEntityTrait
         return $this->attributeManager;
     }
 
-    private function getAttributeValue(string $name)
+    public function setAttributeValues(array $attributeValues = null): void
     {
         if ($this->attributeValues === null) {
-            $this->attributeValues = $this->getAttributemanager()->getAttributeValues($this);
+            if ($attributeValues === null) {
+                $this->attributeValues = $this->getAttributemanager()->getAttributeValues($this);
+            } else {
+                $this->attributeValues = $attributeValues;
+            }
             foreach ($this->attributeValues as $uniqueKey => $attributeValue) {
                 $this->{$uniqueKey} = $attributeValue;
             }
         }
+    }
+
+    private function getAttributeValue(string $name)
+    {
+        $this->setAttributeValues();
         return $this->attributeValues[$name] ?? null;
     }
 
@@ -89,6 +98,7 @@ trait AttributableEntityTrait
      */
     public function getAttributeValues(): array
     {
+        $this->setAttributeValues();
         return $this->attributeValues ?? [];
     }
 

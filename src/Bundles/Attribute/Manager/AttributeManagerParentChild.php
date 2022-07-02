@@ -135,10 +135,13 @@ class AttributeManagerParentChild extends AbstractElasticaAttributeManager
                 $this->getFlashBag()->add('info', $e->getMessage());
             }
         }
+        if ($this->doSynchronize) {
+            $this->synchronizeDatabase();
+        }
         $this->entities->clear();
     }
 
-    protected function getIndex(): Index
+    public function getIndex(): Index
     {
         return $this->getIndexManager()->getIndex('parent_child');
     }
@@ -147,7 +150,7 @@ class AttributeManagerParentChild extends AbstractElasticaAttributeManager
      * Creates an elasticsearch index if it not exists
      * @return bool
      */
-    protected function createIndexIfNotExists(): bool
+    public function createIndexIfNotExists(): bool
     {
         if (!$this->getIndex()->exists()) {
             $this->getIndex()->create([

@@ -202,6 +202,23 @@ msgstr "Attribute Definitions"
 msgid "Home Page"
 msgstr "Home Page"
 
+msgid "Price"
+msgstr "Price"
+
+msgid "price"
+msgstr "price"
+
+msgid "Managed Objects"
+msgstr "Managed Objects"
+
+msgid "Users"
+msgstr "Users"
+
+msgid "users"
+msgstr "users"
+
+
+
 #. EasyAdminBundle+intl-icu.en
 msgid "label.form.empty_value"
 msgstr "__label.form.empty_value"

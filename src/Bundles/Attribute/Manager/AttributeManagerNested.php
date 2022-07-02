@@ -137,14 +137,15 @@ class AttributeManagerNested extends AbstractElasticaAttributeManager
             }
             $bulk->addDocuments($docs);
             try {
-                $response = $bulk->send();
-                if ($response->isOk()) {
-                    $this->getFlashBag()->add('success', 'Attributes have been saved');
-                }
+                $bulk->send();
             } catch (Exception $e) {
                 $this->getFlashBag()->add('error', 'An error occurred during saving');
                 $this->getFlashBag()->add('info', $e->getMessage());
             }
+        }
+
+        if ($this->doSynchronize) {
+            $this->synchronizeDatabase();
         }
         $this->entities->clear();
     }
@@ -153,7 +154,7 @@ class AttributeManagerNested extends AbstractElasticaAttributeManager
      * Creates an elasticsearch index if it not exists
      * @return bool
      */
-    protected function createIndexIfNotExists(): bool
+    public function createIndexIfNotExists(): bool
     {
         if (!$this->getIndex()->exists()) {
             $this->getIndex()->create([
@@ -180,7 +181,7 @@ class AttributeManagerNested extends AbstractElasticaAttributeManager
         return false;
     }
 
-    protected function getIndex(): Index
+    public function getIndex(): Index
     {
         return $this->getIndexManager()->getIndex('nested');
     }

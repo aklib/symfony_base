@@ -22,6 +22,8 @@ interface AttributableEntity
 
     public function getAttributeValues(): array;
 
+    public function setAttributeValues(array $attributeValues = null): void;
+
     public function createDocData(Attribute $attribute = null): ?array;
 
     public function updateDocData(array &$docData, Attribute $attribute = null): bool;

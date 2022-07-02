@@ -2,17 +2,17 @@
 
 namespace App\Entity;
 
-use App\Entity\Extension\Traits\BlameableEntityTrait;
 use App\Entity\Extension\Traits\TimestampableEntityTrait;
 use App\Repository\AttributeValueRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * @ORM\Table(name="attribute_value", uniqueConstraints={@ORM\UniqueConstraint(name="attributable_id_scope", columns={"attributable_id", "scope"})})
  * @ORM\Entity(repositoryClass=AttributeValueRepository::class)
  */
 class AttributeValue
 {
-    use TimestampableEntityTrait, BlameableEntityTrait;
+    use TimestampableEntityTrait;
 
     /**
      * @ORM\Id
@@ -36,6 +36,16 @@ class AttributeValue
      */
     private int $attributableId;
 
+    /**
+     * @ORM\Column(type="string", length=64, nullable=true)
+     */
+    protected string $createdBy;
+
+    /**
+     * @ORM\Column(type="string", length=64, nullable=true)
+     */
+    protected string $updatedBy;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -53,12 +63,12 @@ class AttributeValue
         return $this;
     }
 
-    public function getDocData(): ?array
+    public function getDocData(): array
     {
         return $this->docData;
     }
 
-    public function setDocData(?array $docData): self
+    public function setDocData(array $docData): self
     {
         $this->docData = $docData;
 
@@ -75,5 +85,37 @@ class AttributeValue
         $this->attributableId = $attributableId;
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCreatedBy(): string
+    {
+        return $this->createdBy;
+    }
+
+    /**
+     * @param string $createdBy
+     */
+    public function setCreatedBy(string $createdBy): void
+    {
+        $this->createdBy = $createdBy;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUpdatedBy(): string
+    {
+        return $this->updatedBy;
+    }
+
+    /**
+     * @param string $updatedBy
+     */
+    public function setUpdatedBy(string $updatedBy): void
+    {
+        $this->updatedBy = $updatedBy;
     }
 }

@@ -132,7 +132,6 @@ class PopulateAttributeCommand extends Command
                 if (empty($result)) {
                     break;
                 }
-                $count = count($result);
                 /** @var AttributableEntity $entity */
                 foreach ($result as $entity) {
                     if ($entity instanceof AttributableEntity) {

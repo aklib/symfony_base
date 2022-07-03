@@ -10,7 +10,7 @@
 
 namespace App\Controller\Admin;
 
-use App\Bundles\Attribute\Controller\ManagerCrudController;
+use App\Bundles\Attribute\Controller\CrudControllerManager;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
@@ -24,16 +24,15 @@ abstract class AbstractAppGrudController extends AbstractCrudController implemen
 {
     private EntityManagerInterface $em;
     private TranslatorInterface $translator;
-    private ManagerCrudController $controllerManager;
+    private CrudControllerManager $controllerManager;
     protected const OPTION_SORT_ORDER = 'sortOrder';
 
-    public function __construct(EntityManagerInterface $em, TranslatorInterface $translator, ManagerCrudController $controllerManager)
+    public function __construct(EntityManagerInterface $em, TranslatorInterface $translator, CrudControllerManager $controllerManager)
     {
         $this->em = $em;
         $this->translator = $translator;
         $this->controllerManager = $controllerManager;
     }
-
 
     /**
      * Customise action icons view in a table
@@ -107,9 +106,9 @@ abstract class AbstractAppGrudController extends AbstractCrudController implemen
     }
 
     /**
-     * @return ManagerCrudController
+     * @return CrudControllerManager
      */
-    public function getControllerManager(): ManagerCrudController
+    public function getControllerManager(): CrudControllerManager
     {
         return $this->controllerManager;
     }

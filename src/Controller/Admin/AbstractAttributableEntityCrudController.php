@@ -11,7 +11,7 @@ namespace App\Controller\Admin;
 
 use App\Bundles\Attribute\AttributeManagerInterface;
 use App\Bundles\Attribute\Controller\CrudControllerAttributableEntity;
-use App\Bundles\Attribute\Controller\ManagerCrudController;
+use App\Bundles\Attribute\Controller\CrudControllerManager;
 use App\Entity\Category;
 use App\Repository\CategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -30,7 +30,7 @@ abstract class AbstractAttributableEntityCrudController extends AbstractAppGrudC
     private ?Category $category = null;
     protected AttributeManagerInterface $attributeManager;
 
-    public function __construct(EntityManagerInterface $em, TranslatorInterface $translator, ManagerCrudController $controllerManager, AttributeManagerInterface $attributeManager)
+    public function __construct(EntityManagerInterface $em, TranslatorInterface $translator, CrudControllerManager $controllerManager, AttributeManagerInterface $attributeManager)
     {
         parent::__construct($em, $translator, $controllerManager);
         $this->attributeManager = $attributeManager;

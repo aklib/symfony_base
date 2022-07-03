@@ -43,7 +43,7 @@ use Psr\Container\NotFoundExceptionInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 
-class ManagerCrudController
+class CrudControllerManager
 {
     private EntityManagerInterface $em;
     private ContainerBagInterface $parameterBug;
@@ -287,7 +287,6 @@ class ManagerCrudController
         });
         return $mappings;
     }
-
 
     protected function getEntityManager(): EntityManagerInterface
     {

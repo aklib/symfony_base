@@ -12,6 +12,7 @@ namespace App\Controller\Admin;
 use App\Bundles\Attribute\AttributeManagerInterface;
 use App\Bundles\Attribute\Controller\CrudControllerAttributableEntity;
 use App\Bundles\Attribute\Controller\CrudControllerManager;
+use App\Bundles\Attribute\Entity\AttributableEntity;
 use App\Entity\Category;
 use App\Repository\CategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -60,30 +61,10 @@ abstract class AbstractAttributableEntityCrudController extends AbstractAppGrudC
      */
     public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
     {
-
         $qb = parent::createIndexQueryBuilder($searchDto, $entityDto, $fields, $filters);
         $this->attributeManager->search($qb, $searchDto, $entityDto, $fields);
-        /*
-
-
-        dump($qb->getDQL());die;
-
-
-
-
-
-        $category = $this->getCategory();
-
-            $expr = $qb->expr()->between('cat.lft', $category->getLft(), $category->getRgt());
-            $qb->innerJoin('entity.category', 'cat')->andWhere($expr);
-            $crudDto = $this->getContext() !== null ? $this->getContext()->getCrud() : null;
-            if ($crudDto !== null) {
-                $crudDto->setCustomPageTitle(Crud::PAGE_INDEX, $category->getName());
-            }*/
-
         return $qb;
     }
-
 
     /**
      * Finds a category set in a dashboard controller
@@ -91,8 +72,11 @@ abstract class AbstractAttributableEntityCrudController extends AbstractAppGrudC
      */
     public function getCategory(): Category
     {
-
         if ($this->category === null) {
+            $entity = $this->getEntity();
+            if ($entity instanceof AttributableEntity) {
+                return $this->category = $entity->getCategory();
+            }
             $uniqueKey = $this->getScope($this->getEntityFqcn());
             /** @var CategoryRepository $dao */
             $dao = $this->getEntityManager()->getRepository(Category::class);

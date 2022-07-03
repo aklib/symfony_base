@@ -41,7 +41,12 @@ class AttributeManagerDatabase extends AbstractAttributeManager
             }
         }
         if (array_key_exists($this->getDocumentId($entity), $this->attributeValues)) {
-            return $this->attributeValues[$this->getDocumentId($entity)]->getDocData();
+            $attributeValue = $this->attributeValues[$this->getDocumentId($entity)];
+            $attrValues = [];
+            foreach ($attributeValue->getDocData() as $uniqueKey => $value) {
+                $attrValues[$uniqueKey] = $this->convertValue($uniqueKey, $value);
+            }
+            return $attrValues;
         }
         return [];
     }

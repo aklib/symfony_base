@@ -218,10 +218,9 @@ class CrudControllerManager
                 foreach ($attribute->getAttributeOptions() as $attributeOption) {
                     $choices[$attributeOption->getName()] = $attributeOption->getId();
                 }
-                $field->setChoices($choices);
-                if (!$attribute->isMultiple()) {
-                    $field->allowMultipleChoices(false);
-                }
+                $field
+                    ->setChoices($choices)
+                    ->allowMultipleChoices($attribute->isMultiple());
                 break;
             case 'image':
                 $folder = $attribute === null ? $propertyName : $attribute->getUniqueKey();

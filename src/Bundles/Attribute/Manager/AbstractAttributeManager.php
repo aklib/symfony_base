@@ -25,6 +25,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use Elastica\Util;
 use Exception;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Security;
 
 abstract class AbstractAttributeManager implements AttributeManagerInterface
@@ -32,7 +33,7 @@ abstract class AbstractAttributeManager implements AttributeManagerInterface
     private Security $security;
     private EntityManagerInterface $em;
     private ArrayCollection $attributes;
-    private FlashBagInterface $flashBag;
+    private SessionInterface $session;
     protected array $initialisedEntities = [];
     protected ?array $attributeValues = null;
     /**
@@ -41,11 +42,11 @@ abstract class AbstractAttributeManager implements AttributeManagerInterface
     protected ArrayCollection $entities;
     private array $user = [];
 
-    public function __construct(Security $security, FlashBagInterface $flashBag, EntityManagerInterface $em)
+    public function __construct(Security $security, SessionInterface $session, EntityManagerInterface $em)
     {
         $this->security = $security;
         $this->em = $em;
-        $this->flashBag = $flashBag;
+        $this->session = $session;
         $this->entities = new ArrayCollection();
         $this->attributes = new ArrayCollection();
     }
@@ -239,7 +240,7 @@ abstract class AbstractAttributeManager implements AttributeManagerInterface
      */
     protected function getFlashBag(): FlashBagInterface
     {
-        return $this->flashBag;
+        return $this->session->getFlashBag();
     }
 
     /**

@@ -37,6 +37,6 @@ services:
         class: App\Bundles\Attribute\Manager\AttributeManagerDatabase
 
     # all must be equal!!!
-    App\Bundles\Attribute\AttributeManagerInterface: '@app.attribute.nested'
-    App\Bundles\Attribute\AttributeEntityManagerInterface: '@app.attribute.nested'
-    App\Bundles\Attribute\AttributeValueManagerInterface: '@app.attribute.nested'
+    App\Bundles\Attribute\AttributeManagerInterface: '@app.attribute.database'
+    App\Bundles\Attribute\AttributeEntityManagerInterface: '@app.attribute.database'
+    App\Bundles\Attribute\AttributeValueManagerInterface: '@app.attribute.database'

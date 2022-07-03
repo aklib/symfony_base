@@ -25,7 +25,7 @@ use Elastica\Query;
 use Exception;
 use FOS\ElasticaBundle\Index\IndexManager;
 use Laminas\Json\Json;
-use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Security;
 
 abstract class AbstractElasticaAttributeManager extends AbstractAttributeManager
@@ -35,7 +35,7 @@ abstract class AbstractElasticaAttributeManager extends AbstractAttributeManager
     private AttributeManagerDatabase $managerDatabase;
     protected bool $doSynchronize = true;
 
-    public function __construct(Security $security, FlashBagInterface $flashBag, EntityManagerInterface $em, IndexManager $indexManager, AttributeManagerDatabase $managerDatabase)
+    public function __construct(Security $security, SessionInterface $flashBag, EntityManagerInterface $em, IndexManager $indexManager, AttributeManagerDatabase $managerDatabase)
     {
         parent::__construct($security, $flashBag, $em);
         $this->indexManager = $indexManager;

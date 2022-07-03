@@ -19,7 +19,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FilterCollection;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use Elastica\Util;
@@ -36,20 +35,6 @@ abstract class AbstractAttributableEntityCrudController extends AbstractAppGrudC
         parent::__construct($em, $translator, $controllerManager);
         $this->attributeManager = $attributeManager;
     }
-
-    /**
-     * Set entity name like category
-     * @param Crud $crud
-     * @return Crud
-     */
-//    public function configureCrud(Crud $crud): Crud
-//    {
-//        $fields = [];
-//        foreach ($this->getCategory()->getAttributes(true) as $attribute) {
-//            $fields[] = $attribute->getUniqueKey();
-//        }
-//        return parent::configureCrud($crud)->setSearchFields($fields);
-//    }
 
     /**
      * Called only by index action. Filter a listing by category

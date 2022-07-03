@@ -87,6 +87,7 @@ class CrudControllerManager
         return $fields;
     }
 
+    /** @noinspection PhpIllegalArrayKeyTypeInspection */
     protected function createField(array $mapping, string $pageName, CrudControllerManagerInterface $controller, Attribute $attribute = null): ?FieldInterface
     {
         $propertyName = $mapping['fieldName'];
@@ -116,7 +117,7 @@ class CrudControllerManager
                 if ($attribute === null) {
                     $field = BooleanField::new($propertyName, $label);
                 } else {
-                    $fields[$propertyName] = ChoiceField::new($propertyName, $attribute->getName());
+                    $fields[$propertyName] = ChoiceField::new($propertyName, $label);
                     $fields[$propertyName]->setChoices(
                         [
                             'yes'   => true,
@@ -200,19 +201,19 @@ class CrudControllerManager
             case 'password':
                 return null;
             case 'html':
-                $field = TextEditorField::new($propertyName, $attribute->getName());
+                $field = TextEditorField::new($propertyName, $label);
                 break;
             case 'country':
-                $field = CountryField::new($propertyName, $attribute->getName());
+                $field = CountryField::new($propertyName, $label);
                 if ($attribute->isMultiple()) {
                     $field->setFormTypeOption('multiple', true);
                 }
                 break;
             case 'url':
-                $field = UrlField::new($propertyName, $attribute->getName());
+                $field = UrlField::new($propertyName, $label);
                 break;
             case 'select':
-                $field = ChoiceField::new($propertyName, $attribute->getName());
+                $field = ChoiceField::new($propertyName, $label);
                 $choices = [];
                 /** @var AttributeOption $attributeOption */
                 foreach ($attribute->getAttributeOptions() as $attributeOption) {
@@ -222,15 +223,32 @@ class CrudControllerManager
                     ->setChoices($choices)
                     ->allowMultipleChoices($attribute->isMultiple());
                 break;
+            case 'options':
+                if ($attribute instanceof Attribute) {
+                    $field = ChoiceField::new($propertyName, $label);
+                    $choices = [];
+                    /** @var AttributeOption $attributeOption */
+                    foreach ($attribute->getOptionsArray() as $attributeOption) {
+                        $choices[$attributeOption] = $attributeOption;
+                    }
+                    $field
+                        ->setChoices($choices)
+                        ->allowMultipleChoices($attribute->isMultiple());
+                } else {
+                    $field = ArrayField::new($propertyName, $label);
+                }
+
+
+                break;
             case 'image':
                 $folder = $attribute === null ? $propertyName : $attribute->getUniqueKey();
                 $imagePath = $this->getParameter('upload_image_path') . '/' . $folder;
-                $field = ImageField::new($propertyName, $attribute->getName())
+                $field = ImageField::new($propertyName, $label)
                     ->setUploadDir("public/$imagePath")
                     ->setBasePath($imagePath);
                 break;
             case 'address':
-                $field = CollectionField::new($propertyName, $attribute->getName())
+                $field = CollectionField::new($propertyName, $label)
                     ->setEntryType(AddressFormEmbed::class)
                     ->setTemplatePath('bundles/EasyAdminBundle/crud/field/attribute_address.html.twig');
 

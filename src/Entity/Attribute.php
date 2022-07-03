@@ -114,6 +114,11 @@ class Attribute
     private int $sortOrder = 100;
 
     /**
+     * @ORM\Column(type="array", nullable=true)
+     */
+    private $optionsArray = [];
+
+    /**
      * Attribute constructor.
      */
     public function __construct()
@@ -332,5 +337,17 @@ class Attribute
     }
 
     // ======================= METHODS REQUIRED FOR HYDRATION =======================
+
+    public function getOptionsArray(): ?array
+    {
+        return $this->optionsArray;
+    }
+
+    public function setOptionsArray(?array $optionsArray): self
+    {
+        $this->optionsArray = $optionsArray;
+
+        return $this;
+    }
 
 }

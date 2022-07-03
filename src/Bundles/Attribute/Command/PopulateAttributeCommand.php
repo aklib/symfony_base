@@ -11,6 +11,7 @@
 namespace App\Bundles\Attribute\Command;
 
 use App\Bundles\Attribute\Entity\AttributableEntity;
+use App\Bundles\Attribute\Manager\AbstractElasticaAttributeManager;
 use App\Bundles\Attribute\Manager\AttributeManagerDatabase;
 use App\Bundles\Attribute\Manager\AttributeManagerNested;
 use App\Bundles\Attribute\Manager\AttributeManagerParentChild;
@@ -23,6 +24,7 @@ use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -52,7 +54,9 @@ class PopulateAttributeCommand extends Command
         $this
             // the command help shown when running the command with the "--help" option
             ->setHelp("This command allows you to populate attribute values from database table 'AttributeValue' into configured elasticsearch indexes")
-            ->setDescription('Populates search indexes from database backup table');
+            ->setDescription('Populates search indexes from database backup table')
+            ->addOption('do-reset-ask', null, InputOption::VALUE_NONE, 'Ask if the index needs to be reset')
+            ->addOption('do-reset', null, InputOption::VALUE_OPTIONAL, 'The index needs to be reset');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -69,35 +73,17 @@ class PopulateAttributeCommand extends Command
         $io = new SymfonyStyle($input, $output);
 
         //================= RESET INDEX? =================
-        $helper = $this->getHelper('question');
-
-        $question = new ConfirmationQuestion(
-            sprintf("Do reset '%s' index before populating? y/n", $this->getManagerNested()->getIndex()->getName()),
-            false,
-            '/^(y|j)/i'
-        );
-
-        if ($helper->ask($input, $output, $question)) {
-            $this->getManagerNested()->getIndex()->delete();
-            if ($this->getManagerNested()->createIndexIfNotExists()) {
-                $output->writeln(sprintf("\tIndex <info>%s</> has been <info>created</>", $this->getManagerNested()->getIndex()->getName()));
-            }
+        if ($this->resetIndex($this->getManagerNested(), $input, $output)) {
+            $output->writeln(sprintf("\tIndex <info>%s</> has been <info>reset</>", $this->getManagerNested()->getIndex()->getName()));
+        } else {
+            $output->writeln(sprintf("\tIndex resetting <comment>%s</> was <comment>canceled</>", $this->getManagerNested()->getIndex()->getName()));
         }
 
-        $question = new ConfirmationQuestion(
-            sprintf("Do reset '%s' index before populating? y/n ", $this->getManagerParentChild()->getIndex()->getName()),
-            false,
-            '/^(y|j)/i'
-        );
-
-        if ($helper->ask($input, $output, $question)) {
-            $this->getManagerParentChild()->getIndex()->delete();
-            if ($this->getManagerParentChild()->createIndexIfNotExists()) {
-                $output->writeln(sprintf("\tIndex <info>%s</> has been <info>created</>", $this->getManagerParentChild()->getIndex()->getName()));
-
-            }
+        if ($this->resetIndex($this->getManagerParentChild(), $input, $output)) {
+            $output->writeln(sprintf("\tIndex <info>%s</> has been <info>reset</>", $this->getManagerParentChild()->getIndex()->getName()));
+        } else {
+            $output->writeln(sprintf("\tIndex resetting <comment>%s</> was <comment>canceled</>", $this->getManagerParentChild()->getIndex()->getName()));
         }
-
         //================= CREATE INDEXES IF NOT EXISTS =================
 
         if ($this->getManagerParentChild()->createIndexIfNotExists()) {
@@ -116,11 +102,14 @@ class PopulateAttributeCommand extends Command
 
             $dql = sprintf("SELECT count(doc.id) FROM %s doc WHERE doc.scope = '%s'", AttributeValue::class, $scope);
             try {
-                $total = $this->getEntityManager()->createQuery($dql)->getSingleScalarResult();
+                $total = (int)$this->getEntityManager()->createQuery($dql)->getSingleScalarResult();
             } catch (NoResultException|NonUniqueResultException $e) {
                 $total = 0;
             }
-
+            if ($total === 0) {
+                $output->writeln("\t<comment>no entries found</>");
+                continue;
+            }
             $io->progressStart($total);
             do {
                 $dql = sprintf("SELECT entity, doc FROM %s entity, %s doc WHERE entity.id = doc.attributableId and doc.scope = '%s'", $fqcn, AttributeValue::class, $scope);
@@ -158,6 +147,32 @@ class PopulateAttributeCommand extends Command
         }
 
         return Command::SUCCESS;
+    }
+
+    protected function resetIndex(AbstractElasticaAttributeManager $manager, InputInterface $input, OutputInterface $output): bool
+    {
+        $result = false;
+        $doReset = $input->getOption('do-reset');
+        if ($doReset === null) {
+            $doReset = true;
+        }
+        if ($input->getOption('do-reset-ask') === null) {
+            $helper = $this->getHelper('question');
+            $question = new ConfirmationQuestion(
+                sprintf("Do reset '%s' index before populating? y/n", $manager->getIndex()->getName()),
+                false,
+                '/^(y|j)/i'
+            );
+
+            if ($helper->ask($input, $output, $question)) {
+                $doReset = true;
+            }
+        }
+        if ($doReset) {
+            $manager->getIndex()->delete();
+            $result = $manager->createIndexIfNotExists();
+        }
+        return $result;
     }
 
     public function getAttributeValue(AttributableEntity $entity, string $scope): ?AttributeValue
@@ -222,5 +237,6 @@ class PopulateAttributeCommand extends Command
     {
         return $this->em;
     }
+
 
 }

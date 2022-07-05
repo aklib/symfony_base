@@ -1,14 +1,18 @@
 <?php /** @noinspection PhpUnused */
 
-namespace App\Entity;
+/**
+ * Class ProductAttributeDefTrait
+ * @package App\Entity\Attributable\Extension
+ *
+ * since: 04.07.2022
+ * author: alexej@kisselev.de
+ */
 
-use App\Repository\AttributeDefinitionRepository;
+namespace App\Entity\Attributable\Extension;
+
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass=AttributeDefinitionRepository::class)
- */
-class AttributeDefinition
+trait AttributeDefTrait
 {
     /**
      * @ORM\Id
@@ -16,6 +20,7 @@ class AttributeDefinition
      * @ORM\Column(type="integer")
      */
     private int $id;
+
     /**
      *
      * @ORM\Column(name="type", type="string", length=16, nullable=false, unique=true)
@@ -42,14 +47,6 @@ class AttributeDefinition
     }
 
     /**
-     * @param int $id
-     */
-    public function setId(int $id): void
-    {
-        $this->id = $id;
-    }
-
-    /**
      * @return string
      */
     public function getType(): string
@@ -59,10 +56,12 @@ class AttributeDefinition
 
     /**
      * @param string $type
+     * @return AttributeDefInterface
      */
-    public function setType(string $type): void
+    public function setType(string $type): self
     {
         $this->type = $type;
+        return $this;
     }
 
     /**
@@ -75,10 +74,12 @@ class AttributeDefinition
 
     /**
      * @param string $description
+     * @return AttributeDefInterface
      */
-    public function setDescription(string $description): void
+    public function setDescription(string $description): self
     {
         $this->description = $description;
+        return $this;
     }
 
     public function isCanMultiple(): bool

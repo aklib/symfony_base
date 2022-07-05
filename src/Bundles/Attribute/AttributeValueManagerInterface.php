@@ -9,7 +9,7 @@
 
 namespace App\Bundles\Attribute;
 
-use App\Bundles\Attribute\Entity\AttributableEntity;
+use App\Entity\Attributable\Extension\AttributableEntity;
 
 interface AttributeValueManagerInterface
 {

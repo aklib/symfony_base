@@ -2,9 +2,10 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Category;
-use App\Entity\Product;
+use App\Entity\Attributable\Product;
+use App\Entity\Attributable\ProductCategory;
 use App\Entity\User;
+use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
@@ -16,7 +17,7 @@ class ProductFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         // create 20 products! Bam!
-        $category = $manager->getRepository(Category::class)->find(1);
+        $category = $manager->getRepository(ProductCategory::class)->find(1);
         if ($category === null) {
             print_r("no category found\n");
             die("\n");
@@ -31,7 +32,7 @@ class ProductFixtures extends Fixture
             $product->article_number = 'FAKE_ART-1964-' . $i;
             $product->price = (float)$i + 0.45;
 
-            $product->setCreatedAt(new \DateTime('now'));
+            $product->setCreatedAt(new DateTime('now'));
             if ($user instanceof User) {
                 $product->setCreatedBy($user);
             }

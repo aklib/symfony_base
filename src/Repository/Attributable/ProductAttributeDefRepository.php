@@ -1,28 +1,28 @@
 <?php
 
-namespace App\Repository;
+namespace App\Repository\Attributable;
 
-use App\Entity\Attribute;
+use App\Entity\Attributable\Extension\AttributeDefInterface;
+use App\Entity\Attributable\ProductAttributeDef;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Attribute>
+ * @extends ServiceEntityRepository<ProductAttributeDef>
  *
- * @method Attribute|null find($id, $lockMode = null, $lockVersion = null)
- * @method Attribute|null findOneBy(array $criteria, array $orderBy = null)
- * @method Attribute|null findOneByUniqueKey(string $uniqueKey)
- * @method Attribute[]    findAll()
- * @method Attribute[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method AttributeDefInterface|null find($id, $lockMode = null, $lockVersion = null)
+ * @method AttributeDefInterface|null findOneBy(array $criteria, array $orderBy = null)
+ * @method AttributeDefInterface[]    findAll()
+ * @method AttributeDefInterface[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class AttributeRepository extends ServiceEntityRepository
+class ProductAttributeDefRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Attribute::class);
+        parent::__construct($registry, ProductAttributeDef::class);
     }
 
-    public function add(Attribute $entity, bool $flush = false): void
+    public function add(ProductAttributeDef $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -31,7 +31,7 @@ class AttributeRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(Attribute $entity, bool $flush = false): void
+    public function remove(ProductAttributeDef $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 
@@ -41,7 +41,7 @@ class AttributeRepository extends ServiceEntityRepository
     }
 
 //    /**
-//     * @return Attribute[] Returns an array of Attribute objects
+//     * @return AttributeType[] Returns an array of AttributeType objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -55,7 +55,7 @@ class AttributeRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?Attribute
+//    public function findOneBySomeField($value): ?AttributeType
 //    {
 //        return $this->createQueryBuilder('a')
 //            ->andWhere('a.exampleField = :val')

@@ -11,8 +11,8 @@
 namespace App\Bundles\Attribute\Manager;
 
 use App\Bundles\Attribute\AttributeManagerInterface;
-use App\Bundles\Attribute\Entity\AttributableEntity;
-use App\Entity\Attribute;
+use App\Entity\Attributable\Extension\AttributableEntity;
+use App\Entity\Attributable\Extension\AttributeInterface;
 use App\Entity\User;
 use DateTime;
 use DateTimeZone;
@@ -51,22 +51,22 @@ abstract class AbstractAttributeManager implements AttributeManagerInterface
         $this->attributes = new ArrayCollection();
     }
 
-    public function getAttribute(string $uniqueKey): ?Attribute
+    public function getAttribute(string $uniqueKey): ?AttributeInterface
     {
-        $result = $this->attributes->filter(static function (Attribute $attribute) use ($uniqueKey) {
+        $result = $this->attributes->filter(static function (AttributeInterface $attribute) use ($uniqueKey) {
             // filter by unique key
             if ($attribute->getUniqueKey() === $uniqueKey) {
                 return $attribute;
             }
             return null;
         });
-        if ($result->isEmpty()) {
-            $attr = $this->getEntityManager()->getRepository(Attribute::class)->findOneByUniqueKey($uniqueKey);
-            if ($attr instanceof Attribute) {
-                $this->attributes->add($attr);
-            }
-            return $attr;
-        }
+//        if ($result->isEmpty()) {
+//            $attr = $this->getEntityManager()->getRepository(Attribute::class)->findOneByUniqueKey($uniqueKey);
+//            if ($attr instanceof AttributeInterface) {
+//                $this->attributes->add($attr);
+//            }
+//            return $attr;
+//        }
         return $result->first();
     }
 
@@ -87,7 +87,7 @@ abstract class AbstractAttributeManager implements AttributeManagerInterface
         }
     }
 
-    public function addAttribute(Attribute $attribute): void
+    public function addAttribute(AttributeInterface $attribute): void
     {
         if (!$this->attributes->contains($attribute)) {
             $this->attributes->add($attribute);
@@ -129,7 +129,7 @@ abstract class AbstractAttributeManager implements AttributeManagerInterface
         if ($attribute === null) {
             return $attributeValue;
         }
-        $type = $attribute->getAttributeDefinition()->getType();
+        $type = $attribute->getAttributeDef()->getType();
         switch ($type) {
             case 'date':
             case 'datetime':

@@ -12,9 +12,9 @@ namespace App\Controller\Admin;
 use App\Bundles\Attribute\AttributeManagerInterface;
 use App\Bundles\Attribute\Controller\CrudControllerAttributableEntity;
 use App\Bundles\Attribute\Controller\CrudControllerManager;
-use App\Bundles\Attribute\Entity\AttributableEntity;
-use App\Entity\Category;
-use App\Repository\CategoryRepository;
+use App\Entity\Attributable\Extension\AttributableEntity;
+use App\Entity\Attributable\Extension\CategoryInterface;
+use App\Entity\Attributable\ProductCategory;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
@@ -27,7 +27,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 abstract class AbstractAttributableEntityCrudController extends AbstractAppGrudController implements CrudControllerAttributableEntity
 {
-    private ?Category $category = null;
+    private ?CategoryInterface $category = null;
     protected AttributeManagerInterface $attributeManager;
 
     public function __construct(EntityManagerInterface $em, TranslatorInterface $translator, CrudControllerManager $controllerManager, AttributeManagerInterface $attributeManager)
@@ -53,9 +53,9 @@ abstract class AbstractAttributableEntityCrudController extends AbstractAppGrudC
 
     /**
      * Finds a category set in a dashboard controller
-     * @return Category|null
+     * @return CategoryInterface
      */
-    public function getCategory(): Category
+    public function getCategory(): CategoryInterface
     {
         if ($this->category === null) {
             $entity = $this->getEntity();
@@ -63,8 +63,8 @@ abstract class AbstractAttributableEntityCrudController extends AbstractAppGrudC
                 return $this->category = $entity->getCategory();
             }
             $uniqueKey = $this->getScope($this->getEntityFqcn());
-            /** @var CategoryRepository $dao */
-            $dao = $this->getEntityManager()->getRepository(Category::class);
+            /** @var \App\Repository\Attributable\ProductCategoryRepository $dao */
+            $dao = $this->getEntityManager()->getRepository(ProductCategory::class);
             $this->category = $dao->findOneByUniqueKey($uniqueKey);
             if ($this->category === null) {
                 throw new InvalidArgumentException("The category with unique key '$uniqueKey' not exists. Please first create one.");

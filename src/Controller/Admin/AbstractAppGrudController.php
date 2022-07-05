@@ -11,6 +11,7 @@
 namespace App\Controller\Admin;
 
 use App\Bundles\Attribute\Controller\CrudControllerManager;
+use App\Controller\Admin\Extension\CrudControllerManagerInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;

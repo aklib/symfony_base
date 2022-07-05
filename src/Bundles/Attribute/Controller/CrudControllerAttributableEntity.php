@@ -9,9 +9,9 @@
 
 namespace App\Bundles\Attribute\Controller;
 
-use App\Entity\Category;
+use App\Entity\Attributable\Extension\CategoryInterface;
 
 interface CrudControllerAttributableEntity
 {
-    public function getCategory(): Category;
+    public function getCategory(): CategoryInterface;
 }

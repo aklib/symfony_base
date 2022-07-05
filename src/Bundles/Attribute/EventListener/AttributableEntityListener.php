@@ -5,8 +5,8 @@
 namespace App\Bundles\Attribute\EventListener;
 
 use App\Bundles\Attribute\AttributeEntityManagerInterface;
-use App\Bundles\Attribute\Entity\AttributableEntity;
-use App\Entity\Attribute;
+use App\Entity\Attributable\Extension\AttributableEntity;
+use App\Entity\Attributable\Extension\AttributeInterface;
 use App\Entity\Extension\Annotation\CustomDoctrineAnnotation;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\EventSubscriber;
@@ -70,7 +70,7 @@ class AttributableEntityListener implements EventSubscriber
         if ($entity instanceof AttributableEntity) {
             // entities are loaded in controller fqcn
             $this->attributeManager->addEntity($entity);
-        } elseif ($entity instanceof Attribute) {
+        } elseif ($entity instanceof AttributeInterface) {
             // attributes are loaded in controller ->getCategory()->getAttributes()
             $this->attributeManager->addAttribute($entity);
         }

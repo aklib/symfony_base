@@ -10,11 +10,11 @@
 
 namespace App\Bundles\Attribute\Command;
 
-use App\Bundles\Attribute\Entity\AttributableEntity;
 use App\Bundles\Attribute\Manager\AbstractElasticaAttributeManager;
 use App\Bundles\Attribute\Manager\AttributeManagerDatabase;
 use App\Bundles\Attribute\Manager\AttributeManagerNested;
 use App\Bundles\Attribute\Manager\AttributeManagerParentChild;
+use App\Entity\Attributable\Extension\AttributableEntity;
 use App\Entity\AttributeValue;
 use App\Repository\AttributeValueRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -47,7 +47,7 @@ class PopulateAttributeCommand extends Command
         $this->attributeValueCollection = new ArrayCollection();
     }
 
-    protected static $defaultName = 'attribute:populate';
+    protected static $defaultName = 'attributable:populate';
 
     protected function configure(): void
     {

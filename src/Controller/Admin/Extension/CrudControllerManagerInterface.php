@@ -7,7 +7,7 @@
  * author: alexej@kisselev.de
  */
 
-namespace App\Controller\Admin;
+namespace App\Controller\Admin\Extension;
 
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 

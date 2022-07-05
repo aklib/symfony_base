@@ -2,8 +2,7 @@
 
 namespace App\Entity;
 
-use App\Bundles\Attribute\Entity\AttributableEntity;
-use App\Bundles\Attribute\Entity\AttributableEntityTrait;
+use App\Entity\Attributable\Extension\AttributableEntityTrait;
 use App\Entity\Extension\Traits\BlameableEntityTrait;
 use App\Entity\Extension\Traits\TimestampableEntityTrait;
 use App\Repository\UserProfileRepository;
@@ -12,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass=UserProfileRepository::class)
  */
-class UserProfile implements AttributableEntity
+class UserProfile implements Attributable\Extension\AttributableEntity
 {
     use TimestampableEntityTrait, BlameableEntityTrait, AttributableEntityTrait;
 
@@ -45,13 +44,8 @@ class UserProfile implements AttributableEntity
         return $this;
     }
 
-    /** @noinspection PhpUndefinedFieldInspection */
     public function __toString()
     {
-        // check from attributes
-        if(is_string($this->name)){
-            return $this->name . '';
-        }
         return 'profile#'. $this->id;
     }
 }

@@ -2,14 +2,12 @@
 
 namespace App\Controller\Admin;
 
-use App\Bundles\Attribute\Entity\AttributableEntity;
-use App\Entity\Attribute;
-use App\Entity\AttributeDefinition;
-use App\Entity\AttributeOption;
-use App\Entity\AttributeTab;
-use App\Entity\Category;
-use App\Entity\Person;
-use App\Entity\Product;
+use App\Entity\Attributable\Extension\AttributableEntity;
+use App\Entity\Attributable\Product;
+use App\Entity\Attributable\ProductAttribute;
+use App\Entity\Attributable\ProductAttributeDef;
+use App\Entity\Attributable\ProductAttributeTab;
+use App\Entity\Attributable\ProductCategory;
 use App\Entity\User;
 use App\Entity\UserProfile;
 use Doctrine\ORM\EntityManagerInterface;
@@ -77,15 +75,14 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
 
         yield MenuItem::section('Managed Objects')->setPermission('ROLE_ADMIN');
-        yield MenuItem::linkToCrud('Category', 'fas fa-stream', Category::class)->setPermission('ROLE_ADMIN');
+        yield MenuItem::linkToCrud('Category', 'fas fa-stream', ProductCategory::class)->setPermission('ROLE_ADMIN');
         yield MenuItem::linkToCrud('Product', 'fas fa-list', Product::class)->setPermission('ROLE_ADMIN');
-        yield MenuItem::linkToCrud('Person', 'fas fa-list', Person::class)->setPermission('ROLE_ADMIN');
+        //yield MenuItem::linkToCrud('Person', 'fas fa-list', Person::class)->setPermission('ROLE_ADMIN');
 
         yield MenuItem::section('Attributes')->setPermission('ROLE_ADMIN');
-        yield MenuItem::linkToCrud('Attribute', 'fas fa-list-ol', Attribute::class)->setPermission('ROLE_ADMIN');
-        yield MenuItem::linkToCrud('Attribute Tabs', 'fas fa-list-ol', AttributeTab::class)->setPermission('ROLE_ADMIN');
-        yield MenuItem::linkToCrud('Attribute Definitions', 'fas fa-list-ol', AttributeDefinition::class)->setPermission('ROLE_ADMIN');
-        yield MenuItem::linkToCrud('Attribute Options', 'fas fa-list-ol', AttributeOption::class)->setPermission('ROLE_ADMIN');
+        yield MenuItem::linkToCrud('Attribute', 'fas fa-list-ol', ProductAttribute::class)->setPermission('ROLE_ADMIN');
+        yield MenuItem::linkToCrud('Attribute Tabs', 'fas fa-list-ol', ProductAttributeTab::class)->setPermission('ROLE_ADMIN');
+        yield MenuItem::linkToCrud('Attribute Definitions', 'fas fa-list-ol', ProductAttributeDef::class)->setPermission('ROLE_ADMIN');
 
         yield MenuItem::section('Users')->setPermission('ROLE_ADMIN');
         yield MenuItem::linkToCrud('User', 'fas fa-list-ul', User::class)->setPermission('ROLE_ADMIN');
@@ -98,11 +95,10 @@ class DashboardController extends AbstractDashboardController
         $img = null;
         if ($user instanceof User && $user->getUserProfile() !== null) {
             $profile = $user->getUserProfile();
-            if ($profile !== null) {
-                $userMenuItems[] = MenuItem::linkToCrud('Profile', 'fa-id-card', UserProfile::class)
-                    ->setAction(Crud::PAGE_DETAIL)
-                    ->setEntityId($user->getUserProfile()->getId());
-            }
+            $userMenuItems[] = MenuItem::linkToCrud('Profile', 'fa-id-card', UserProfile::class)
+                ->setAction(Crud::PAGE_DETAIL)
+                ->setEntityId($user->getUserProfile()->getId());
+
             if ($profile instanceof AttributableEntity) {
                 $img = $profile->avatar ?? null;
             }

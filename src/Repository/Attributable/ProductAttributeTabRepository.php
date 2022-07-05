@@ -1,27 +1,27 @@
 <?php
 
-namespace App\Repository;
+namespace App\Repository\Attributable;
 
-use App\Entity\AttributeOption;
+use App\Entity\Attributable\ProductAttributeTab;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<AttributeOption>
+ * @extends ServiceEntityRepository<ProductAttributeTab>
  *
- * @method AttributeOption|null find($id, $lockMode = null, $lockVersion = null)
- * @method AttributeOption|null findOneBy(array $criteria, array $orderBy = null)
- * @method AttributeOption[]    findAll()
- * @method AttributeOption[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method ProductAttributeTab|null find($id, $lockMode = null, $lockVersion = null)
+ * @method ProductAttributeTab|null findOneBy(array $criteria, array $orderBy = null)
+ * @method ProductAttributeTab[]    findAll()
+ * @method ProductAttributeTab[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class AttributeOptionRepository extends ServiceEntityRepository
+class ProductAttributeTabRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, AttributeOption::class);
+        parent::__construct($registry, ProductAttributeTab::class);
     }
 
-    public function add(AttributeOption $entity, bool $flush = false): void
+    public function add(ProductAttributeTab $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -30,7 +30,7 @@ class AttributeOptionRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(AttributeOption $entity, bool $flush = false): void
+    public function remove(ProductAttributeTab $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 
@@ -40,7 +40,7 @@ class AttributeOptionRepository extends ServiceEntityRepository
     }
 
 //    /**
-//     * @return AttributeOption[] Returns an array of AttributeOption objects
+//     * @return AttributeTab[] Returns an array of AttributeTab objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -54,7 +54,7 @@ class AttributeOptionRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?AttributeOption
+//    public function findOneBySomeField($value): ?AttributeTab
 //    {
 //        return $this->createQueryBuilder('a')
 //            ->andWhere('a.exampleField = :val')

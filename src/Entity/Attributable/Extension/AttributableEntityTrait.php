@@ -1,12 +1,9 @@
 <?php /** @noinspection PhpUnused */
 
-namespace App\Bundles\Attribute\Entity;
+namespace App\Entity\Attributable\Extension;
 
 
 use App\Bundles\Attribute\AttributeValueManagerInterface;
-use App\Entity\Attribute;
-use App\Entity\Category;
-use App\Entity\Extension\Annotation as AppORM;
 use Doctrine\ORM\Mapping as ORM;
 use Elastica\Util;
 
@@ -19,23 +16,73 @@ use Elastica\Util;
  */
 trait AttributableEntityTrait
 {
-    private ?array $attributeValues = null;
-    private AttributeValueManagerInterface $attributeManager;
     /**
-     * @ORM\ManyToOne(targetEntity=Category::class, fetch="EAGER")
-     * @ORM\JoinColumn(nullable=false)
-     * @AppORM\Element(sortOrder="3")
-     *
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
      */
-    private ?Category $category = null;
-    private ?string $scope = null;
+    private int $id;
 
-    public function getCategory(): ?Category
+    /**
+     * @ORM\Column(type="string", nullable=false)
+     */
+    private string $name = '';
+
+    /**
+     * @ORM\Column(type="boolean", nullable=false)
+     */
+    private bool $active = true;
+    private ?CategoryInterface $category = null;
+    private AttributeValueManagerInterface $attributeManager;
+    private ?string $scope = null;
+    private ?array $attributeValues = null;
+
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     * @return AttributableEntity
+     */
+    public function setName(string $name): AttributableEntity
+    {
+        $this->name = $name;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isActive(): bool
+    {
+        return $this->active;
+    }
+
+    public function setActive(bool $active): AttributableEntity
+    {
+        $this->active = $active;
+        return $this;
+    }
+
+    public function getCategory(): ?CategoryInterface
     {
         return $this->category;
     }
 
-    public function setCategory(Category $category): self
+    public function setCategory(CategoryInterface $category): self
     {
         $this->category = $category;
 
@@ -44,13 +91,10 @@ trait AttributableEntityTrait
 
     //==================================== HANDLE ATTRIBUTE VALUES ====================================
 
-    /**
-     * @implements AttributableEntity
-     * @param AttributeValueManagerInterface $manager
-     */
-    public function setAttributeManager(AttributeValueManagerInterface $manager): void
+    public function setAttributeManager(AttributeValueManagerInterface $manager): AttributableEntity
     {
         $this->attributeManager = $manager;
+        return $this;
     }
 
     public function getAttributeManager(): AttributeValueManagerInterface
@@ -58,7 +102,7 @@ trait AttributableEntityTrait
         return $this->attributeManager;
     }
 
-    public function setAttributeValues(array $attributeValues = null): void
+    public function setAttributeValues(array $attributeValues = null): AttributableEntity
     {
         if ($this->attributeValues === null) {
             if ($attributeValues === null) {
@@ -70,6 +114,7 @@ trait AttributableEntityTrait
                 $this->{$uniqueKey} = $attributeValue;
             }
         }
+        return $this;
     }
 
     private function getAttributeValue(string $name)
@@ -110,7 +155,7 @@ trait AttributableEntityTrait
         return $this->scope;
     }
 
-    public function createDocData(Attribute $attribute = null): ?array
+    public function createDocData(AttributeInterface $attribute = null): ?array
     {
         // create entity doc
 
@@ -127,7 +172,7 @@ trait AttributableEntityTrait
             return null;
         }
         // create attribute value doc
-        $type = $attribute->getAttributeDefinition()->getType();
+        $type = $attribute->getAttributeDef()->getType();
         $docData['uniqueKey'] = $uniqueKey;
         $docData['attribute']['id'] = $attribute->getId();
         $docData['type'] = $type;
@@ -135,7 +180,7 @@ trait AttributableEntityTrait
         return $docData;
     }
 
-    public function updateDocData(array &$docData, Attribute $attribute = null): bool
+    public function updateDocData(array &$docData, AttributeInterface $attribute = null): bool
     {
         $newDocData = $this->createDocData($attribute);
         if ($newDocData === null) {
@@ -151,6 +196,4 @@ trait AttributableEntityTrait
         }
         return $changed;
     }
-
-    abstract public function getId(): int;
 }

@@ -11,10 +11,9 @@
 namespace App\Bundles\Attribute\Controller;
 
 use App\Bundles\Attribute\Form\AddressFormEmbed;
-use App\Controller\Admin\CrudControllerManagerInterface;
-use App\Entity\Attribute;
-use App\Entity\AttributeOption;
-use App\Entity\Category;
+use App\Controller\Admin\Extension\CrudControllerManagerInterface;
+use App\Entity\Attributable\Extension\AttributeInterface;
+use App\Entity\Attributable\Extension\CategoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\QueryBuilder;
@@ -87,8 +86,7 @@ class CrudControllerManager
         return $fields;
     }
 
-    /** @noinspection PhpIllegalArrayKeyTypeInspection */
-    protected function createField(array $mapping, string $pageName, CrudControllerManagerInterface $controller, Attribute $attribute = null): ?FieldInterface
+    protected function createField(array $mapping, string $pageName, CrudControllerManagerInterface $controller, AttributeInterface $attribute = null): ?FieldInterface
     {
         $propertyName = $mapping['fieldName'];
         $label = $attribute === null ? ucfirst($propertyName) : $attribute->getName();
@@ -172,7 +170,7 @@ class CrudControllerManager
                 }
 
             if ($propertyName === 'category' && $controller instanceof CrudControllerAttributableEntity) {
-                /** @var Category $category */
+                /** @var CategoryInterface $category */
                 $category = $controller->getCategory();
 
                 $field->setQueryBuilder(
@@ -215,19 +213,18 @@ class CrudControllerManager
             case 'select':
                 $field = ChoiceField::new($propertyName, $label);
                 $choices = [];
-                /** @var AttributeOption $attributeOption */
-                foreach ($attribute->getAttributeOptions() as $attributeOption) {
-                    $choices[$attributeOption->getName()] = $attributeOption->getId();
-                }
+//                /** @var AttributeOption $attributeOption */
+//                foreach ($attribute->getAttributeOptions() as $attributeOption) {
+//                    $choices[$attributeOption->getName()] = $attributeOption->getId();
+//                }
                 $field
                     ->setChoices($choices)
                     ->allowMultipleChoices($attribute->isMultiple());
                 break;
             case 'options':
-                if ($attribute instanceof Attribute) {
+                if ($attribute instanceof AttributeInterface) {
                     $field = ChoiceField::new($propertyName, $label);
                     $choices = [];
-                    /** @var AttributeOption $attributeOption */
                     foreach ($attribute->getOptionsArray() as $attributeOption) {
                         $choices[$attributeOption] = $attributeOption;
                     }

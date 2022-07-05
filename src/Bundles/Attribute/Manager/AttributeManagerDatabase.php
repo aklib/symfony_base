@@ -10,7 +10,7 @@
 
 namespace App\Bundles\Attribute\Manager;
 
-use App\Bundles\Attribute\Entity\AttributableEntity;
+use App\Entity\Attributable\Extension\AttributableEntity;
 use App\Entity\AttributeValue;
 use App\Repository\AttributeValueRepository;
 use DateTime;

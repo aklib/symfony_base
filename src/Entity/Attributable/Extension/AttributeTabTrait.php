@@ -1,14 +1,18 @@
 <?php /** @noinspection PhpUnused */
 
-namespace App\Entity;
+/**
+ * Class AttributeTabTrait
+ * @package App\Entity\Attributable\Extension
+ *
+ * since: 04.07.2022
+ * author: alexej@kisselev.de
+ */
 
-use App\Repository\AttributeTabRepository;
+namespace App\Entity\Attributable\Extension;
+
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass=AttributeTabRepository::class)
- */
-class AttributeTab
+trait AttributeTabTrait
 {
     /**
      * @ORM\Id
@@ -40,14 +44,6 @@ class AttributeTab
     }
 
     /**
-     * @param int $id
-     */
-    public function setId(int $id): void
-    {
-        $this->id = $id;
-    }
-
-    /**
      * @return string
      */
     public function getName(): string
@@ -57,10 +53,12 @@ class AttributeTab
 
     /**
      * @param string $name
+     * @return AttributeTabInterface
      */
-    public function setName(string $name): void
+    public function setName(string $name): self
     {
         $this->name = $name;
+        return $this;
     }
 
     /**
@@ -73,10 +71,12 @@ class AttributeTab
 
     /**
      * @param int $sortOrder
+     * @return AttributeTabInterface
      */
-    public function setSortOrder(int $sortOrder): void
+    public function setSortOrder(int $sortOrder): self
     {
         $this->sortOrder = $sortOrder;
+        return $this;
     }
 
     public function __toString()

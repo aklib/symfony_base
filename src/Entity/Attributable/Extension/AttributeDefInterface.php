@@ -10,7 +10,9 @@
 
 namespace App\Entity\Attributable\Extension;
 
-interface AttributeDefInterface
+use App\Entity\Extension\DeletableEntity;
+
+interface AttributeDefInterface extends DeletableEntity
 {
     /**
      * @return int

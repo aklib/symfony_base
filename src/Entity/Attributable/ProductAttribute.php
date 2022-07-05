@@ -39,7 +39,7 @@ class ProductAttribute implements AttributeInterface
     /**
      * @var AttributeTabInterface
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Attributable\ProductAttributeTab", fetch="EXTRA_LAZY")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Attributable\ProductAttributeTab", fetch="EXTRA_LAZY", inversedBy="attributes")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="tab_id", referencedColumnName="id", nullable=false)
      * })
@@ -48,9 +48,9 @@ class ProductAttribute implements AttributeInterface
     private AttributeTabInterface $tab;
 
     /**
-     * @var ProductAttributeDef
+     * @var AttributeDefInterface
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Attributable\ProductAttributeDef", fetch="EAGER")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Attributable\ProductAttributeDef", fetch="EAGER", inversedBy="attributes")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="def_id", referencedColumnName="id", nullable=false)
      * })
@@ -58,4 +58,8 @@ class ProductAttribute implements AttributeInterface
      */
     private AttributeDefInterface $attributeDef;
 
+    public function isDeletable(): bool
+    {
+        return true;
+    }
 }

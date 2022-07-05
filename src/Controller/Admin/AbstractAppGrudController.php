@@ -12,6 +12,7 @@ namespace App\Controller\Admin;
 
 use App\Bundles\Attribute\Controller\CrudControllerManager;
 use App\Controller\Admin\Extension\CrudControllerManagerInterface;
+use App\Entity\Extension\DeletableEntity;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
@@ -80,7 +81,13 @@ abstract class AbstractAppGrudController extends AbstractCrudController implemen
                 return $action->addCssClass('btn btn-icon btn-sm btn-default')
                     ->setIcon('fa fa-trash')
                     ->setLabel(false)
-                    ->setHtmlAttributes(['title' => 'Delete']);
+                    ->setHtmlAttributes(['title' => 'Delete'])
+                    ->displayIf(static function ($entity) {
+                        if ($entity instanceof DeletableEntity) {
+                            return $entity->isDeletable();
+                        }
+                        return true;
+                    });
             })
             ->add(Crud::PAGE_INDEX, Action::DETAIL)
             ->update(Crud::PAGE_INDEX, Action::DETAIL, function (Action $action) {

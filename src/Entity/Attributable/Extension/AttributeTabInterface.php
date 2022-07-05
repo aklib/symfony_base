@@ -9,7 +9,9 @@
 
 namespace App\Entity\Attributable\Extension;
 
-interface AttributeTabInterface
+use App\Entity\Extension\DeletableEntity;
+
+interface AttributeTabInterface extends DeletableEntity
 {
     /**
      * @return int
@@ -24,7 +26,7 @@ interface AttributeTabInterface
     /**
      * @param string $name
      */
-    public function setName(string $name): self;
+    public function setName(string $name): AttributeTabInterface;
 
     /**
      * @return int
@@ -34,7 +36,7 @@ interface AttributeTabInterface
     /**
      * @param int $sortOrder
      */
-    public function setSortOrder(int $sortOrder): self;
+    public function setSortOrder(int $sortOrder): AttributeTabInterface;
 
     public function __toString();
 }

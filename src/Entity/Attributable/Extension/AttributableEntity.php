@@ -3,6 +3,7 @@
 namespace App\Entity\Attributable\Extension;
 
 use App\Bundles\Attribute\AttributeValueManagerInterface;
+use App\Entity\Extension\DeletableEntity;
 
 /**
  * Class AttributeEntityInterface
@@ -10,7 +11,7 @@ use App\Bundles\Attribute\AttributeValueManagerInterface;
  * since: 16.09.2021
  * author: alexej@kisselev.de
  */
-interface AttributableEntity
+interface AttributableEntity extends DeletableEntity
 {
     public function getId(): int;
 

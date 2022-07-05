@@ -140,5 +140,9 @@ class ProductCategory implements CategoryInterface
     }
 
 
+    public function isDeletable(): bool
+    {
+        return $this->getAttributes()->count() === 0;
+    }
 }
    

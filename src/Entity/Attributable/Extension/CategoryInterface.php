@@ -9,9 +9,10 @@
 
 namespace App\Entity\Attributable\Extension;
 
+use App\Entity\Extension\DeletableEntity;
 use Doctrine\Common\Collections\Collection;
 
-interface CategoryInterface
+interface CategoryInterface extends DeletableEntity
 {
     /**
      * @return int

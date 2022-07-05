@@ -46,6 +46,11 @@ class UserProfile implements Attributable\Extension\AttributableEntity
 
     public function __toString()
     {
-        return 'profile#'. $this->id;
+        return 'profile#' . $this->id;
+    }
+
+    public function isDeletable(): bool
+    {
+        return false;
     }
 }

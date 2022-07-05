@@ -25,4 +25,9 @@ class Product implements AttributableEntity
      *
      */
     private ?CategoryInterface $category = null;
+
+    public function isDeletable(): bool
+    {
+        return true;
+    }
 }

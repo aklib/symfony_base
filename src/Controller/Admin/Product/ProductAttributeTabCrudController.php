@@ -11,5 +11,4 @@ class ProductAttributeTabCrudController extends AbstractAppGrudController
     {
         return ProductAttributeTab::class;
     }
-
 }

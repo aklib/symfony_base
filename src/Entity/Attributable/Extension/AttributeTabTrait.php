@@ -56,7 +56,7 @@ trait AttributeTabTrait
      * @param string $name
      * @return AttributeTabInterface
      */
-    public function setName(string $name): self
+    public function setName(string $name): AttributeTabInterface
     {
         $this->name = $name;
         return $this;
@@ -74,7 +74,7 @@ trait AttributeTabTrait
      * @param int $sortOrder
      * @return AttributeTabInterface
      */
-    public function setSortOrder(int $sortOrder): self
+    public function setSortOrder(int $sortOrder): AttributeTabInterface
     {
         $this->sortOrder = $sortOrder;
         return $this;

@@ -18,6 +18,12 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 trait CategoryTrait
 {
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class="App\Entity\Generator\SequenceGenerator")
+     * @ORM\Column(type="integer")
+     */
     private int $id;
 
     /**
@@ -182,5 +188,10 @@ trait CategoryTrait
     public function hasChildren(): bool
     {
         return $this->rgt - $this->lft > 1;
+    }
+
+    public function __toString()
+    {
+        return $this->name ?? 'unknown';
     }
 }

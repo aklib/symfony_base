@@ -2,11 +2,11 @@
 
 namespace App\Controller\Admin\Product;
 
-use App\Controller\Admin\AbstractAttributableEntityCrudController;
+use App\Controller\Admin\AbstractAttributableEntityController;
 use App\Entity\Attributable\Product;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 
-class ProductCrudController extends AbstractAttributableEntityCrudController
+class ProductEntityController extends AbstractAttributableEntityController
 {
     public static function getEntityFqcn(): string
     {

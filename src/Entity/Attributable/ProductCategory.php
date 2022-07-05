@@ -27,13 +27,6 @@ class ProductCategory implements CategoryInterface
     use CategoryTrait, TimestampableEntityTrait, BlameableEntityTrait;
 
     /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private int $id;
-
-    /**
      * @Gedmo\TreeParent
      * @ORM\ManyToOne(targetEntity="App\Entity\Attributable\ProductCategory", inversedBy="children", fetch="EAGER")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")

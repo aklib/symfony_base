@@ -4,7 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\UserProfile;
 
-class UserProfileCrudController extends AbstractAttributableEntityCrudController
+class UserProfileEntityController extends AbstractAttributableEntityController
 {
     public static function getEntityFqcn(): string
     {

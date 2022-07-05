@@ -15,11 +15,4 @@ use Doctrine\ORM\Mapping as ORM;
 class ProductAttributeTab implements AttributeTabInterface
 {
     use AttributeTabTrait, TimestampableEntityTrait, BlameableEntityTrait;
-
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private int $id;
 }

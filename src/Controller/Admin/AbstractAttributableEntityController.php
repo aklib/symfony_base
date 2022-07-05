@@ -25,7 +25,7 @@ use Elastica\Util;
 use InvalidArgumentException;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-abstract class AbstractAttributableEntityCrudController extends AbstractAppGrudController implements CrudControllerAttributableEntity
+abstract class AbstractAttributableEntityController extends AbstractAppGrudController implements CrudControllerAttributableEntity
 {
     private ?CategoryInterface $category = null;
     protected AttributeManagerInterface $attributeManager;
@@ -60,10 +60,13 @@ abstract class AbstractAttributableEntityCrudController extends AbstractAppGrudC
         if ($this->category === null) {
             $entity = $this->getEntity();
             if ($entity instanceof AttributableEntity) {
-                return $this->category = $entity->getCategory();
+                $category = $entity->getCategory();
+                if ($category instanceof CategoryInterface) {
+                    return $this->category = $category;
+                }
             }
             $uniqueKey = $this->getScope($this->getEntityFqcn());
-            /** @var \App\Repository\Attributable\ProductCategoryRepository $dao */
+
             $dao = $this->getEntityManager()->getRepository(ProductCategory::class);
             $this->category = $dao->findOneByUniqueKey($uniqueKey);
             if ($this->category === null) {

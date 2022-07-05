@@ -19,22 +19,10 @@ class Product implements AttributableEntity
     use AttributableEntityTrait, TimestampableEntityTrait, BlameableEntityTrait;
 
     /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private int $id;
-
-    /**
      * @ORM\ManyToOne(targetEntity=ProductCategory::class, fetch="EAGER")
      * @ORM\JoinColumn(nullable=false)
      * @AppORM\Element(sortOrder="3")
      *
      */
     private ?CategoryInterface $category = null;
-
-    public function getId(): int
-    {
-        return $this->id;
-    }
 }

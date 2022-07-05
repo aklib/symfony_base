@@ -117,12 +117,12 @@ abstract class AbstractAppGrudController extends AbstractCrudController implemen
     public function excludeFields(string $pageName = 'index'): array
     {
         $fields = [];
-        if($pageName === 'new' || $pageName === 'edit'){
+        //if($pageName === 'new' || $pageName === 'edit'){
             $fields[] = 'createdBy';
             $fields[] = 'updatedBy';
             $fields[] = 'createdAt';
             $fields[] = 'updatedAt';
-        }
+        //}
         return $fields;
     }
 

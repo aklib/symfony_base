@@ -74,15 +74,12 @@ class DashboardController extends AbstractDashboardController
     {
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
 
-        yield MenuItem::section('Managed Objects')->setPermission('ROLE_ADMIN');
-        yield MenuItem::linkToCrud('Category', 'fas fa-stream', ProductCategory::class)->setPermission('ROLE_ADMIN');
+        yield MenuItem::section('Product')->setPermission('ROLE_ADMIN');
         yield MenuItem::linkToCrud('Product', 'fas fa-list', Product::class)->setPermission('ROLE_ADMIN');
-        //yield MenuItem::linkToCrud('Person', 'fas fa-list', Person::class)->setPermission('ROLE_ADMIN');
-
-        yield MenuItem::section('Attributes')->setPermission('ROLE_ADMIN');
-        yield MenuItem::linkToCrud('Attribute', 'fas fa-list-ol', ProductAttribute::class)->setPermission('ROLE_ADMIN');
-        yield MenuItem::linkToCrud('Attribute Tabs', 'fas fa-list-ol', ProductAttributeTab::class)->setPermission('ROLE_ADMIN');
-        yield MenuItem::linkToCrud('Attribute Definitions', 'fas fa-list-ol', ProductAttributeDef::class)->setPermission('ROLE_ADMIN');
+        yield MenuItem::linkToCrud('Category', 'fas fa-stream', ProductCategory::class)->setPermission('ROLE_ADMIN')->setCssClass('ms-3');
+        yield MenuItem::linkToCrud('Attribute', 'fas fa-list-ol', ProductAttribute::class)->setPermission('ROLE_ADMIN')->setCssClass('ms-3');
+        yield MenuItem::linkToCrud('Attribute Tabs', 'fas fa-list-ol', ProductAttributeTab::class)->setPermission('ROLE_ADMIN')->setCssClass('ms-3');
+        yield MenuItem::linkToCrud('Attribute Definitions', 'fas fa-list-ol', ProductAttributeDef::class)->setPermission('ROLE_ADMIN')->setCssClass('ms-3');
 
         yield MenuItem::section('Users')->setPermission('ROLE_ADMIN');
         yield MenuItem::linkToCrud('User', 'fas fa-list-ul', User::class)->setPermission('ROLE_ADMIN');

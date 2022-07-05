@@ -16,10 +16,4 @@ class ProductAttributeDef implements AttributeDefInterface
 {
     use AttributeDefTrait, TimestampableEntityTrait, BlameableEntityTrait;
 
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private int $id;
 }

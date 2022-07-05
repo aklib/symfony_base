@@ -51,7 +51,7 @@ class UserCrudController extends AbstractAppGrudController
         }
 
         $adminUrlGenerator
-            ->setController(UserProfileCrudController::class)
+            ->setController(UserProfileEntityController::class)
             ->setAction(Crud::PAGE_DETAIL)
             ->setEntityId($entity->getUserProfile()->getId());
         return new RedirectResponse($adminUrlGenerator->generateUrl());

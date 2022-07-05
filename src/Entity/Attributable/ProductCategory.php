@@ -4,6 +4,7 @@ namespace App\Entity\Attributable;
 
 use App\Entity\Attributable\Extension\CategoryInterface;
 use App\Entity\Attributable\Extension\CategoryTrait;
+use App\Entity\Extension\Annotation as AppORM;
 use App\Entity\Extension\Traits\BlameableEntityTrait;
 use App\Entity\Extension\Traits\TimestampableEntityTrait;
 use App\Repository\Attributable\ProductCategoryRepository;

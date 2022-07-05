@@ -1,20 +1,13 @@
 <?php
 
-namespace App\Controller\Admin;
+namespace App\Controller\Admin\Product;
 
-use App\Entity\Product;
+use App\Controller\Admin\AbstractAttributableEntityCrudController;
+use App\Entity\Attributable\Product;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 
-/**
- * Class ProductCrudController
- * @package App\Controller\Admin
- *
- * @since: 09.06.2022
- * @author: alexej@kisselev.de
- */
 class ProductCrudController extends AbstractAttributableEntityCrudController
 {
-
     public static function getEntityFqcn(): string
     {
         return Product::class;
@@ -25,5 +18,3 @@ class ProductCrudController extends AbstractAttributableEntityCrudController
         return parent::configureCrud($crud)->setPaginatorPageSize(50);
     }
 }
-
-

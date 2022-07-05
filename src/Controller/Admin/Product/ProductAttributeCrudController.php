@@ -1,23 +1,25 @@
 <?php
 
-namespace App\Controller\Admin;
+namespace App\Controller\Admin\Product;
 
-use App\Entity\Attribute;
+use App\Controller\Admin\AbstractAppGrudController;
+use App\Entity\Attributable\Extension\AttributeInterface;
+use App\Entity\Attributable\ProductAttribute;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 
-class AttributeCrudController extends AbstractAppGrudController
+class ProductAttributeCrudController extends AbstractAppGrudController
 {
     public static function getEntityFqcn(): string
     {
-        return Attribute::class;
+        return ProductAttribute::class;
     }
 
     public function excludeFields(string $pageName = 'index'): array
     {
         $fields = parent::excludeFields($pageName);
         $entity = $this->getEntity();
-        if ($entity instanceof Attribute) {
-            if ($pageName === Crud::PAGE_NEW || $entity->getAttributeDefinition()->getType() !== 'select') {
+        if ($entity instanceof AttributeInterface) {
+            if ($pageName === Crud::PAGE_NEW || $entity->getAttributeDef()->getType() !== 'select') {
                 $fields[] = 'attributeOptions';
             }
         } else {
@@ -25,7 +27,7 @@ class AttributeCrudController extends AbstractAppGrudController
         }
         if ($pageName === 'edit') {
             $attribute = $this->getEntity();
-            if ($attribute instanceof Attribute && !$attribute->getAttributeDefinition()->isCanMultiple()) {
+            if ($attribute instanceof AttributeInterface && !$attribute->getAttributeDef()->isCanMultiple()) {
                 $fields[] = 'multiple';
             }
         } else {

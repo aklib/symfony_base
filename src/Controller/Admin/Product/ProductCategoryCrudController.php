@@ -1,18 +1,19 @@
 <?php
 
-namespace App\Controller\Admin;
+namespace App\Controller\Admin\Product;
 
-use App\Entity\Category;
+use App\Controller\Admin\AbstractAppGrudController;
+use App\Entity\Attributable\ProductCategory;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FieldTrait;
 
-class CategoryCrudController extends AbstractAppGrudController
+class ProductCategoryCrudController extends AbstractAppGrudController
 {
     public static function getEntityFqcn(): string
     {
-        return Category::class;
+        return ProductCategory::class;
     }
 
     public function configureCrud(Crud $crud): Crud

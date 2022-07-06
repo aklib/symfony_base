@@ -7,3 +7,4 @@ stof_doctrine_extensions:
             tree: true
             timestampable: true # not needed: listeners are not enabled by default
             blameable: true
+            sluggable: true

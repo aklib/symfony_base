@@ -12,6 +12,7 @@ namespace App\Entity\Attributable\Extension;
 
 use App\Entity\Extension\Annotation as AppORM;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
 
 trait AttributeTrait
@@ -35,12 +36,22 @@ trait AttributeTrait
      * @var string
      * @ORM\Column(name="unique_key", type="string", length=32, nullable=false, unique=true)
      * @AppORM\Element(sortOrder="3", help="Only [a-z] characters in lower case and underscore '_'.")
+     *
+     * @Gedmo\Slug(handlers={
+     *      @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\RelativeSlugHandler", options={
+     *          @Gedmo\SlugHandlerOption(name="relationField", value="category"),
+     *          @Gedmo\SlugHandlerOption(name="relationSlugField", value="name"),
+     *          @Gedmo\SlugHandlerOption(name="separator", value="_")
+     *      })
+     * }, fields={"name"}, style="lower", unique_base="uniqueKey", updatable=false)
+     *
      * @Assert\Regex(
      *     pattern     = "/^[a-z_]+$/"
      * )
      * @Assert\NotEqualTo("category")
      * @Assert\NotEqualTo("id")
      * @Assert\NotEqualTo("active")
+     *
      */
     private string $uniqueKey;
 

@@ -10,6 +10,7 @@
 
 namespace App\Entity\Attributable\Extension;
 
+use App\Entity\Attributable\ProductCategory;
 use App\Entity\Extension\Annotation as AppORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -33,13 +34,6 @@ trait CategoryTrait
     private string $name;
 
     /**
-     * @ORM\Column(type="string", length=32, unique=true)
-     * @AppORM\Element(sortOrder="2")
-     *
-     */
-    private string $uniqueKey;
-
-    /**
      * @Gedmo\TreeLeft
      * @ORM\Column(type="integer")
      */
@@ -58,8 +52,22 @@ trait CategoryTrait
     private int $level;
 
     //============= OVERRIDDEN IN IMPLEMENTATION CLASS =============
+    // must be override because target entity
+
+    private ?CategoryInterface $parent = null;
+    private ?CategoryInterface $root;
+    private Collection $children;
+    private Collection $attributes;
+    private Collection $products;
 
     //============= EO OVERRIDDEN =============
+
+    public function __construct()
+    {
+        $this->attributes = new ArrayCollection();
+        $this->children = new ArrayCollection();
+        $this->products = new ArrayCollection();
+    }
 
     /**
      * @return int
@@ -84,24 +92,6 @@ trait CategoryTrait
     public function setName(string $name): CategoryInterface
     {
         $this->name = $name;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUniqueKey(): string
-    {
-        return $this->uniqueKey;
-    }
-
-    /**
-     * @param string $uniqueKey
-     * @return CategoryInterface
-     */
-    public function setUniqueKey(string $uniqueKey): CategoryInterface
-    {
-        $this->uniqueKey = $uniqueKey;
         return $this;
     }
 
@@ -159,7 +149,106 @@ trait CategoryTrait
         return $this;
     }
 
+    /**
+     * @return CategoryInterface|null
+     */
+    public function getParent(): ?CategoryInterface
+    {
+        return $this->parent;
+    }
+
+    /**
+     * @param CategoryInterface|null $parent
+     * @return ProductCategory
+     */
+    public function setParent(?CategoryInterface $parent): ProductCategory
+    {
+        $this->parent = $parent;
+        return $this;
+    }
+
+    /**
+     * @return CategoryInterface|null
+     */
+    public function getRoot(): ?CategoryInterface
+    {
+        return $this->root;
+    }
+
+    /**
+     * @param CategoryInterface|null $root
+     * @return ProductCategory
+     */
+    public function setRoot(?CategoryInterface $root): ProductCategory
+    {
+        $this->root = $root;
+        return $this;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getChildren(): Collection
+    {
+        return $this->children;
+    }
+
+    /**
+     * @param Collection $children
+     * @return ProductCategory
+     */
+    public function setChildren(Collection $children): CategoryInterface
+    {
+        $this->children = $children;
+        return $this;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getProducts(): Collection
+    {
+        return $this->products;
+    }
+
+    /**
+     * @param Collection $products
+     * @return ProductCategory
+     */
+    public function setProducts(Collection $products): ProductCategory
+    {
+        $this->products = $products;
+        return $this;
+    }
+
+    public function isDeletable(): bool
+    {
+        return $this->getAttributes()->count() === 0 && $this->getProducts()->count() === 0;
+    }
+
     // ======================= METHODS REQUIRED FOR HYDRATION =======================
+
+    /**
+     * @param bool $recursive
+     * @return Collection
+     */
+    public function getAttributes(bool $recursive = false): Collection
+    {
+        if ($recursive) {
+            return $this->getAttributesRecursive();
+        }
+        return $this->attributes;
+    }
+
+    /**
+     * @param ArrayCollection|Collection $attributes
+     * @return ProductCategory
+     */
+    public function setAttributes($attributes): CategoryInterface
+    {
+        $this->attributes = $attributes;
+        return $this;
+    }
 
     private ?Collection $attributesFromTree = null;
 
@@ -189,6 +278,7 @@ trait CategoryTrait
     {
         return $this->rgt - $this->lft > 1;
     }
+
 
     public function __toString()
     {

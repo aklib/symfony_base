@@ -30,17 +30,6 @@ interface CategoryInterface extends DeletableEntity
     public function setName(string $name): CategoryInterface;
 
     /**
-     * @return string
-     */
-    public function getUniqueKey(): string;
-
-    /**
-     * @param string $uniqueKey
-     * @return CategoryInterface
-     */
-    public function setUniqueKey(string $uniqueKey): CategoryInterface;
-
-    /**
      * @return int
      */
     public function getLft(): int;

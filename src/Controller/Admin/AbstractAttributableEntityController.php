@@ -1,4 +1,5 @@
-<?php
+<?php /** @noinspection PhpUnusedPrivateMethodInspection */
+
 /**
  * Class AbstractAttributableEntityController
  * @package App\Controller\Admin
@@ -65,12 +66,11 @@ abstract class AbstractAttributableEntityController extends AbstractAppGrudContr
                     return $this->category = $category;
                 }
             }
-            $uniqueKey = $this->getScope($this->getEntityFqcn());
 
             $dao = $this->getEntityManager()->getRepository(ProductCategory::class);
-            $this->category = $dao->findOneByUniqueKey($uniqueKey);
+            $this->category = $dao->getRootNodes()[0] ?? null;
             if ($this->category === null) {
-                throw new InvalidArgumentException("The category with unique key '$uniqueKey' not exists. Please first create one.");
+                throw new InvalidArgumentException("The category tree root not exists. Please first create one.");
             }
         }
         return $this->category;

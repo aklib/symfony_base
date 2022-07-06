@@ -34,4 +34,6 @@ interface AttributableEntity extends DeletableEntity
     public function getScope(): string;
 
     public function getAttributeManager(): AttributeValueManagerInterface;
+
+    public function __toString();
 }

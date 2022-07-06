@@ -191,9 +191,8 @@ class CrudControllerManager
                 break;
             case 'string':
                 $field = TextField::new($propertyName, $label);
-                if ($propertyName === 'uniqueKey' && $pageName !== 'new') {
-                    $field->setHelp('');
-                    $field->setDisabled();
+                if ($propertyName === 'uniqueKey') {
+                    $field->setHelp('')->hideOnForm();
                 }
                 break;
             case 'password':
@@ -213,10 +212,9 @@ class CrudControllerManager
             case 'select':
                 $field = ChoiceField::new($propertyName, $label);
                 $choices = [];
-//                /** @var AttributeOption $attributeOption */
-//                foreach ($attribute->getAttributeOptions() as $attributeOption) {
-//                    $choices[$attributeOption->getName()] = $attributeOption->getId();
-//                }
+                foreach ($attribute->getOptionsArray() as $attributeOption) {
+                    $choices[$attributeOption] = $attributeOption;
+                }
                 $field
                     ->setChoices($choices)
                     ->allowMultipleChoices($attribute->isMultiple());

@@ -49,7 +49,10 @@ class ProductCategoryCrudController extends AbstractAppGrudController
 
     public function excludeFields(string $pageName = null): array
     {
-        $fields = parent::excludeFields($pageName);
-        return array_merge($fields,  ['lft','rgt','level','root','children','products']);
+        $fields = array_merge(parent::excludeFields($pageName), ['lft', 'rgt', 'level', 'root', 'children']);
+        if ($pageName !== 'index') {
+            $fields[] = 'products';
+        }
+        return $fields;
     }
 }

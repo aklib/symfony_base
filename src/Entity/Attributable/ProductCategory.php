@@ -8,7 +8,6 @@ use App\Entity\Extension\Annotation as AppORM;
 use App\Entity\Extension\Traits\BlameableEntityTrait;
 use App\Entity\Extension\Traits\TimestampableEntityTrait;
 use App\Repository\Attributable\ProductCategoryRepository;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -56,116 +55,5 @@ class ProductCategory implements CategoryInterface
      * @ORM\OneToMany(targetEntity="App\Entity\Attributable\Product", mappedBy="category")
      */
     private Collection $products;
-
-    public function __construct()
-    {
-        $this->attributes = new ArrayCollection();
-        $this->children = new ArrayCollection();
-        $this->products = new ArrayCollection();
-    }
-
-    /**
-     * @return int
-     */
-    public function getId(): int
-    {
-        return $this->id;
-    }
-
-    /**
-     * @return CategoryInterface|null
-     */
-    public function getParent(): ?CategoryInterface
-    {
-        return $this->parent;
-    }
-
-    /**
-     * @param CategoryInterface|null $parent
-     * @return ProductCategory
-     */
-    public function setParent(?CategoryInterface $parent): ProductCategory
-    {
-        $this->parent = $parent;
-        return $this;
-    }
-
-    /**
-     * @return CategoryInterface|null
-     */
-    public function getRoot(): ?CategoryInterface
-    {
-        return $this->root;
-    }
-
-    /**
-     * @param CategoryInterface|null $root
-     * @return ProductCategory
-     */
-    public function setRoot(?CategoryInterface $root): ProductCategory
-    {
-        $this->root = $root;
-        return $this;
-    }
-
-    /**
-     * @return Collection
-     */
-    public function getChildren(): Collection
-    {
-        return $this->children;
-    }
-
-    /**
-     * @param Collection $children
-     * @return ProductCategory
-     */
-    public function setChildren(Collection $children): CategoryInterface
-    {
-        $this->children = $children;
-        return $this;
-    }
-
-    /**
-     * @param bool $recursive
-     * @return Collection
-     */
-    public function getAttributes(bool $recursive = false): Collection
-    {
-        return $this->attributes;
-    }
-
-    /**
-     * @param ArrayCollection|Collection $attributes
-     * @return ProductCategory
-     */
-    public function setAttributes($attributes): CategoryInterface
-    {
-        $this->attributes = $attributes;
-        return $this;
-    }
-
-    /**
-     * @return Collection
-     */
-    public function getProducts(): Collection
-    {
-        return $this->products;
-    }
-
-    /**
-     * @param Collection $products
-     * @return ProductCategory
-     */
-    public function setProducts(Collection $products): ProductCategory
-    {
-        $this->products = $products;
-        return $this;
-    }
-
-    public function isDeletable(): bool
-    {
-        return $this->getAttributes()->count() === 0 && $this->getProducts()->count() === 0;
-    }
 }
    

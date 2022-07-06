@@ -60,13 +60,14 @@ abstract class AbstractAttributeManager implements AttributeManagerInterface
             }
             return null;
         });
-//        if ($result->isEmpty()) {
+        if ($result->isEmpty()) {
+            return null;
 //            $attr = $this->getEntityManager()->getRepository(Attribute::class)->findOneByUniqueKey($uniqueKey);
 //            if ($attr instanceof AttributeInterface) {
 //                $this->attributes->add($attr);
 //            }
 //            return $attr;
-//        }
+        }
         return $result->first();
     }
 

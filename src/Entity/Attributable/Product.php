@@ -19,7 +19,7 @@ class Product implements AttributableEntity
     use AttributableEntityTrait, TimestampableEntityTrait, BlameableEntityTrait;
 
     /**
-     * @ORM\ManyToOne(targetEntity=ProductCategory::class, fetch="EAGER")
+     * @ORM\ManyToOne(targetEntity=ProductCategory::class, inversedBy="products", fetch="EAGER")
      * @ORM\JoinColumn(nullable=false)
      * @AppORM\Element(sortOrder="3")
      *

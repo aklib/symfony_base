@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpUnused */
 
 namespace App\Entity\Attributable;
 
@@ -52,10 +52,16 @@ class ProductCategory implements CategoryInterface
      */
     private Collection $attributes;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Attributable\Product", mappedBy="category")
+     */
+    private Collection $products;
+
     public function __construct()
     {
         $this->attributes = new ArrayCollection();
         $this->children = new ArrayCollection();
+        $this->products = new ArrayCollection();
     }
 
     /**
@@ -139,10 +145,27 @@ class ProductCategory implements CategoryInterface
         return $this;
     }
 
+    /**
+     * @return Collection
+     */
+    public function getProducts(): Collection
+    {
+        return $this->products;
+    }
+
+    /**
+     * @param Collection $products
+     * @return ProductCategory
+     */
+    public function setProducts(Collection $products): ProductCategory
+    {
+        $this->products = $products;
+        return $this;
+    }
 
     public function isDeletable(): bool
     {
-        return $this->getAttributes()->count() === 0;
+        return $this->getAttributes()->count() === 0 && $this->getProducts()->count() === 0;
     }
 }
    

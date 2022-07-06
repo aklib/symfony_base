@@ -10,6 +10,9 @@
 
 namespace App\Entity\Attributable\Extension;
 
+use App\Entity\Attributable\ProductAttributeTab;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 trait AttributeTabTrait
@@ -35,6 +38,36 @@ trait AttributeTabTrait
      * @ORM\Column(name="sort_order", type="integer", nullable=false, options={"default"="1"})
      */
     private int $sortOrder = 1;
+
+    private Collection $attributes;
+
+    public function __construct()
+    {
+        $this->attributes = new ArrayCollection();
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getAttributes(): Collection
+    {
+        return $this->attributes;
+    }
+
+    /**
+     * @param ArrayCollection|Collection $attributes
+     * @return ProductAttributeTab
+     */
+    public function setAttributes($attributes): ProductAttributeTab
+    {
+        $this->attributes = $attributes;
+        return $this;
+    }
+
+    public function isDeletable(): bool
+    {
+        return $this->getAttributes()->count() === 0;
+    }
 
     /**
      * @return int

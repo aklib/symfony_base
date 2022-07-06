@@ -202,4 +202,9 @@ trait AttributableEntityTrait
         }
         return $changed;
     }
+
+    public function isDeletable(): bool
+    {
+        return true;
+    }
 }

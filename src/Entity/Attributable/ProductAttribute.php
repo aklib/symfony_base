@@ -57,9 +57,4 @@ class ProductAttribute implements AttributeInterface
      * @AppORM\Element(sortOrder="3")
      */
     private AttributeDefInterface $attributeDef;
-
-    public function isDeletable(): bool
-    {
-        return true;
-    }
 }

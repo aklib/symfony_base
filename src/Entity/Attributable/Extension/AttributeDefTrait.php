@@ -10,6 +10,8 @@
 
 namespace App\Entity\Attributable\Extension;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 trait AttributeDefTrait
@@ -39,6 +41,36 @@ trait AttributeDefTrait
      */
     private bool $canMultiple = false;
 
+    private Collection $attributes;
+
+    public function __construct()
+    {
+        $this->attributes = new ArrayCollection();
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getAttributes(): Collection
+    {
+        return $this->attributes;
+    }
+
+    /**
+     * @param ArrayCollection|Collection $attributes
+     * @return AttributeDefInterface
+     */
+    public function setAttributes($attributes): AttributeDefInterface
+    {
+        $this->attributes = $attributes;
+        return $this;
+    }
+
+    public function isDeletable(): bool
+    {
+        return $this->getAttributes()->count() === 0;
+    }
+
     /**
      * @return int
      */
@@ -59,7 +91,7 @@ trait AttributeDefTrait
      * @param string $type
      * @return AttributeDefInterface
      */
-    public function setType(string $type): self
+    public function setType(string $type): AttributeDefInterface
     {
         $this->type = $type;
         return $this;
@@ -77,7 +109,7 @@ trait AttributeDefTrait
      * @param string $description
      * @return AttributeDefInterface
      */
-    public function setDescription(string $description): self
+    public function setDescription(string $description): AttributeDefInterface
     {
         $this->description = $description;
         return $this;
@@ -88,7 +120,7 @@ trait AttributeDefTrait
         return $this->canMultiple;
     }
 
-    public function setCanMultiple(bool $canMultiple): self
+    public function setCanMultiple(bool $canMultiple): AttributeDefInterface
     {
         $this->canMultiple = $canMultiple;
 

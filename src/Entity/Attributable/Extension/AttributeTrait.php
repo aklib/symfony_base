@@ -305,6 +305,11 @@ trait AttributeTrait
         return $mapping;
     }
 
+    public function isDeletable(): bool
+    {
+        return true;
+    }
+
     public function __toString()
     {
         return $this->name;

@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Entity\Attributable;
+namespace App\Entity\Product;
 
-use App\Entity\Attributable\Extension\AttributeDefInterface;
-use App\Entity\Attributable\Extension\AttributeDefTrait;
+use App\Entity\Extension\Attributable\AttributeDefInterface;
+use App\Entity\Extension\Attributable\AttributeDefTrait;
 use App\Entity\Extension\Traits\BlameableEntityTrait;
 use App\Entity\Extension\Traits\TimestampableEntityTrait;
-use App\Repository\Attributable\ProductAttributeDefRepository;
+use App\Repository\Product\ProductAttributeDefRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -18,7 +18,7 @@ class ProductAttributeDef implements AttributeDefInterface
     use AttributeDefTrait, TimestampableEntityTrait, BlameableEntityTrait;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Attributable\ProductAttribute", mappedBy="attributeDef")
+     * @ORM\OneToMany(targetEntity="App\Entity\Product\ProductAttribute", mappedBy="attributeDef")
      * @ORM\OrderBy({"name" = "ASC"})
      */
     private Collection $attributes;

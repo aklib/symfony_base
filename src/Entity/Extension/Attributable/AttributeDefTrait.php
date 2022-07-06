@@ -8,7 +8,7 @@
  * author: alexej@kisselev.de
  */
 
-namespace App\Entity\Attributable\Extension;
+namespace App\Entity\Extension\Attributable;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;

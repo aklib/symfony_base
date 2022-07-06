@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity\Attributable\Extension;
+namespace App\Entity\Extension\Attributable;
 
 use App\Bundles\Attribute\AttributeValueManagerInterface;
 use App\Entity\Extension\DeletableEntity;

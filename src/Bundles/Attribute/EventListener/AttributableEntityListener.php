@@ -5,9 +5,9 @@
 namespace App\Bundles\Attribute\EventListener;
 
 use App\Bundles\Attribute\AttributeEntityManagerInterface;
-use App\Entity\Attributable\Extension\AttributableEntity;
-use App\Entity\Attributable\Extension\AttributeInterface;
 use App\Entity\Extension\Annotation\CustomDoctrineAnnotation;
+use App\Entity\Extension\Attributable\AttributableEntity;
+use App\Entity\Extension\Attributable\AttributeInterface;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;

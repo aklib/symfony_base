@@ -10,8 +10,8 @@
 
 namespace App\Bundles\Attribute\Manager;
 
-use App\Entity\Attributable\Extension\AttributableEntity;
 use App\Entity\AttributeValue;
+use App\Entity\Extension\Attributable\AttributableEntity;
 use App\Repository\AttributeValueRepository;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -59,7 +59,7 @@ class AttributeManagerDatabase extends AbstractAttributeManager
         $entities = new ArrayCollection();
         $scopes = [];
         $ids = [];
-        /** @var AttributableEntity $entity */
+        /** @var \App\Entity\Extension\Attributable\AttributableEntity $entity */
         foreach ($this->entities as $entity) {
             $key = $this->getDocumentId($entity);
             if (in_array($key, $this->initialisedEntities, true)) {
@@ -105,7 +105,7 @@ class AttributeManagerDatabase extends AbstractAttributeManager
         //upsert entity documents
         $user = $this->getSecurity()->getUser();
         $identifier = $user instanceof UserInterface ? $user->getUserIdentifier() : 'console';
-        /** @var AttributableEntity $entity */
+        /** @var \App\Entity\Extension\Attributable\AttributableEntity $entity */
         foreach ($this->entities as $entity) {
             $attrValues = [];
             $docId = $this->getDocumentId($entity);

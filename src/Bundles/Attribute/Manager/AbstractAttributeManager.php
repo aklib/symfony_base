@@ -11,8 +11,8 @@
 namespace App\Bundles\Attribute\Manager;
 
 use App\Bundles\Attribute\AttributeManagerInterface;
-use App\Entity\Attributable\Extension\AttributableEntity;
-use App\Entity\Attributable\Extension\AttributeInterface;
+use App\Entity\Extension\Attributable\AttributableEntity;
+use App\Entity\Extension\Attributable\AttributeInterface;
 use App\Entity\User;
 use DateTime;
 use DateTimeZone;
@@ -37,7 +37,7 @@ abstract class AbstractAttributeManager implements AttributeManagerInterface
     protected array $initialisedEntities = [];
     protected ?array $attributeValues = null;
     /**
-     * @var ArrayCollection<AttributableEntity>
+     * @var ArrayCollection<\App\Entity\Extension\Attributable\AttributableEntity>
      */
     protected ArrayCollection $entities;
     private array $user = [];
@@ -165,7 +165,7 @@ abstract class AbstractAttributeManager implements AttributeManagerInterface
     }
 
     /**
-     * @param AttributableEntity $entity
+     * @param \App\Entity\Extension\Attributable\AttributableEntity $entity
      * @param EntityManagerInterface $entityManager
      * @return void
      */
@@ -200,7 +200,7 @@ abstract class AbstractAttributeManager implements AttributeManagerInterface
 
     /**
      * Unique key for document e.g. product_20,  user_profile_1
-     * @param AttributableEntity|null $entity
+     * @param \App\Entity\Extension\Attributable\AttributableEntity|null $entity
      * @param array|null $docData
      * @return string
      */

@@ -1,13 +1,13 @@
 <?php /** @noinspection PhpUnused */
 
-namespace App\Entity\Attributable;
+namespace App\Entity\Product;
 
-use App\Entity\Attributable\Extension\CategoryInterface;
-use App\Entity\Attributable\Extension\CategoryTrait;
 use App\Entity\Extension\Annotation as AppORM;
+use App\Entity\Extension\Attributable\CategoryInterface;
+use App\Entity\Extension\Attributable\CategoryTrait;
 use App\Entity\Extension\Traits\BlameableEntityTrait;
 use App\Entity\Extension\Traits\TimestampableEntityTrait;
-use App\Repository\Attributable\ProductCategoryRepository;
+use App\Repository\Product\ProductCategoryRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -22,7 +22,7 @@ class ProductCategory implements CategoryInterface
 
     /**
      * @Gedmo\TreeParent
-     * @ORM\ManyToOne(targetEntity="App\Entity\Attributable\ProductCategory", inversedBy="children", fetch="EAGER")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Product\ProductCategory", inversedBy="children", fetch="EAGER")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
      * @AppORM\Element(sortOrder="2")
      */
@@ -30,24 +30,24 @@ class ProductCategory implements CategoryInterface
 
     /**
      * @Gedmo\TreeRoot
-     * @ORM\ManyToOne(targetEntity="App\Entity\Attributable\ProductCategory")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Product\ProductCategory")
      * @ORM\JoinColumn(name="tree_root", referencedColumnName="id", onDelete="CASCADE")
      */
     private ?CategoryInterface $root;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Attributable\ProductCategory", mappedBy="parent")
+     * @ORM\OneToMany(targetEntity="App\Entity\Product\ProductCategory", mappedBy="parent")
      * @ORM\OrderBy({"lft" = "ASC"})
      */
     private Collection $children;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Attributable\ProductAttribute", mappedBy="category")
+     * @ORM\OneToMany(targetEntity="App\Entity\Product\ProductAttribute", mappedBy="category")
      */
     private Collection $attributes;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Attributable\Product", mappedBy="category")
+     * @ORM\OneToMany(targetEntity="App\Entity\Product\Product", mappedBy="category")
      */
     private Collection $products;
 }

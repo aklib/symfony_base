@@ -3,8 +3,8 @@
 namespace App\Controller\Admin\Product;
 
 use App\Controller\Admin\AbstractAppGrudController;
-use App\Entity\Attributable\Extension\AttributeInterface;
-use App\Entity\Attributable\ProductAttribute;
+use App\Entity\Extension\Attributable\AttributeInterface;
+use App\Entity\Product\ProductAttribute;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 
 class ProductAttributeCrudController extends AbstractAppGrudController

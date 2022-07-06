@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Entity\Attributable;
+namespace App\Entity\Product;
 
 
-use App\Entity\Attributable\Extension\AttributeDefInterface;
-use App\Entity\Attributable\Extension\AttributeInterface;
-use App\Entity\Attributable\Extension\AttributeTabInterface;
-use App\Entity\Attributable\Extension\AttributeTrait;
-use App\Entity\Attributable\Extension\CategoryInterface;
 use App\Entity\Extension\Annotation as AppORM;
+use App\Entity\Extension\Attributable\AttributeDefInterface;
+use App\Entity\Extension\Attributable\AttributeInterface;
+use App\Entity\Extension\Attributable\AttributeTabInterface;
+use App\Entity\Extension\Attributable\AttributeTrait;
+use App\Entity\Extension\Attributable\CategoryInterface;
 use App\Entity\Extension\Traits\BlameableEntityTrait;
 use App\Entity\Extension\Traits\TimestampableEntityTrait;
-use App\Repository\Attributable\ProductAttributeRepository;
+use App\Repository\Product\ProductAttributeRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
@@ -28,7 +28,7 @@ class ProductAttribute implements AttributeInterface
     use AttributeTrait, TimestampableEntityTrait, BlameableEntityTrait;
 
     /**
-     * @var CategoryInterface
+     * @var \App\Entity\Extension\Attributable\CategoryInterface
      * @ORM\ManyToOne(targetEntity=ProductCategory::class, inversedBy="attributes")
      *
      * @ORM\OrderBy({"lft" = "ASC"})
@@ -39,7 +39,7 @@ class ProductAttribute implements AttributeInterface
     /**
      * @var AttributeTabInterface
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Attributable\ProductAttributeTab", fetch="EXTRA_LAZY", inversedBy="attributes")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Product\ProductAttributeTab", fetch="EXTRA_LAZY", inversedBy="attributes")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="tab_id", referencedColumnName="id", nullable=false)
      * })
@@ -50,7 +50,7 @@ class ProductAttribute implements AttributeInterface
     /**
      * @var AttributeDefInterface
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Attributable\ProductAttributeDef", fetch="EAGER", inversedBy="attributes")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Product\ProductAttributeDef", fetch="EAGER", inversedBy="attributes")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="def_id", referencedColumnName="id", nullable=false)
      * })

@@ -2,12 +2,12 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\Attributable\Extension\AttributableEntity;
-use App\Entity\Attributable\Product;
-use App\Entity\Attributable\ProductAttribute;
-use App\Entity\Attributable\ProductAttributeDef;
-use App\Entity\Attributable\ProductAttributeTab;
-use App\Entity\Attributable\ProductCategory;
+use App\Entity\Extension\Attributable\AttributableEntity;
+use App\Entity\Product\Product;
+use App\Entity\Product\ProductAttribute;
+use App\Entity\Product\ProductAttributeDef;
+use App\Entity\Product\ProductAttributeTab;
+use App\Entity\Product\ProductCategory;
 use App\Entity\User;
 use App\Entity\UserProfile;
 use Doctrine\ORM\EntityManagerInterface;

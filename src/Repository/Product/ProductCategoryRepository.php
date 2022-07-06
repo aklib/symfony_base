@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Repository\Attributable;
+namespace App\Repository\Product;
 
-use App\Entity\Attributable\ProductCategory;
+use App\Entity\Product\ProductCategory;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 
@@ -12,12 +12,12 @@ use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
  * @method ProductCategory|null find($id, $lockMode = null, $lockVersion = null)
  * @method ProductCategory|null findOneBy(array $criteria, array $orderBy = null)
  * @method ProductCategory[]    findAll()
- * @method ProductCategory[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method \App\Entity\Product\ProductCategory[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  * @method ProductCategory|null findOneByUniqueKey(string $uniqueKey)
  */
 class ProductCategoryRepository extends NestedTreeRepository
 {
-    public function add(ProductCategory $entity, bool $flush = false): void
+    public function add(\App\Entity\Product\ProductCategory $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 

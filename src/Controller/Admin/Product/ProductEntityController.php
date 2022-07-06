@@ -3,7 +3,7 @@
 namespace App\Controller\Admin\Product;
 
 use App\Controller\Admin\AbstractAttributableEntityController;
-use App\Entity\Attributable\Product;
+use App\Entity\Product\Product;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 
 class ProductEntityController extends AbstractAttributableEntityController

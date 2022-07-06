@@ -3,7 +3,7 @@
 namespace App\Controller\Admin\Product;
 
 use App\Controller\Admin\AbstractAppGrudController;
-use App\Entity\Attributable\ProductAttributeTab;
+use App\Entity\Product\ProductAttributeTab;
 
 class ProductAttributeTabCrudController extends AbstractAppGrudController
 {

@@ -9,7 +9,7 @@
 
 namespace App\Bundles\Attribute\Controller;
 
-use App\Entity\Attributable\Extension\CategoryInterface;
+use App\Entity\Extension\Attributable\CategoryInterface;
 
 interface CrudControllerAttributableEntity
 {

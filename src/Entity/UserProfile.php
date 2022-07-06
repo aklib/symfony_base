@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use App\Entity\Attributable\Extension\AttributableEntityTrait;
+use App\Entity\Extension\Attributable\AttributableEntityTrait;
 use App\Entity\Extension\Traits\BlameableEntityTrait;
 use App\Entity\Extension\Traits\TimestampableEntityTrait;
 use App\Repository\UserProfileRepository;
@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass=UserProfileRepository::class)
  */
-class UserProfile implements Attributable\Extension\AttributableEntity
+class UserProfile implements Extension\Attributable\AttributableEntity
 {
     use TimestampableEntityTrait, BlameableEntityTrait, AttributableEntityTrait;
 

@@ -8,10 +8,10 @@
  * author: alexej@kisselev.de
  */
 
-namespace App\Entity\Attributable\Extension;
+namespace App\Entity\Extension\Attributable;
 
-use App\Entity\Attributable\ProductCategory;
 use App\Entity\Extension\Annotation as AppORM;
+use App\Entity\Product\ProductCategory;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -177,9 +177,9 @@ trait CategoryTrait
 
     /**
      * @param CategoryInterface|null $root
-     * @return ProductCategory
+     * @return \App\Entity\Product\ProductCategory
      */
-    public function setRoot(?CategoryInterface $root): ProductCategory
+    public function setRoot(?CategoryInterface $root): \App\Entity\Product\ProductCategory
     {
         $this->root = $root;
         return $this;

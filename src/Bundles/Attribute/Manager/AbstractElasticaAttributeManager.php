@@ -11,7 +11,7 @@
 
 namespace App\Bundles\Attribute\Manager;
 
-use App\Entity\Attributable\Extension\AttributableEntity;
+use App\Entity\Extension\Attributable\AttributableEntity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
@@ -44,7 +44,7 @@ abstract class AbstractElasticaAttributeManager extends AbstractAttributeManager
 
     /**
      * Unique key for document e.g. product_20,  user_profile_1
-     * @param AttributableEntity|null $entity
+     * @param \App\Entity\Extension\Attributable\AttributableEntity|null $entity
      * @param array|null $docData
      * @return string
      */
@@ -72,7 +72,7 @@ abstract class AbstractElasticaAttributeManager extends AbstractAttributeManager
         }
         $entities = new ArrayCollection();
 
-        /** @var \App\Entity\Attributable\Extension\AttributableEntity $entity */
+        /** @var \App\Entity\Extension\Attributable\AttributableEntity $entity */
         foreach ($this->entities as $entity) {
             $key = $this->getDocumentId($entity);
             if (in_array($key, $this->initialisedEntities, true)) {
@@ -191,7 +191,7 @@ abstract class AbstractElasticaAttributeManager extends AbstractAttributeManager
         if ($this->entities->isEmpty()) {
             return;
         }
-        /** @var AttributableEntity $entity */
+        /** @var \App\Entity\Extension\Attributable\AttributableEntity $entity */
         foreach ($this->entities as $entity) {
             $this->managerDatabase->addEntity($entity);
             foreach ($entity->getCategory()->getAttributes() as $attribute) {

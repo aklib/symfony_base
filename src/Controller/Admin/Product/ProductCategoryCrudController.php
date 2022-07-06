@@ -3,7 +3,7 @@
 namespace App\Controller\Admin\Product;
 
 use App\Controller\Admin\AbstractAppGrudController;
-use App\Entity\Attributable\ProductCategory;
+use App\Entity\Product\ProductCategory;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;

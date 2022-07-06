@@ -11,14 +11,11 @@
 
 namespace App\Bundles\Attribute\Command;
 
-use App\Bundles\Attribute\Manager\AbstractElasticaAttributeManager;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\MakerBundle\Maker\MakeEntity;
-use Symfony\Bundle\MakerBundle\Test\MakerTestKernel;
+use Symfony\Bundle\MakerBundle\ConsoleStyle;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
 
 
@@ -26,10 +23,9 @@ class AttributableCreateCommand extends Command
 {
     private EntityManagerInterface $em;
 
-    /** @noinspection PhpOptionalBeforeRequiredParametersInspection */
-    public function __construct(string $name = null, EntityManagerInterface $em)
+    public function __construct(EntityManagerInterface $em)
     {
-        parent::__construct($name);
+        parent::__construct();
         $this->em = $em;
     }
 
@@ -56,24 +52,36 @@ class AttributableCreateCommand extends Command
             '============',
             '',
         ]);
+        $io = new ConsoleStyle($input, $output);
 
         $helper = $this->getHelper('question');
         $question = new Question('The name (camelcase) of the bundle[entity] : ');
 //
         $entityName = $helper->ask($input, $output, $question);
-        $entityName = "Attributable\\$entityName";
 
-        $kernel = new MakerTestKernel('dev', true);
-        $kernel->boot();
-        /** @var MakeEntity $maker */
+        $entityName = "$entityName\\$entityName";
+        $entityNameAttribute = $entityName . 'Attribute';
+        $entityNameAttributeDef = $entityName . 'AttributeDef';
+        $entityNameAttributeTab = $entityName . 'AttributeTab';
+        $entityNameCategory = $entityName . 'Category';
+
+
+//        $kernel = new MakerTestKernel('dev', true);
+//        $kernel->registerBundles();
+//        $kernel->boot();
+//        /** @var MakeEntity $maker */
 //        $maker = $kernel->getContainer()->get('maker.maker.make_entity');
-//        $maker->generate($input,);
-        $out = shell_exec('php bin/console -n -q make:entity ' . escapeshellarg($entityName) . "\n");
+//        $maker->generate($input, $io, $this->generator);
 
-        $out .= shell_exec('php bin/console -n -q make:entity ' . escapeshellarg($entityName) . "\n");
-
-
-        $output->writeln($out);
+//        shell_exec('php bin/console -q make:entity ' . escapeshellarg($entityName) . "\n");
+//        sleep(1);
+//        shell_exec('php bin/console -q make:entity ' . escapeshellarg($entityNameAttribute) . "\n");
+//        sleep(1);
+//        shell_exec('php bin/console -q make:entity ' . escapeshellarg($entityNameAttributeDef) . "\n");
+//        sleep(1);
+//        shell_exec('php bin/console -q make:entity ' . escapeshellarg($entityNameAttributeTab) . "\n");
+//        sleep(1);
+//        shell_exec('php bin/console -q make:entity ' . escapeshellarg($entityNameCategory) . "\n");
 
 
         return Command::SUCCESS;
@@ -94,33 +102,6 @@ class AttributableCreateCommand extends Command
 //
 //        return Command::SUCCESS;
     }
-
-    protected function resetIndex(AbstractElasticaAttributeManager $manager, InputInterface $input, OutputInterface $output): bool
-    {
-        $result = false;
-        $doReset = $input->getOption('do-reset');
-        if ($doReset === null) {
-            $doReset = true;
-        }
-        if ($input->getOption('do-reset-ask') === null) {
-            $helper = $this->getHelper('question');
-            $question = new ConfirmationQuestion(
-                sprintf("Do reset '%s' index before populating? y/n", $manager->getIndex()->getName()),
-                false,
-                '/^(y|j)/i'
-            );
-
-            if ($helper->ask($input, $output, $question)) {
-                $doReset = true;
-            }
-        }
-        if ($doReset) {
-            $manager->getIndex()->delete();
-            $result = $manager->createIndexIfNotExists();
-        }
-        return $result;
-    }
-
 
     //============================== GETTERS ==============================
 

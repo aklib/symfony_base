@@ -10,8 +10,8 @@
 
 namespace App\Bundles\Attribute\Manager;
 
-use App\Entity\Attributable\Extension\AttributableEntity;
-use App\Entity\Attributable\Extension\AttributeInterface;
+use App\Entity\Extension\Attributable\AttributableEntity;
+use App\Entity\Extension\Attributable\AttributeInterface;
 use Doctrine\Common\Collections\Collection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;

@@ -8,9 +8,9 @@
  * author: alexej@kisselev.de
  */
 
-namespace App\Entity\Attributable\Extension;
+namespace App\Entity\Extension\Attributable;
 
-use App\Entity\Attributable\ProductAttributeTab;
+use App\Entity\Product\ProductAttributeTab;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;

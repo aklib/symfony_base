@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Entity\Attributable;
+namespace App\Entity\Product;
 
-use App\Entity\Attributable\Extension\AttributeTabInterface;
-use App\Entity\Attributable\Extension\AttributeTabTrait;
+use App\Entity\Extension\Attributable\AttributeTabInterface;
+use App\Entity\Extension\Attributable\AttributeTabTrait;
 use App\Entity\Extension\Traits\BlameableEntityTrait;
 use App\Entity\Extension\Traits\TimestampableEntityTrait;
-use App\Repository\Attributable\ProductAttributeTabRepository;
+use App\Repository\Product\ProductAttributeTabRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -18,7 +18,7 @@ class ProductAttributeTab implements AttributeTabInterface
     use AttributeTabTrait, TimestampableEntityTrait, BlameableEntityTrait;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Attributable\ProductAttribute", mappedBy="tab")
+     * @ORM\OneToMany(targetEntity="App\Entity\Product\ProductAttribute", mappedBy="tab")
      * @ORM\OrderBy({"name" = "ASC"})
      */
     private Collection $attributes;

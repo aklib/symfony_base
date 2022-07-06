@@ -12,8 +12,8 @@ namespace App\Bundles\Attribute\Controller;
 
 use App\Bundles\Attribute\Form\AddressFormEmbed;
 use App\Controller\Admin\Extension\CrudControllerManagerInterface;
-use App\Entity\Attributable\Extension\AttributeInterface;
-use App\Entity\Attributable\Extension\CategoryInterface;
+use App\Entity\Extension\Attributable\AttributeInterface;
+use App\Entity\Extension\Attributable\CategoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\QueryBuilder;

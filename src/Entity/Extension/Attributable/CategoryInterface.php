@@ -7,7 +7,7 @@
  * author: alexej@kisselev.de
  */
 
-namespace App\Entity\Attributable\Extension;
+namespace App\Entity\Extension\Attributable;
 
 use App\Entity\Extension\DeletableEntity;
 use Doctrine\Common\Collections\Collection;

@@ -7,7 +7,7 @@
  * author: alexej@kisselev.de
  */
 
-namespace App\Entity\Attributable\Extension;
+namespace App\Entity\Extension\Attributable;
 
 interface AttributeManagerEntityInterface
 {

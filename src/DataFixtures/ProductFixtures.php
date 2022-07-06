@@ -2,8 +2,8 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Attributable\Product;
-use App\Entity\Attributable\ProductCategory;
+use App\Entity\Product\Product;
+use App\Entity\Product\ProductCategory;
 use App\Entity\User;
 use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;

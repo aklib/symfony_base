@@ -12,8 +12,7 @@
 
 namespace App\Bundles\Attribute\Manager;
 
-use App\Entity\Attributable\Extension\AttributableEntity;
-use App\Entity\Attributable\Extension\AttributeInterface;
+use App\Entity\Extension\Attributable\AttributableEntity;
 use Doctrine\Common\Collections\Collection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -53,7 +52,7 @@ class AttributeManagerNested extends AbstractElasticaAttributeManager
             if (!array_key_exists($docId, $this->attributeValues)) {
                 $this->attributeValues[$docId] = [];
             }
-            /** @var AttributeInterface $attribute */
+            /** @var \App\Entity\Extension\Attributable\AttributeInterface $attribute */
             foreach ($entity->getCategory()->getAttributes(true) as $attribute) {
                 if (!array_key_exists($attribute->getUniqueKey(), $this->attributeValues[$docId])) {
                     $this->attributeValues[$docId][$attribute->getUniqueKey()] = null;
@@ -67,7 +66,7 @@ class AttributeManagerNested extends AbstractElasticaAttributeManager
     {
         $ids = [];
         $scopes = [];
-        /** @var AttributableEntity $campaign */
+        /** @var \App\Entity\Extension\Attributable\AttributableEntity $campaign */
         foreach ($entities as $entity) {
             try {
                 $ids[] = $entity->getId();
@@ -98,7 +97,7 @@ class AttributeManagerNested extends AbstractElasticaAttributeManager
         $documents = [];
         //upsert entity documents
 
-        /** @var AttributableEntity $entity */
+        /** @var \App\Entity\Extension\Attributable\AttributableEntity $entity */
         foreach ($this->entities as $entity) {
             $attributeValues = [];
             $docId = $this->getDocumentId($entity);

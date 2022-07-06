@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Entity\Attributable;
+namespace App\Entity\Product;
 
-use App\Entity\Attributable\Extension\AttributableEntity;
-use App\Entity\Attributable\Extension\AttributableEntityTrait;
-use App\Entity\Attributable\Extension\CategoryInterface;
 use App\Entity\Extension\Annotation as AppORM;
+use App\Entity\Extension\Attributable\AttributableEntity;
+use App\Entity\Extension\Attributable\AttributableEntityTrait;
+use App\Entity\Extension\Attributable\CategoryInterface;
 use App\Entity\Extension\Traits\BlameableEntityTrait;
 use App\Entity\Extension\Traits\TimestampableEntityTrait;
-use App\Repository\Attributable\ProductRepository;
+use App\Repository\Product\ProductRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**

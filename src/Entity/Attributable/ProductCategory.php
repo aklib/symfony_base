@@ -11,15 +11,10 @@ use App\Repository\Attributable\ProductCategoryRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @Gedmo\Tree(type="nested")
  * @ORM\Entity(repositoryClass=ProductCategoryRepository::class)
- * @UniqueEntity(
- *     fields={"uniqueKey"},
- *     message="The name '{{ value }}' is already in use. Please choose any other one."
- * )
  */
 class ProductCategory implements CategoryInterface
 {

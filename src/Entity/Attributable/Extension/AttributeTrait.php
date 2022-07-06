@@ -37,14 +37,6 @@ trait AttributeTrait
      * @ORM\Column(name="unique_key", type="string", length=32, nullable=false, unique=true)
      * @AppORM\Element(sortOrder="3", help="Only [a-z] characters in lower case and underscore '_'.")
      *
-     * @Gedmo\Slug(handlers={
-     *      @Gedmo\SlugHandler(class="Gedmo\Sluggable\Handler\RelativeSlugHandler", options={
-     *          @Gedmo\SlugHandlerOption(name="relationField", value="category"),
-     *          @Gedmo\SlugHandlerOption(name="relationSlugField", value="name"),
-     *          @Gedmo\SlugHandlerOption(name="separator", value="_")
-     *      })
-     * }, fields={"name"}, style="lower", unique_base="uniqueKey", updatable=false)
-     *
      * @Assert\Regex(
      *     pattern     = "/^[a-z_]+$/"
      * )
@@ -52,6 +44,7 @@ trait AttributeTrait
      * @Assert\NotEqualTo("id")
      * @Assert\NotEqualTo("active")
      *
+     * @Gedmo\Slug(fields={"id"}, prefix="attr_")
      */
     private string $uniqueKey;
 

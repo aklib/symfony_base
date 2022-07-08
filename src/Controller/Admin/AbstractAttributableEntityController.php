@@ -24,16 +24,15 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use Elastica\Util;
 use InvalidArgumentException;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 abstract class AbstractAttributableEntityController extends AbstractAppGrudController implements CrudControllerAttributableEntity
 {
     private ?CategoryInterface $category = null;
     protected AttributeManagerInterface $attributeManager;
 
-    public function __construct(EntityManagerInterface $em, TranslatorInterface $translator, CrudControllerManager $controllerManager, AttributeManagerInterface $attributeManager)
+    public function __construct(EntityManagerInterface $em, CrudControllerManager $controllerManager, AttributeManagerInterface $attributeManager)
     {
-        parent::__construct($em, $translator, $controllerManager);
+        parent::__construct($em, $controllerManager);
         $this->attributeManager = $attributeManager;
     }
 

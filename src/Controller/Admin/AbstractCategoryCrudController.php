@@ -21,16 +21,14 @@ use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 abstract class AbstractCategoryCrudController extends AbstractAppGrudController
 {
     protected AdminUrlGenerator $adminUrlGenerator;
 
-    public function __construct(EntityManagerInterface $em, TranslatorInterface $translator, CrudControllerManager $controllerManager, AdminUrlGenerator $adminUrlGenerator)
+    public function __construct(EntityManagerInterface $em, CrudControllerManager $controllerManager, AdminUrlGenerator $adminUrlGenerator)
     {
-        parent::__construct($em, $translator, $controllerManager);
+        parent::__construct($em, $controllerManager);
         $this->adminUrlGenerator = $adminUrlGenerator;
     }
 
@@ -81,10 +79,6 @@ abstract class AbstractCategoryCrudController extends AbstractAppGrudController
         return $fields;
     }
 
-    /**
-     * @Route("/admin/reorder", name="admin_reorder")
-     * @return Response
-     */
     public function reorder(Request $request): Response
     {
         // post
@@ -112,7 +106,6 @@ abstract class AbstractCategoryCrudController extends AbstractAppGrudController
                     $response['success'] = false;
                     $response['message'] = sprintf('Parent node#%d not found', $data['parent']);
                 }
-
             }
             if (array_key_exists('after', $data)) {
                 $sibling = $dao->find($data['after']);

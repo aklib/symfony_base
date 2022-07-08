@@ -20,19 +20,16 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 abstract class AbstractAppGrudController extends AbstractCrudController implements CrudControllerManagerInterface
 {
     private EntityManagerInterface $em;
-    private TranslatorInterface $translator;
     private CrudControllerManager $controllerManager;
     protected const OPTION_SORT_ORDER = 'sortOrder';
 
-    public function __construct(EntityManagerInterface $em, TranslatorInterface $translator, CrudControllerManager $controllerManager)
+    public function __construct(EntityManagerInterface $em, CrudControllerManager $controllerManager)
     {
         $this->em = $em;
-        $this->translator = $translator;
         $this->controllerManager = $controllerManager;
     }
 
@@ -98,14 +95,6 @@ abstract class AbstractAppGrudController extends AbstractCrudController implemen
             })
             ->reorder(Crud::PAGE_INDEX, [Action::EDIT, Action::DETAIL, Action::DELETE]);
         return $actions;
-    }
-
-    /**
-     * @return TranslatorInterface
-     */
-    public function getTranslator(): TranslatorInterface
-    {
-        return $this->translator;
     }
 
     protected function getEntityManager(): EntityManagerInterface

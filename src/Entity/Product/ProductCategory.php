@@ -21,6 +21,13 @@ class ProductCategory implements CategoryInterface
     use CategoryTrait, TimestampableEntityTrait, BlameableEntityTrait;
 
     /**
+     * Make first because a tree view
+     * @ORM\Column(type="string", length=32)
+     * @AppORM\Element(sortOrder="0")
+     */
+    private string $name;
+
+    /**
      * @Gedmo\TreeParent
      * @ORM\ManyToOne(targetEntity="App\Entity\Product\ProductCategory", inversedBy="children", fetch="EAGER")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")

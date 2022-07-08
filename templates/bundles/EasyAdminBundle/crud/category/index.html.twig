@@ -5,8 +5,14 @@
         {% if not entity.isAccessible %}
             {% set some_results_are_hidden = true %}
         {% else %}
-            <tr data-id="{{ entity.primaryKeyValueAsString }}"
-                class="treegrid-{{ entity.primaryKeyValueAsString }}{% if (entity.getInstance.parent is not null) %} treegrid-parent-{{ entity.getInstance.parent.id }} {% endif %}">
+            <tr data-id="{{ entity.primaryKeyValueAsString }}" data-parent="{{ entity.getInstance.parent.id|default(0) }}"
+                class="treegrid-{{ entity.primaryKeyValueAsString }}
+                {% if (entity.getInstance.parent is not null) %}
+                     treegrid-parent-{{ entity.getInstance.parent.id }}
+                    {% else %}
+                    treegrid-root
+                {% endif %}
+                 expanded">
                 {% if has_batch_actions %}
                     <td class="batch-actions-selector">
                         <div class="form-check">
@@ -16,8 +22,11 @@
                 {% endif %}
 
                 {% for field in entity.fields %}
-                    <td data-label="{{ field.label|e('html_attr') }}" class="{{ field.property == sort_field_name ? 'sorted' }} text-{{ field.textAlign }} {{ field.cssClass }}" dir="{{ ea.i18n.textDirection }}">
+                    <td data-label="{{ field.label|e('html_attr') }}"
+                        class="{% if loop.index == 1 %}cursor-move {% endif %}{{ field.property == sort_field_name ? 'sorted' }} text-{{ field.textAlign }} {{ field.cssClass }}"
+                        dir="{{ ea.i18n.textDirection }}">
                         {{ include(field.templatePath, { field: field, entity: entity }, with_context = false) }}
+                        <br>
                     </td>
                 {% endfor %}
 
@@ -30,7 +39,8 @@
                                         {# don't use FontAwesome 'fa-ellipsis-h' icon here because it doesn't look good #}
                                         {# this icon is 'dots-horizontal' icon from https://heroicons.com/ #}
                                         <svg xmlns="http://www.w3.org/2000/svg" height="21" width="21" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"/>
                                         </svg>
                                     </a>
 
@@ -88,14 +98,61 @@
 {% endblock %}
  {% block body_javascript %}
      <script type="text/javascript">
-         $(document).ready(function() {
+         $(document).ready(function () {
+             {% set sym_url = ea_url().setAction('reorder') %}
+             let url = '{{ sym_url }}'.split("&amp;").join("&");
+             let current_target = null;
+             let current_parent = 0;
+             let current_position = 0;
+
              $('table.datagrid').treegrid({
-                 treeColumn: 2,
-                 expanderExpandedClass: ' fas fa-minus',
-                 expanderCollapsedClass: ' fas fa-plus',
-                 expanderTemplate: '<span class="treegrid-expander"></span>',
-                 indentTemplate: '<span class="treegrid-indent"><i></i></span>'
+                 enableMove: true,
+                 onMoveOver: function (item, helper, target, position) {
+                     if (position === 1) {
+                         current_parent = $(target).data('id');
+                     }
+                     if (position !== 1) {
+                         current_target = target;
+                         current_parent = $(item).data('parent')
+                     }
+                     current_position = position;
+                     //console.log('position ' + position);
+                     return !target.hasClass('treegrid-root');
+                 },
+                 onMoveStop: function (item) {
+                     let data = {
+                         node: item.data('id'),
+                     };
+
+                     if (current_position === 0) {
+                         // before target
+                         data.before = $(current_target).data('id');
+                     } else if (current_position === 2) {
+                         // after target
+                         data.after = $(current_target).data('id');
+                     } else if (current_position === 1) {
+                         data.parent = current_parent;
+                     }
+
+                     // show overlay
+                     $('#loaderOverlay').removeClass('hidden');
+
+
+                     $.post(url, data, function () {
+
+                     })
+                         .always(function () {
+                             window.location.reload();
+                         });
+
+
+                 }
              });
          });
      </script>
  {% endblock body_javascript %}
+
+ {% block configured_body_contents %}
+     {{ include('utils/loader_overlay.html.twig') }}
+
+ {% endblock %}

@@ -2,25 +2,26 @@
 
 namespace App\Repository\Product;
 
+use App\Entity\Product\ProductAttributeTab;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<\App\Entity\Product\ProductAttributeTab>
+ * @extends ServiceEntityRepository<ProductAttributeTab>
  *
- * @method \App\Entity\Product\ProductAttributeTab|null find($id, $lockMode = null, $lockVersion = null)
- * @method \App\Entity\Product\ProductAttributeTab|null findOneBy(array $criteria, array $orderBy = null)
- * @method \App\Entity\Product\ProductAttributeTab[]    findAll()
- * @method \App\Entity\Product\ProductAttributeTab[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method ProductAttributeTab|null find($id, $lockMode = null, $lockVersion = null)
+ * @method ProductAttributeTab|null findOneBy(array $criteria, array $orderBy = null)
+ * @method ProductAttributeTab[]    findAll()
+ * @method ProductAttributeTab[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class ProductAttributeTabRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, \App\Entity\Product\ProductAttributeTab::class);
+        parent::__construct($registry, ProductAttributeTab::class);
     }
 
-    public function add(\App\Entity\Product\ProductAttributeTab $entity, bool $flush = false): void
+    public function add(ProductAttributeTab $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -29,7 +30,7 @@ class ProductAttributeTabRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(\App\Entity\Product\ProductAttributeTab $entity, bool $flush = false): void
+    public function remove(ProductAttributeTab $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 

@@ -2,25 +2,26 @@
 
 namespace App\Repository\Product;
 
+use App\Entity\Product\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<\App\Entity\Product\Product>
+ * @extends ServiceEntityRepository<Product>
  *
- * @method \App\Entity\Product\Product|null find($id, $lockMode = null, $lockVersion = null)
- * @method \App\Entity\Product\Product|null findOneBy(array $criteria, array $orderBy = null)
- * @method \App\Entity\Product\Product[]    findAll()
- * @method \App\Entity\Product\Product[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Product|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Product|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Product[]    findAll()
+ * @method Product[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class ProductRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, \App\Entity\Product\Product::class);
+        parent::__construct($registry, Product::class);
     }
 
-    public function add(\App\Entity\Product\Product $entity, bool $flush = false): void
+    public function add(Product $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -29,7 +30,7 @@ class ProductRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(\App\Entity\Product\Product $entity, bool $flush = false): void
+    public function remove(Product $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 

@@ -1,5 +1,3 @@
-
-
 {% set category = entity.getInstance() %}
 {% set show = '' %}
 
@@ -11,7 +9,7 @@
 
     <div class="accordion-item border-0">
         <h6 class="accordion-header">
-            <a class="accordion-button collapsed px-0" type="button" data-bs-toggle="collapse"
+            <a class="accordion-button collapsed px-0 py-1" type="button" data-bs-toggle="collapse"
                data-bs-target="#contents-{{ category.id }}">
                 <span class="badge badge-secondary">{{ category.attributes(true).count }}</span>
             </a>

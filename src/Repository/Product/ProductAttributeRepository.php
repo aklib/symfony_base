@@ -10,20 +10,20 @@ use Doctrine\Persistence\ManagerRegistry;
 /**
  * @extends ServiceEntityRepository<ProductAttribute>
  *
- * @method \App\Entity\Product\ProductAttribute|null find($id, $lockMode = null, $lockVersion = null)
+ * @method ProductAttribute|null find($id, $lockMode = null, $lockVersion = null)
  * @method ProductAttribute|null findOneBy(array $criteria, array $orderBy = null)
- * @method \App\Entity\Product\ProductAttribute|null findOneByUniqueKey(string $uniqueKey)
- * @method \App\Entity\Product\ProductAttribute[]    findAll()
- * @method \App\Entity\Product\ProductAttribute[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method ProductAttribute|null findOneByUniqueKey(string $uniqueKey)
+ * @method ProductAttribute[]    findAll()
+ * @method ProductAttribute[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class ProductAttributeRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, \App\Entity\Product\ProductAttribute::class);
+        parent::__construct($registry, ProductAttribute::class);
     }
 
-    public function add(\App\Entity\Product\ProductAttribute $entity, bool $flush = false): void
+    public function add(ProductAttribute $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -32,7 +32,7 @@ class ProductAttributeRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(\App\Entity\Product\ProductAttribute $entity, bool $flush = false): void
+    public function remove(ProductAttribute $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 

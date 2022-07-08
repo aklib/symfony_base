@@ -12,12 +12,12 @@ use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
  * @method ProductCategory|null find($id, $lockMode = null, $lockVersion = null)
  * @method ProductCategory|null findOneBy(array $criteria, array $orderBy = null)
  * @method ProductCategory[]    findAll()
- * @method \App\Entity\Product\ProductCategory[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method ProductCategory[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  * @method ProductCategory|null findOneByUniqueKey(string $uniqueKey)
  */
 class ProductCategoryRepository extends NestedTreeRepository
 {
-    public function add(\App\Entity\Product\ProductCategory $entity, bool $flush = false): void
+    public function add(ProductCategory $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 

@@ -64,7 +64,7 @@ abstract class AbstractCategoryCrudController extends AbstractAppGrudController
 
     public function configureAssets(Assets $assets): Assets
     {
-        return $assets
+        return parent::configureAssets($assets)
             ->addCssFile('js/jquery-treegrid/dist/css/jquery.treegrid.css')
             ->addJsFile('/js/jquery-3.1.1.min.js')
             ->addJsFile('/js/jquery-treegrid/dist/js/jquery.treegrid.js');
@@ -79,7 +79,7 @@ abstract class AbstractCategoryCrudController extends AbstractAppGrudController
         return $fields;
     }
 
-    public function reorder(Request $request): Response
+    public function reorderAction(Request $request): Response
     {
         // post
         $dataRaw = [

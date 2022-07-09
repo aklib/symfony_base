@@ -99,7 +99,7 @@
  {% block body_javascript %}
      <script type="text/javascript">
          $(document).ready(function () {
-             {% set sym_url = ea_url().setAction('reorder') %}
+             {% set sym_url = ea_url().setAction('reorderAction') %}
              let url = '{{ sym_url }}'.split("&amp;").join("&");
              let current_target = null;
              let current_parent = 0;
@@ -137,7 +137,6 @@
                      // show overlay
                      $('#loaderOverlay').removeClass('hidden');
 
-
                      $.post(url, data, function () {
 
                      })
@@ -151,8 +150,3 @@
          });
      </script>
  {% endblock body_javascript %}
-
- {% block configured_body_contents %}
-     {{ include('utils/loader_overlay.html.twig') }}
-
- {% endblock %}

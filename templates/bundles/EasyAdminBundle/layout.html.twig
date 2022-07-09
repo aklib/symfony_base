@@ -1,5 +1,13 @@
 {% extends '@!EasyAdmin/layout.html.twig' %}
 
+ {% block header_logo %}
+     <a class="logo" title="{{ ea.dashboardTitle|striptags }}" href="{{ path(ea.dashboardRouteName) }}">
+         <span class="svg-icon svg-icon-primary svg-icon-1x">
+            {{ include('layout/_logo.html.twig') }} {{ ea.dashboardTitle|raw }}
+        </span>
+     </a>
+ {% endblock header_logo %}
+
  {% block configured_body_contents %}
      {{ parent() }}
      {# avoid error: Unable to add global "ea" as the runtime or the extensions have already been initialized. #}

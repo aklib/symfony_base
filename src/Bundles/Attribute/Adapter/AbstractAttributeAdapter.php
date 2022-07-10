@@ -8,9 +8,9 @@
  * author: alexej@kisselev.de
  */
 
-namespace App\Bundles\Attribute\Manager;
+namespace App\Bundles\Attribute\Adapter;
 
-use App\Bundles\Attribute\AttributeAdapterInterface;
+use App\Bundles\Attribute\Adapter\Interfaces\AttributeAdapterInterface;
 use App\Entity\Extension\Attributable\AttributableEntity;
 use App\Entity\Extension\Attributable\AttributeInterface;
 use App\Entity\User;

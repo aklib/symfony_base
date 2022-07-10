@@ -7,7 +7,7 @@
  * author: alexej@kisselev.de
  */
 
-namespace App\Bundles\Attribute;
+namespace App\Bundles\Attribute\Adapter\Interfaces;
 
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;

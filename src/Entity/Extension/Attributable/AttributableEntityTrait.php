@@ -3,7 +3,7 @@
 namespace App\Entity\Extension\Attributable;
 
 
-use App\Bundles\Attribute\AttributeValueAdapterInterface;
+use App\Bundles\Attribute\Adapter\Interfaces\AttributeValueAdapterInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Elastica\Util;
 

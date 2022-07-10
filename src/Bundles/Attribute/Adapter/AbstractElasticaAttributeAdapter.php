@@ -9,7 +9,7 @@
  * author: alexej@kisselev.de
  */
 
-namespace App\Bundles\Attribute\Manager;
+namespace App\Bundles\Attribute\Adapter;
 
 use App\Entity\Extension\Attributable\AttributableEntity;
 use Doctrine\Common\Collections\ArrayCollection;

@@ -10,10 +10,10 @@
 
 namespace App\Bundles\Attribute\Command;
 
-use App\Bundles\Attribute\Manager\AbstractElasticaAttributeAdapter;
-use App\Bundles\Attribute\Manager\AttributeAdapterDatabase;
-use App\Bundles\Attribute\Manager\AttributeAdapterNested;
-use App\Bundles\Attribute\Manager\AttributeAdapterParentChild;
+use App\Bundles\Attribute\Adapter\AbstractElasticaAttributeAdapter;
+use App\Bundles\Attribute\Adapter\AttributeAdapterDatabase;
+use App\Bundles\Attribute\Adapter\AttributeAdapterNested;
+use App\Bundles\Attribute\Adapter\AttributeAdapterParentChild;
 use App\Entity\AttributeValue;
 use App\Entity\Extension\Attributable\AttributableEntity;
 use App\Repository\AttributeValueRepository;
@@ -218,7 +218,7 @@ class PopulateAttributeCommand extends Command
     }
 
     /**
-     * @return AttributeAdapterNested
+     * @return \App\Bundles\Attribute\Adapter\AttributeAdapterNested
      */
     public function getManagerNested(): AttributeAdapterNested
     {

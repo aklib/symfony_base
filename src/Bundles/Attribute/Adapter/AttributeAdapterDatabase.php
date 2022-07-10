@@ -8,7 +8,7 @@
  * author: alexej@kisselev.de
  */
 
-namespace App\Bundles\Attribute\Manager;
+namespace App\Bundles\Attribute\Adapter;
 
 use App\Entity\AttributeValue;
 use App\Entity\Extension\Attributable\AttributableEntity;

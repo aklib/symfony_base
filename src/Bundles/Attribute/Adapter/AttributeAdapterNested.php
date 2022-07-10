@@ -10,7 +10,7 @@
  * author: alexej@kisselev.de
  */
 
-namespace App\Bundles\Attribute\Manager;
+namespace App\Bundles\Attribute\Adapter;
 
 use App\Entity\Extension\Attributable\AttributableEntity;
 use App\Entity\Extension\Attributable\AttributeInterface;
@@ -26,6 +26,7 @@ use Elastica\Util;
 use Exception;
 use FOS\ElasticaBundle\Elastica\Index;
 use Throwable;
+use function App\Bundles\Attribute\Manager\str_contains;
 
 class AttributeAdapterNested extends AbstractElasticaAttributeAdapter
 {

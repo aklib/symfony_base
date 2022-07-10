@@ -7,7 +7,7 @@
  * author: alexej@kisselev.de
  */
 
-namespace App\Bundles\Attribute;
+namespace App\Bundles\Attribute\Adapter\Interfaces;
 
 use App\Entity\Extension\Attributable\AttributableEntity;
 

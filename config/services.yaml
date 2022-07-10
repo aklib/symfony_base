@@ -28,15 +28,15 @@ services:
             - { name: doctrine.event_subscriber, connection: default }
 
     app.attribute.nested:
-        class: App\Bundles\Attribute\Manager\AttributeAdapterNested
+        class: App\Bundles\Attribute\Adapter\AttributeAdapterNested
 
     app.attribute.parent_child:
-        class: App\Bundles\Attribute\Manager\AttributeAdapterParentChild
+        class: App\Bundles\Attribute\Adapter\AttributeAdapterParentChild
 
     app.attribute.database:
-        class: App\Bundles\Attribute\Manager\AttributeAdapterDatabase
+        class: App\Bundles\Attribute\Adapter\AttributeAdapterDatabase
 
     # all must be equal!!!
-    App\Bundles\Attribute\AttributeAdapterInterface: '@app.attribute.database'
-    App\Bundles\Attribute\AttributeEntityAdapterInterface: '@app.attribute.database'
-    App\Bundles\Attribute\AttributeValueAdapterInterface: '@app.attribute.database'
+    App\Bundles\Attribute\Adapter\Interfaces\AttributeAdapterInterface: '@app.attribute.database'
+    App\Bundles\Attribute\Adapter\Interfaces\AttributeEntityAdapterInterface: '@app.attribute.database'
+    App\Bundles\Attribute\Adapter\Interfaces\AttributeValueAdapterInterface: '@app.attribute.database'

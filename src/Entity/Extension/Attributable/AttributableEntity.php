@@ -2,7 +2,7 @@
 
 namespace App\Entity\Extension\Attributable;
 
-use App\Bundles\Attribute\AttributeValueAdapterInterface;
+use App\Bundles\Attribute\Adapter\Interfaces\AttributeValueAdapterInterface;
 use App\Entity\Extension\DeletableEntity;
 
 /**

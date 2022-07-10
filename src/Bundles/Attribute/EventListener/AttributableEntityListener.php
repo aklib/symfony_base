@@ -4,7 +4,7 @@
 
 namespace App\Bundles\Attribute\EventListener;
 
-use App\Bundles\Attribute\AttributeEntityAdapterInterface;
+use App\Bundles\Attribute\Adapter\Interfaces\AttributeEntityAdapterInterface;
 use App\Entity\Extension\Annotation\CustomDoctrineAnnotation;
 use App\Entity\Extension\Attributable\AttributableEntity;
 use App\Entity\Extension\Attributable\AttributeInterface;

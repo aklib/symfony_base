@@ -14,7 +14,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 
-interface AttributeManagerInterface extends AttributeEntityManagerInterface, AttributeValueManagerInterface
+interface AttributeAdapterInterface extends AttributeEntityAdapterInterface, AttributeValueAdapterInterface
 {
     public function search(QueryBuilder $qb, SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields): void;
 }

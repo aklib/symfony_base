@@ -58,7 +58,7 @@ class DashboardController extends AbstractDashboardController
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
-            ->setTitle('Dashboard')
+            ->setTitle('Symfony Base')
             ->setFaviconPath('favicon.png')
             // by default, all backend URLs include a signature hash. If a user changes any
             // query parameter (to "hack" the backend) the signature won't match and EasyAdmin

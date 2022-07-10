@@ -2,7 +2,7 @@
 
 namespace App\Entity\Extension\Attributable;
 
-use App\Bundles\Attribute\AttributeValueManagerInterface;
+use App\Bundles\Attribute\AttributeValueAdapterInterface;
 use App\Entity\Extension\DeletableEntity;
 
 /**
@@ -21,7 +21,7 @@ interface AttributableEntity extends DeletableEntity
 
     public function getCategory(): ?CategoryInterface;
 
-    public function setAttributeManager(AttributeValueManagerInterface $manager): AttributableEntity;
+    public function setAttributeManager(AttributeValueAdapterInterface $manager): AttributableEntity;
 
     public function getAttributeValues(): array;
 
@@ -33,7 +33,7 @@ interface AttributableEntity extends DeletableEntity
 
     public function getScope(): string;
 
-    public function getAttributeManager(): AttributeValueManagerInterface;
+    public function getAttributeManager(): AttributeValueAdapterInterface;
 
     public function __toString();
 }

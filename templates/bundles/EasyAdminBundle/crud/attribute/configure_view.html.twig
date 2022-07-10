@@ -1,0 +1,104 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+
+{% block main %}
+    <div id="columnActions" class="" role="toolbar">
+        <div class="btn-group" role="group">
+            <a class="btn btn-outline-success" href="#" data-action="select">
+                <i class="fa check-square-o"></i> {{ 'select all'|trans }}
+            </a>
+            <a class="btn btn-outline-secondary" href="#" data-action="deselect">
+                <i class="fa fa-square-o"></i> {{ 'deselect_all'|trans }}
+            </a>
+        </div>
+
+        <div class="btn-group ms-5" role="group">
+            <a class="btn btn-outline-success" href="#" data-action="all">
+                {{ 'show all'|trans }}
+            </a>
+            <a class="btn btn-outline-secondary" href="#" data-action="checked">
+                <i class="fa fa-check-square-o"></i> {{ 'show checked'|trans }}
+            </a>
+            <a class="btn btn-outline-secondary" href="#" data-action="unchecked">
+                <i class="fa fa-square-o"></i> {{ 'show unchecked'|trans }}
+            </a>
+        </div>
+    </div>
+    <div style="height: 100px"></div>
+
+    <div id="columnContainer" class="row row-cols-auto justify-content-start gx-1 gy-1 draggable-zone">
+        {% for column in columns %}
+            <div id="column_{{ column.name }}" data-colname="{{ column.name }}" class="draggable col float-left">
+                <div class="text-nowrap p-2 border bg-light draggable-handle">
+                    <div class="form-check">
+                        <input type="hidden" name="{{ column.name }}" value="0">
+                        <input type="checkbox" name="{{ column.name }}" class="form-check-input" value="1" id="{{ column.name }}">
+                        <label class="form-check-label" for="{{ column.name }}">
+                            {{ column.label|trans }}
+                        </label>
+                    </div>
+                </div>
+
+
+            </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}
+
+{% block body_javascript %}
+    <script src="/js/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+    <script src="{{ asset('assets/plugins/custom/draggable/draggable.bundle.js') }}"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            const container = document.querySelector('.draggable-zone');
+
+
+            const sort = new Sortable.default(container, {
+                draggable: '.draggable',
+                handle: '.draggable .draggable-handle'
+            });
+            sort.disableSelection();
+            // checkboxes
+            let allCheckboxes = $('#columnContainer input[type=checkbox]');
+            $('#columnActions a').on('click', function (e) {
+                e.preventDefault();
+                let $a = $(this);
+                let action = $a.data('action');
+
+                switch (action) {
+                    case 'select':
+                        allCheckboxes.prop('checked', true);
+                        allCheckboxes.parents('div.draggable').show();
+                        break;
+                    case 'deselect':
+                        allCheckboxes.prop('checked', false);
+                        allCheckboxes.parents('div.draggable').show();
+                        break;
+                    case 'all':
+                        allCheckboxes.parents('div.draggable').show();
+                        break;
+                    case 'checked':
+                        allCheckboxes.each(function (i, input) {
+                            if ($(input).prop('checked')) {
+                                $(input).parents('div.draggable').show();
+                            } else {
+                                $(input).parents('div.draggable').hide();
+                            }
+                        });
+                        break;
+                    case 'unchecked':
+                        allCheckboxes.each(function (i, input) {
+                            if ($(input).prop('checked')) {
+                                $(input).parents('div.draggable').hide();
+                            } else {
+                                $(input).parents('div.draggable').show();
+                            }
+                        });
+                        break;
+                }
+            });
+            /* ==== eo click ==== */
+        });
+    </script>
+{% endblock body_javascript %}

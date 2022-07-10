@@ -2,11 +2,13 @@
 
 namespace App\Entity;
 
+use App\Entity\Extension\Annotation as AppORM;
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use App\Entity\Extension\Annotation as AppORM;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
@@ -47,6 +49,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\OneToOne(targetEntity=UserProfile::class, mappedBy="user", cascade={"persist", "remove"})
      */
     private $userProfile;
+
+    /**
+     * @ORM\OneToMany(targetEntity=UserViewConfig::class, mappedBy="user")
+     */
+    private $userViewConfigs;
+
+    public function __construct()
+    {
+        $this->userViewConfigs = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -185,11 +197,41 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __serialize(): array
     {
         return [
-            'id'  => $this->id,
-            'email' => $this->email,
-            'roles' => $this->roles,
+            'id'       => $this->id,
+            'email'    => $this->email,
+            'roles'    => $this->roles,
             'password' => $this->password,
-            'active' => $this->active,
+            'active'   => $this->active,
         ];
+    }
+
+    /**
+     * @return Collection<int, UserViewConfig>
+     */
+    public function getUserViewConfigs(): Collection
+    {
+        return $this->userViewConfigs;
+    }
+
+    public function addUserViewConfig(UserViewConfig $userViewConfig): self
+    {
+        if (!$this->userViewConfigs->contains($userViewConfig)) {
+            $this->userViewConfigs[] = $userViewConfig;
+            $userViewConfig->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserViewConfig(UserViewConfig $userViewConfig): self
+    {
+        if ($this->userViewConfigs->removeElement($userViewConfig)) {
+            // set the owning side to null (unless already changed)
+            if ($userViewConfig->getUser() === $this) {
+                $userViewConfig->setUser(null);
+            }
+        }
+
+        return $this;
     }
 }

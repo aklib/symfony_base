@@ -28,14 +28,14 @@ use Laminas\Json\Json;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Security;
 
-abstract class AbstractElasticaAttributeManager extends AbstractAttributeManager
+abstract class AbstractElasticaAttributeAdapter extends AbstractAttributeAdapter
 {
     public const ATTRIBUTE_FIELD = 'attributes';
     private IndexManager $indexManager;
-    private AttributeManagerDatabase $managerDatabase;
+    private AttributeAdapterDatabase $managerDatabase;
     protected bool $doSynchronize = true;
 
-    public function __construct(Security $security, SessionInterface $flashBag, EntityManagerInterface $em, IndexManager $indexManager, AttributeManagerDatabase $managerDatabase)
+    public function __construct(Security $security, SessionInterface $flashBag, EntityManagerInterface $em, IndexManager $indexManager, AttributeAdapterDatabase $managerDatabase)
     {
         parent::__construct($security, $flashBag, $em);
         $this->indexManager = $indexManager;
@@ -44,7 +44,7 @@ abstract class AbstractElasticaAttributeManager extends AbstractAttributeManager
 
     /**
      * Unique key for document e.g. product_20,  user_profile_1
-     * @param \App\Entity\Extension\Attributable\AttributableEntity|null $entity
+     * @param AttributableEntity|null $entity
      * @param array|null $docData
      * @return string
      */
@@ -72,7 +72,7 @@ abstract class AbstractElasticaAttributeManager extends AbstractAttributeManager
         }
         $entities = new ArrayCollection();
 
-        /** @var \App\Entity\Extension\Attributable\AttributableEntity $entity */
+        /** @var AttributableEntity $entity */
         foreach ($this->entities as $entity) {
             $key = $this->getDocumentId($entity);
             if (in_array($key, $this->initialisedEntities, true)) {
@@ -191,7 +191,7 @@ abstract class AbstractElasticaAttributeManager extends AbstractAttributeManager
         if ($this->entities->isEmpty()) {
             return;
         }
-        /** @var \App\Entity\Extension\Attributable\AttributableEntity $entity */
+        /** @var AttributableEntity $entity */
         foreach ($this->entities as $entity) {
             $this->managerDatabase->addEntity($entity);
             foreach ($entity->getCategory()->getAttributes() as $attribute) {

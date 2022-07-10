@@ -4,7 +4,7 @@
 
 namespace App\Bundles\Attribute\EventListener;
 
-use App\Bundles\Attribute\AttributeEntityManagerInterface;
+use App\Bundles\Attribute\AttributeEntityAdapterInterface;
 use App\Entity\Extension\Annotation\CustomDoctrineAnnotation;
 use App\Entity\Extension\Attributable\AttributableEntity;
 use App\Entity\Extension\Attributable\AttributeInterface;
@@ -18,9 +18,9 @@ use Doctrine\ORM\Events;
 class AttributableEntityListener implements EventSubscriber
 {
     private AnnotationReader $reader;
-    private AttributeEntityManagerInterface $attributeManager;
+    private AttributeEntityAdapterInterface $attributeManager;
 
-    public function __construct(AttributeEntityManagerInterface $attributeManager)
+    public function __construct(AttributeEntityAdapterInterface $attributeManager)
     {
         $this->reader = new AnnotationReader();
         $this->attributeManager = $attributeManager;

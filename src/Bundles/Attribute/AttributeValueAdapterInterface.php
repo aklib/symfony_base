@@ -11,7 +11,7 @@ namespace App\Bundles\Attribute;
 
 use App\Entity\Extension\Attributable\AttributableEntity;
 
-interface AttributeValueManagerInterface
+interface AttributeValueAdapterInterface
 {
     public function getAttributeValues(AttributableEntity $entity): array;
 

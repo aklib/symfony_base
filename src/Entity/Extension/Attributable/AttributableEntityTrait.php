@@ -3,7 +3,7 @@
 namespace App\Entity\Extension\Attributable;
 
 
-use App\Bundles\Attribute\AttributeValueManagerInterface;
+use App\Bundles\Attribute\AttributeValueAdapterInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Elastica\Util;
 
@@ -34,7 +34,7 @@ trait AttributableEntityTrait
      */
     private bool $active = true;
     private ?CategoryInterface $category = null;
-    private AttributeValueManagerInterface $attributeManager;
+    private AttributeValueAdapterInterface $attributeManager;
     private ?string $scope = null;
     private ?array $attributeValues = null;
 
@@ -92,13 +92,13 @@ trait AttributableEntityTrait
 
     //==================================== HANDLE ATTRIBUTE VALUES ====================================
 
-    public function setAttributeManager(AttributeValueManagerInterface $manager): AttributableEntity
+    public function setAttributeManager(AttributeValueAdapterInterface $manager): AttributableEntity
     {
         $this->attributeManager = $manager;
         return $this;
     }
 
-    public function getAttributeManager(): AttributeValueManagerInterface
+    public function getAttributeManager(): AttributeValueAdapterInterface
     {
         return $this->attributeManager;
     }

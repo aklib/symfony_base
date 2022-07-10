@@ -21,7 +21,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class AttributeManagerDatabase extends AbstractAttributeManager
+class AttributeAdapterDatabase extends AbstractAttributeAdapter
 {
     public function search(QueryBuilder $qb, SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields): void
     {
@@ -59,7 +59,7 @@ class AttributeManagerDatabase extends AbstractAttributeManager
         $entities = new ArrayCollection();
         $scopes = [];
         $ids = [];
-        /** @var \App\Entity\Extension\Attributable\AttributableEntity $entity */
+        /** @var AttributableEntity $entity */
         foreach ($this->entities as $entity) {
             $key = $this->getDocumentId($entity);
             if (in_array($key, $this->initialisedEntities, true)) {
@@ -105,7 +105,7 @@ class AttributeManagerDatabase extends AbstractAttributeManager
         //upsert entity documents
         $user = $this->getSecurity()->getUser();
         $identifier = $user instanceof UserInterface ? $user->getUserIdentifier() : 'console';
-        /** @var \App\Entity\Extension\Attributable\AttributableEntity $entity */
+        /** @var AttributableEntity $entity */
         foreach ($this->entities as $entity) {
             $attrValues = [];
             $docId = $this->getDocumentId($entity);

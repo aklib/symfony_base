@@ -10,7 +10,7 @@
 
 namespace App\Bundles\Attribute\Manager;
 
-use App\Bundles\Attribute\AttributeManagerInterface;
+use App\Bundles\Attribute\AttributeAdapterInterface;
 use App\Entity\Extension\Attributable\AttributableEntity;
 use App\Entity\Extension\Attributable\AttributeInterface;
 use App\Entity\User;
@@ -28,7 +28,7 @@ use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Core\Security;
 
-abstract class AbstractAttributeManager implements AttributeManagerInterface
+abstract class AbstractAttributeAdapter implements AttributeAdapterInterface
 {
     private Security $security;
     private EntityManagerInterface $em;
@@ -37,7 +37,7 @@ abstract class AbstractAttributeManager implements AttributeManagerInterface
     protected array $initialisedEntities = [];
     protected ?array $attributeValues = null;
     /**
-     * @var ArrayCollection<\App\Entity\Extension\Attributable\AttributableEntity>
+     * @var ArrayCollection<AttributableEntity>
      */
     protected ArrayCollection $entities;
     private array $user = [];
@@ -165,7 +165,7 @@ abstract class AbstractAttributeManager implements AttributeManagerInterface
     }
 
     /**
-     * @param \App\Entity\Extension\Attributable\AttributableEntity $entity
+     * @param AttributableEntity $entity
      * @param EntityManagerInterface $entityManager
      * @return void
      */
@@ -200,7 +200,7 @@ abstract class AbstractAttributeManager implements AttributeManagerInterface
 
     /**
      * Unique key for document e.g. product_20,  user_profile_1
-     * @param \App\Entity\Extension\Attributable\AttributableEntity|null $entity
+     * @param AttributableEntity|null $entity
      * @param array|null $docData
      * @return string
      */

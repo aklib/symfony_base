@@ -11,7 +11,7 @@ namespace App\Bundles\Attribute;
 
 use App\Entity\Extension\Attributable\AttributableEntity;
 
-interface AttributeEntityManagerInterface
+interface AttributeEntityAdapterInterface
 {
     public function addEntity(AttributableEntity $entity): void;
 

@@ -10,10 +10,10 @@
 
 namespace App\Bundles\Attribute\Command;
 
-use App\Bundles\Attribute\Manager\AbstractElasticaAttributeManager;
-use App\Bundles\Attribute\Manager\AttributeManagerDatabase;
-use App\Bundles\Attribute\Manager\AttributeManagerNested;
-use App\Bundles\Attribute\Manager\AttributeManagerParentChild;
+use App\Bundles\Attribute\Manager\AbstractElasticaAttributeAdapter;
+use App\Bundles\Attribute\Manager\AttributeAdapterDatabase;
+use App\Bundles\Attribute\Manager\AttributeAdapterNested;
+use App\Bundles\Attribute\Manager\AttributeAdapterParentChild;
 use App\Entity\AttributeValue;
 use App\Entity\Extension\Attributable\AttributableEntity;
 use App\Repository\AttributeValueRepository;
@@ -31,13 +31,13 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class PopulateAttributeCommand extends Command
 {
-    private AttributeManagerDatabase $managerDatabase;
-    private AttributeManagerNested $managerNested;
-    private AttributeManagerParentChild $managerParentChild;
+    private AttributeAdapterDatabase $managerDatabase;
+    private AttributeAdapterNested $managerNested;
+    private AttributeAdapterParentChild $managerParentChild;
     private EntityManagerInterface $em;
     private ArrayCollection $attributeValueCollection;
 
-    public function __construct(AttributeManagerDatabase $managerDatabase, AttributeManagerNested $managerNested, AttributeManagerParentChild $managerParentChild, EntityManagerInterface $em)
+    public function __construct(AttributeAdapterDatabase $managerDatabase, AttributeAdapterNested $managerNested, AttributeAdapterParentChild $managerParentChild, EntityManagerInterface $em)
     {
         parent::__construct();
         $this->managerDatabase = $managerDatabase;
@@ -149,7 +149,7 @@ class PopulateAttributeCommand extends Command
         return Command::SUCCESS;
     }
 
-    protected function resetIndex(AbstractElasticaAttributeManager $manager, InputInterface $input, OutputInterface $output): bool
+    protected function resetIndex(AbstractElasticaAttributeAdapter $manager, InputInterface $input, OutputInterface $output): bool
     {
         $result = false;
         $doReset = $input->getOption('do-reset');
@@ -210,25 +210,25 @@ class PopulateAttributeCommand extends Command
     //============================== GETTERS ==============================
 
     /**
-     * @return AttributeManagerDatabase
+     * @return AttributeAdapterDatabase
      */
-    public function getManagerDatabase(): AttributeManagerDatabase
+    public function getManagerDatabase(): AttributeAdapterDatabase
     {
         return $this->managerDatabase;
     }
 
     /**
-     * @return AttributeManagerNested
+     * @return AttributeAdapterNested
      */
-    public function getManagerNested(): AttributeManagerNested
+    public function getManagerNested(): AttributeAdapterNested
     {
         return $this->managerNested;
     }
 
     /**
-     * @return AttributeManagerParentChild
+     * @return AttributeAdapterParentChild
      */
-    public function getManagerParentChild(): AttributeManagerParentChild
+    public function getManagerParentChild(): AttributeAdapterParentChild
     {
         return $this->managerParentChild;
     }

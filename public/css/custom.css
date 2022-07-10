@@ -105,3 +105,13 @@ table.datagrid tr.expanded {
         left: 100%;
     }
 }
+
+.draggable--original {
+    opacity: 10%;
+    display: block !important;
+}
+
+
+
+
+

@@ -1,18 +1,17 @@
 <?php /** @noinspection DuplicatedCode */
-/** @noinspection ReturnTypeCanBeDeclaredInspection */
-/** @noinspection PhpUnused */
 
 /**
- * Class ElasticaManager
- * @package App\Bundles\Attribute
+ * Class AttributeManagerParentChild
+ * @package App\Bundles\Attribute\Manager
  *
- * since: 23.06.2022
+ * since: 29.06.2022
  * author: alexej@kisselev.de
  */
 
 namespace App\Bundles\Attribute\Manager;
 
 use App\Entity\Extension\Attributable\AttributableEntity;
+use App\Entity\Extension\Attributable\AttributeInterface;
 use Doctrine\Common\Collections\Collection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -20,15 +19,13 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use Elastica\Bulk;
 use Elastica\Document;
 use Elastica\Query;
-use Elastica\Query\BoolQuery;
 use Elastica\Util;
 use Exception;
 use FOS\ElasticaBundle\Elastica\Index;
 use Throwable;
 
-class AttributeManagerNested extends AbstractElasticaAttributeManager
+class AttributeAdapterParentChild extends AbstractElasticaAttributeAdapter
 {
-
     // =============================== WORKFLOW METHODS  ===============================
 
     public function getAttributeValues(AttributableEntity $entity): array
@@ -38,21 +35,19 @@ class AttributeManagerNested extends AbstractElasticaAttributeManager
             $this->attributeValues = [];
             // update attribute values. can be lazy loading
             $documents = $this->getDocuments();
-            /** @var Document $document */
-            foreach ($documents as $document) {
-                $docData = $document instanceof Document ? $document->getData() : $document;
-                $documentId = $document instanceof Document ? $document->getId() : $this->getDocumentId(null, $docData);
-                $attributes = $docData[self::ATTRIBUTE_FIELD] ?? [];
-                foreach ($attributes as $attrData) {
-                    $this->attributeValues[$documentId][$attrData['uniqueKey']] = $this->convertValue($attrData['uniqueKey'], $attrData[$attrData['type']] ?? null);
+            foreach ($documents as $docData) {
+                if ($docData instanceof Document) {
+                    $docData = $docData->getData();
                 }
+                $uniqueKey = $docData['uniqueKey'];
+                $this->attributeValues[$this->getDocumentId(null, $docData)][$uniqueKey] = $this->convertValue($uniqueKey, $docData[$docData['type']] ?? null);
             }
             // add attributes has no value
 
             if (!array_key_exists($docId, $this->attributeValues)) {
                 $this->attributeValues[$docId] = [];
             }
-            /** @var \App\Entity\Extension\Attributable\AttributeInterface $attribute */
+            /** @var AttributeInterface $attribute */
             foreach ($entity->getCategory()->getAttributes(true) as $attribute) {
                 if (!array_key_exists($attribute->getUniqueKey(), $this->attributeValues[$docId])) {
                     $this->attributeValues[$docId][$attribute->getUniqueKey()] = null;
@@ -62,45 +57,34 @@ class AttributeManagerNested extends AbstractElasticaAttributeManager
         return $this->attributeValues[$docId] ?? [];
     }
 
-    protected function getQuery(Collection $entities): Query
-    {
-        $ids = [];
-        $scopes = [];
-        /** @var \App\Entity\Extension\Attributable\AttributableEntity $campaign */
-        foreach ($entities as $entity) {
-            try {
-                $ids[] = $entity->getId();
-                $scopes[] = $this->getScope($entity);
-            } catch (Throwable $e) {
-                // detached/removed entity
-            }
-
-        }
-        $termsQuery = new Query\Terms('id', $ids);
-        $queryBool = new BoolQuery();
-        $queryBool->addMust($termsQuery);
-
-        $termsQueryScope = new Query\Terms('scope', array_unique($scopes));
-        $queryBool->addMust($termsQueryScope);
-
-        $query = new Query();
-        $query->setQuery($queryBool);
-        return $query;
-    }
-
+    /** @noinspection NestedPositiveIfStatementsInspection */
     public function flush(): void
     {
         if ($this->entities->isEmpty()) {
             return;
         }
-        $documentsAll = $this->getDocuments(true);
+
+
         $documents = [];
+        $documentsAll = $this->getDocuments(true);
         //upsert entity documents
 
-        /** @var \App\Entity\Extension\Attributable\AttributableEntity $entity */
+        /** @var AttributableEntity $entity */
         foreach ($this->entities as $entity) {
-            $attributeValues = [];
             $docId = $this->getDocumentId($entity);
+            /** @var Document $document */
+            $document = $documentsAll[$docId] ?? null;
+            if ($document instanceof Document) {
+                $docData = $document->getData();
+                if ($entity->updateDocData($docData)) {
+                    $documents[] = $document;
+                }
+            } else {
+                $docData = $entity->createDocData();
+                // =========== CREATE PARENT DOC ===========
+                $docData[self::ATTRIBUTE_FIELD] = ['name' => 'entity'];
+                $documents[] = new Document($docId, $docData, $this->getIndex());
+            }
             foreach ($entity->getAttributeValues() as $uniqueKey => $attributeValue) {
                 $attribute = $this->getAttribute($uniqueKey);
                 if ($attribute === null) {
@@ -109,44 +93,57 @@ class AttributeManagerNested extends AbstractElasticaAttributeManager
                 if (empty($attributeValue)) {
                     continue;
                 }
-                $val = $entity->createDocData($attribute);
-                $attributeValues[] = $val;
+                //=========== CREATE/UPDATE CHILDREN DOCS ===========
+                $document = $documentsAll[$docId . '_' . $uniqueKey] ?? null;
+                if ($document === null) {
+                    $docData = $entity->createDocData($attribute);
+                    $docData[self::ATTRIBUTE_FIELD] = [
+                        'name'   => 'attribute',
+                        'parent' => $docId
+                    ];
+                    $documents[] = new Document($docId . '_' . $uniqueKey, $docData, $this->getIndex());
+                } elseif ($document instanceof Document) {
+                    $docData = $document->getData();
+                    if ($entity->updateDocData($docData, $attribute)) {
+                        //dump($docData);
+                        if (!empty($docData)) {
+                            $document->setData($docData);
+                            $documents[] = $document;
+                        }
+//                        else {
+//                            // remove doc
+//                        }
+                    }
+                }
             }
-            $document = $documentsAll[$docId] ?? null;
-            if ($document instanceof Document) {
-                $docData = $document->getData();
-                $entity->updateDocData($docData);
-                $docData[self::ATTRIBUTE_FIELD] = $attributeValues;
-            } else {
-                $docData = $entity->createDocData();
-                $docData[self::ATTRIBUTE_FIELD] = $attributeValues;
-                $document = new Document($this->getDocumentId($entity), $docData, $this->getIndex());
-            }
-            $document->setData($docData);
-            $documents[] = $document;
         }
         if (empty($documents)) {
             return;
         }
-
         foreach (array_chunk($documents, 500) as $docs) {
             $bulk = new Bulk($this->getIndex()->getClient());
-            if (count($documents) < 10) {
-                $bulk->setRequestParam('refresh', true);
-            }
+            $bulk->setRequestParam('routing', 1);
+            $bulk->setRequestParam('refresh', true);
             $bulk->addDocuments($docs);
             try {
-                $bulk->send();
+                $response = $bulk->send();
+                if (!$response->isOk()) {
+                    $this->getFlashBag()->add('error', 'An error occurred during saving. ' . $response->getErrorMessage());
+                }
             } catch (Exception $e) {
                 $this->getFlashBag()->add('error', 'An error occurred during saving');
                 $this->getFlashBag()->add('info', $e->getMessage());
             }
         }
-
         if ($this->doSynchronize) {
             $this->synchronizeDatabase();
         }
         $this->entities->clear();
+    }
+
+    public function getIndex(): Index
+    {
+        return $this->getIndexManager()->getIndex('parent_child');
     }
 
     /**
@@ -164,7 +161,10 @@ class AttributeManagerNested extends AbstractElasticaAttributeManager
                 'mappings' => [
                     'properties' => [
                         self::ATTRIBUTE_FIELD => [
-                            'type' => 'nested'
+                            'type'      => 'join',
+                            'relations' => [
+                                'entity' => 'attribute'
+                            ]
                         ],
                         'created_at'          => [
                             'type' => 'date'
@@ -180,9 +180,27 @@ class AttributeManagerNested extends AbstractElasticaAttributeManager
         return false;
     }
 
-    public function getIndex(): Index
+    /**
+     * @param Collection $entities
+     * @return Query
+     */
+    protected function getQuery(Collection $entities): Query
     {
-        return $this->getIndexManager()->getIndex('nested');
+        $ids = [];
+        /** @var AttributableEntity $campaign */
+        foreach ($entities as $entity) {
+            try {
+                $ids[] = $this->getDocumentId($entity);
+            } catch (Throwable $e) {
+                // detached/removed entity
+            }
+        }
+        $queryJoin = new Query();
+        $queryJoin->setQuery(new Query\Terms('_id', $ids));
+        $queryTree = new Query\HasParent($queryJoin, 'entity');
+        $query = new Query();
+        $query->setQuery($queryTree);
+        return $query;
     }
 
     protected function getSearchQuery(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields): ?Query
@@ -202,16 +220,12 @@ class AttributeManagerNested extends AbstractElasticaAttributeManager
         $queryString = new Query\QueryString($searchString);
         $queryBool->addMust($queryString);
 
-        $term = new Query\Term();
-        $term->setTerm(self::ATTRIBUTE_FIELD . '.scope', $scope);
+        $term = new Query\Term(['scope' => $scope]);
         $queryBool->addMust($term);
 
-        $queryNested = new Query\Nested();
-        $queryNested->setQuery($queryBool);
-        $queryNested->setPath(self::ATTRIBUTE_FIELD);
-
+        $queryTree = new Query\HasChild($queryBool, 'attribute');
         $query = new Query();
-        $query->setQuery($queryNested);
+        $query->setQuery($queryTree);
         return $query;
     }
 }

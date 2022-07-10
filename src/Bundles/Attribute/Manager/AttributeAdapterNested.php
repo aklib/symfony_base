@@ -13,6 +13,7 @@
 namespace App\Bundles\Attribute\Manager;
 
 use App\Entity\Extension\Attributable\AttributableEntity;
+use App\Entity\Extension\Attributable\AttributeInterface;
 use Doctrine\Common\Collections\Collection;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
@@ -52,7 +53,7 @@ class AttributeAdapterNested extends AbstractElasticaAttributeAdapter
             if (!array_key_exists($docId, $this->attributeValues)) {
                 $this->attributeValues[$docId] = [];
             }
-            /** @var \App\Entity\Extension\Attributable\AttributeInterface $attribute */
+            /** @var AttributeInterface $attribute */
             foreach ($entity->getCategory()->getAttributes(true) as $attribute) {
                 if (!array_key_exists($attribute->getUniqueKey(), $this->attributeValues[$docId])) {
                     $this->attributeValues[$docId][$attribute->getUniqueKey()] = null;

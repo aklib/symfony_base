@@ -1,0 +1,28 @@
+{% block button %}
+    {% set configs = [] %}
+    {% set current = null %}
+    {% for config in ea.user.getUserViewConfigs %}
+        {% if config.entityFqcn == ea.entity.fqcn %}
+            {% if config.current %}
+                {% set current = config %}
+            {% else %}
+                {% set configs = configs|merge({ (loop.index): config}) %}
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+
+    <button id="configureViewButton" class="btn btn-secondary dropdown-toggle datagrid-filters action-filters-button" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="fa fa-filter fa-gear"></i> {{ current.name|default('default') }}
+    </button>
+    {% if configs|length > 0 %}
+        <ul class="dropdown-menu" aria-labelledby="configureViewButton">
+            {% for config in configs %}
+                <li><a class="dropdown-item" href="{{ ea_url().set('viewConfig', config.id) }}">{{ config.name }}</a></li>
+            {% endfor %}
+            <li>
+                <hr class="dropdown-divider">
+            </li>
+            <li><a class="dropdown-item" href="{{ action.linkUrl }}"><b>{{ 'Edit'|trans }}</b></a></li>
+        </ul>
+    {% endif %}
+{% endblock %}

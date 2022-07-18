@@ -20,17 +20,21 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 
 abstract class AbstractAppGrudController extends AbstractCrudController implements CrudControllerManagerInterface
 {
     private EntityManagerInterface $em;
     private CrudControllerManager $controllerManager;
     protected const OPTION_SORT_ORDER = 'sortOrder';
+    private AdminUrlGenerator $adminUrlGenerator;
 
-    public function __construct(EntityManagerInterface $em, CrudControllerManager $controllerManager)
+    public function __construct(EntityManagerInterface $em, CrudControllerManager $controllerManager, AdminUrlGenerator $adminUrlGenerator)
     {
+
         $this->em = $em;
         $this->controllerManager = $controllerManager;
+        $this->adminUrlGenerator = $adminUrlGenerator;
     }
 
     /**
@@ -49,7 +53,7 @@ abstract class AbstractAppGrudController extends AbstractCrudController implemen
      */
     public function configureFields(string $pageName): iterable
     {
-        return $this->getControllerManager()->configureFields($this, $pageName, $this->excludeFields($pageName));
+        return $this->getControllerManager()->configureFields($this, $pageName, $this->getFieldOptions($pageName));
     }
 
     public function configureFilters(Filters $filters): Filters
@@ -103,6 +107,14 @@ abstract class AbstractAppGrudController extends AbstractCrudController implemen
     }
 
     /**
+     * @return AdminUrlGenerator
+     */
+    public function getAdminUrlGenerator(): AdminUrlGenerator
+    {
+        return $this->adminUrlGenerator;
+    }
+
+    /**
      * @return CrudControllerManager
      */
     public function getControllerManager(): CrudControllerManager
@@ -110,16 +122,9 @@ abstract class AbstractAppGrudController extends AbstractCrudController implemen
         return $this->controllerManager;
     }
 
-    public function excludeFields(string $pageName = 'index'): array
+    public function getFieldOptions(string $pageName = 'index'): array
     {
-        $fields = [];
-        //if($pageName === 'new' || $pageName === 'edit'){
-            $fields[] = 'createdBy';
-            $fields[] = 'updatedBy';
-            $fields[] = 'createdAt';
-            $fields[] = 'updatedAt';
-        //}
-        return $fields;
+        return [];
     }
 
     protected function getEntity(): ?object

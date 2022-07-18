@@ -13,5 +13,5 @@ use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface
 
 interface CrudControllerManagerInterface extends CrudControllerInterface
 {
-    public function excludeFields(string $pageName = 'index'): array;
+    public function getFieldOptions(string $pageName = 'index'): array;
 }

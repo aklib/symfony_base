@@ -28,7 +28,7 @@ class ProductAttribute implements AttributeInterface
     use AttributeTrait, TimestampableEntityTrait, BlameableEntityTrait;
 
     /**
-     * @var \App\Entity\Extension\Attributable\CategoryInterface
+     * @var CategoryInterface
      * @ORM\ManyToOne(targetEntity=ProductCategory::class, inversedBy="attributes")
      *
      * @ORM\OrderBy({"lft" = "ASC"})

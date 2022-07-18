@@ -1,1 +1,7 @@
-easy_admin: ~
+easy_admin:
+  entities:
+    Product:
+      class: App\Entity\Product\Product
+      label: 'Products'
+      form:
+        title: '%%entity_label%% listing'

@@ -18,9 +18,9 @@ class UserCrudController extends AbstractAppGrudController
         return User::class;
     }
 
-    public function excludeFields(string $pageName = 'index'): array
+    public function getFieldOptions(string $pageName = 'index'): array
     {
-        $fields = parent::excludeFields($pageName);
+        $fields = parent::getFieldOptions($pageName);
         if ($pageName !== 'index') {
             $fields[] = 'userProfile';
         }

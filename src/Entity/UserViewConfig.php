@@ -6,6 +6,7 @@ use App\Entity\Extension\Traits\BlameableEntityTrait;
 use App\Entity\Extension\Traits\TimestampableEntityTrait;
 use App\Repository\UserViewConfigRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass=UserViewConfigRepository::class)
@@ -29,7 +30,7 @@ class UserViewConfig
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="userViewConfigs")
      */
-    private User $user;
+    private UserInterface $user;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -39,12 +40,7 @@ class UserViewConfig
     /**
      * @ORM\Column(type="json")
      */
-    private array $columnsVisible = [];
-
-    /**
-     * @ORM\Column(type="array")
-     */
-    private array $columnsHidden = [];
+    private array $columnOptions = [];
 
     /**
      * @ORM\Column(type="boolean")
@@ -68,12 +64,12 @@ class UserViewConfig
         return $this;
     }
 
-    public function getUser(): ?User
+    public function getUser(): UserInterface
     {
         return $this->user;
     }
 
-    public function setUser(?User $user): self
+    public function setUser(UserInterface $user): self
     {
         $this->user = $user;
 
@@ -92,26 +88,14 @@ class UserViewConfig
         return $this;
     }
 
-    public function getColumnsVisible(): ?array
+    public function getColumnOptions(): ?array
     {
-        return $this->columnsVisible;
+        return $this->columnOptions;
     }
 
-    public function setColumnsVisible(array $columnsVisible): self
+    public function setColumnOptions(array $columnOptions): self
     {
-        $this->columnsVisible = $columnsVisible;
-
-        return $this;
-    }
-
-    public function getColumnsHidden(): ?array
-    {
-        return $this->columnsHidden;
-    }
-
-    public function setColumnsHidden(array $columnsHidden): self
-    {
-        $this->columnsHidden = $columnsHidden;
+        $this->columnOptions = $columnOptions;
 
         return $this;
     }

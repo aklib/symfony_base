@@ -14,9 +14,9 @@ class ProductAttributeCrudController extends AbstractAppGrudController
         return ProductAttribute::class;
     }
 
-    public function excludeFields(string $pageName = 'index'): array
+    public function getFieldOptions(string $pageName = 'index'): array
     {
-        $fields = parent::excludeFields($pageName);
+        $fields = parent::getFieldOptions($pageName);
         $entity = $this->getEntity();
         if ($entity instanceof AttributeInterface) {
             if ($pageName === Crud::PAGE_NEW || $entity->getAttributeDef()->getType() !== 'select') {

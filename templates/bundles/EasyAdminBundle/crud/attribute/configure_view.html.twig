@@ -1,51 +1,77 @@
 {% extends '@EasyAdmin/page/content.html.twig' %}
-
+{% block body_class %}ea-content-width-full{% endblock %}
+{% block page_title %}{{ entity_label }} view Configuration {% endblock %}
 
 {% block main %}
-    <div id="columnActions" class="" role="toolbar">
-        <div class="btn-group" role="group">
-            <a class="btn btn-outline-success" href="#" data-action="select">
-                <i class="fa check-square-o"></i> {{ 'select all'|trans }}
-            </a>
-            <a class="btn btn-outline-secondary" href="#" data-action="deselect">
-                <i class="fa fa-square-o"></i> {{ 'deselect_all'|trans }}
-            </a>
-        </div>
+    <form id="configurationForm" name="checkboxes" method="post">
+        <section class="content-header">
+            <div id="columnActions" class="" role="toolbar">
+                <div class="btn-group" role="group">
+                    <a class="btn btn-outline-success" href="#" data-action="select">
+                        <i class="fa check-square-o"></i> {{ 'select all'|trans }}
+                    </a>
+                    <a class="btn btn-outline-secondary" href="#" data-action="deselect">
+                        <i class="fa fa-square-o"></i> {{ 'deselect_all'|trans }}
+                    </a>
+                </div>
 
-        <div class="btn-group ms-5" role="group">
-            <a class="btn btn-outline-success" href="#" data-action="all">
-                {{ 'show all'|trans }}
-            </a>
-            <a class="btn btn-outline-secondary" href="#" data-action="checked">
-                <i class="fa fa-check-square-o"></i> {{ 'show checked'|trans }}
-            </a>
-            <a class="btn btn-outline-secondary" href="#" data-action="unchecked">
-                <i class="fa fa-square-o"></i> {{ 'show unchecked'|trans }}
-            </a>
-        </div>
-    </div>
-    <div style="height: 100px"></div>
-
-    <div id="columnContainer" class="row row-cols-auto justify-content-start gx-1 gy-1 mx-2 draggable-zone">
-        {% for column in columns %}
-            <div id="column_{{ column.name }}" data-colname="{{ column.name }}" class="draggable col float-left">
-                <div class="text-nowrap p-2 border bg-light draggable-handle">
-                    <div class="form-check">
-                        <input type="hidden" name="{{ column.name }}" value="0">
-                        <input type="checkbox" name="{{ column.name }}" class="form-check-input" value="1" id="{{ column.name }}">
-                        <label class="form-check-label" for="{{ column.name }}">
-                            {{ column.label|trans }}
-                        </label>
+                <div class="btn-group ms-5" role="group">
+                    <a class="btn btn-outline-success" href="#" data-action="all">
+                        {{ 'show all'|trans }}
+                    </a>
+                    <a class="btn btn-outline-secondary" href="#" data-action="checked">
+                        <i class="fa fa-check-square-o"></i> {{ 'show checked'|trans }}
+                    </a>
+                    <a class="btn btn-outline-secondary" href="#" data-action="unchecked">
+                        <i class="fa fa-square-o"></i> {{ 'show unchecked'|trans }}
+                    </a>
+                </div>
+            </div>
+            <div class="page-actions">
+                <div class="row g-3 global-actions">
+                    <div class="col-md-4">
+                        <button class="btn btn-primary action-save" type="submit" name="submit" value="update">{{ 'Update Configuration'|trans }}</button>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="text" name="config_name" value="{{ currentConfig.name }}" class="form-control form-control-sm" placeholder="new configuration name">
+                    </div>
+                    <div class="col-md-4">
+                        <button class="btn btn-primary action-save" type="submit" name="submit" value="create">{{ 'Create new Configuration'|trans }}</button>
                     </div>
                 </div>
             </div>
-        {% endfor %}
-    </div>
+        </section>
+        <section class="content-header">
+            <small class="text-muted">{{ 'Drag and drop columns to change an order. Check-in or check-out to show or hide the column in the list view.'|trans }}</small>
+        </section>
+        <section id="main" class="content-body">
+            <div id="columnContainer" class="row row-cols-auto justify-content-start gap-3 gx-1 gy-0 draggable-zone container-fluid">
+                {% for column in columns %}
+                    <div id="column_{{ column.name }}" data-colname="{{ column.name }}" class="draggable col">
+                        <div class="text-nowrap p-2 border bg-light draggable-handle">
+                            <div class="form-check">
+                                <input type="hidden" name="{{ column.name }}[sortOrder]" value="{{ column.sortOrder }}" id="column_{{ column.name }}">
+                                <input type="hidden" name="{{ column.name }}[visible]" value="0">
+                                <input type="checkbox" name="{{ column.name }}[visible]" class="form-check-input" value="1"
+                                       id="{{ column.name }}"{% if(column.visible) %} checked{% endif %}>
+
+                                <label class="form-check-label" for="{{ column.name }}">
+                                    {{ column.label|trans }}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+    </form>
+
 
 {% endblock %}
 
 {% block body_javascript %}
-{#    <link rel="stylesheet" href="{{ asset('/js/jquery-ui-1.13.1/jquery-ui.css') }}">#}
+    {#    <link rel="stylesheet" href="{{ asset('/js/jquery-ui-1.13.1/jquery-ui.css') }}"> #}
+
     <script src="{{ asset('/js/jquery-3.1.1.min.js') }}"></script>
     <script src="{{ asset('/js/jquery-ui-1.13.1/jquery-ui.min.js') }}"></script>
     <script type="text/javascript">
@@ -53,7 +79,7 @@
             $('.draggable-zone').sortable({
                 placeholder: 'placeholder',
                 helper: 'clone',
-                start: function(event, ui){
+                start: function (event, ui) {
                     ui.item.show();
                 }
             }).disableSelection();
@@ -98,6 +124,11 @@
                 }
             });
             /* ==== eo click ==== */
+            $("#configurationForm").submit(function () {
+                $("#columnContainer input[id^='column_']").each(function (index, element) {
+                    $(element).prop('value', index + 1);
+                });
+            });
         });
     </script>
 {% endblock body_javascript %}

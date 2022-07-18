@@ -15,10 +15,13 @@ namespace App\Controller\Admin;
 use App\Bundles\Attribute\Adapter\Interfaces\AttributeAdapterInterface;
 use App\Bundles\Attribute\Controller\CrudControllerAttributableEntity;
 use App\Bundles\Attribute\Controller\CrudControllerManager;
+use App\Bundles\Attribute\Manager\ViewConfigManager;
 use App\Entity\Extension\Attributable\AttributableEntity;
 use App\Entity\Extension\Attributable\AttributeInterface;
 use App\Entity\Extension\Attributable\CategoryInterface;
 use App\Entity\Product\ProductCategory;
+use App\Entity\User;
+use App\Entity\UserViewConfig;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
@@ -33,6 +36,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Event\AfterCrudActionEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Event\BeforeCrudActionEvent;
 use EasyCorp\Bundle\EasyAdminBundle\Exception\ForbiddenActionException;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Security\Permission;
 use Elastica\Util;
 use InvalidArgumentException;
@@ -44,12 +48,26 @@ abstract class AbstractAttributableEntityController extends AbstractAppGrudContr
 {
     private ?CategoryInterface $category = null;
     protected AttributeAdapterInterface $attributeManager;
+    protected ViewConfigManager $viewConfigManager;
 
-    public function __construct(EntityManagerInterface $em, CrudControllerManager $controllerManager, AttributeAdapterInterface $attributeManager)
+    public function __construct(EntityManagerInterface $em, CrudControllerManager $controllerManager, AdminUrlGenerator $adminUrlGenerator, AttributeAdapterInterface $attributeManager, ViewConfigManager $viewConfigManager)
     {
-        parent::__construct($em, $controllerManager);
+        parent::__construct($em, $controllerManager, $adminUrlGenerator);
         $this->attributeManager = $attributeManager;
+        $this->viewConfigManager = $viewConfigManager;
+        $this->viewConfigManager->setEntityFqcn($this::getEntityFqcn());
     }
+
+    public function getFieldOptions(string $pageName = 'index'): array
+    {
+        $fields = parent::getFieldOptions($pageName);
+        $config = $this->getViewConfigManager()->getCurrentViewConfig();
+        if ($config instanceof UserViewConfig) {
+            $fields = array_replace_recursive($fields, $config->getColumnOptions());
+        }
+        return $fields;
+    }
+
 
     /**
      * Configure and save index/list view for attributable entities
@@ -72,20 +90,35 @@ abstract class AbstractAttributableEntityController extends AbstractAppGrudContr
         if (!$this->isGranted(Permission::EA_EXECUTE_ACTION, ['action' => Action::DETAIL, 'entity' => null])) {
             throw new ForbiddenActionException($context);
         }
+        // ============== GET CONFIG ==============
 
-        $columns = [];
+        $currentConfig = $this->getViewConfigManager()->getCurrentViewConfig();
+        if ($currentConfig === null) {
+            $currentConfig = $this->getViewConfigManager()->createViewConfig();
+        }
+        // ============== GET FIELDS ==============
+        // 1. from class
         $metaData = $this->getEntityManager()->getClassMetadata($this::getEntityFqcn());
         $fields = array_merge($metaData->fieldMappings, $metaData->associationMappings);
-        $count = 1;
+        $columns = $currentConfig->getColumnOptions();
+        $sortOrder = 1;
         foreach ($fields as $name => $field) {
             $columns[$name]['name'] = $name;
             $columns[$name]['label'] = $name;
-            if (empty($field['element']['sortOrder'])) {
-                $columns[$name]['sortOrder'] = $count++;
-            } else {
-                $columns[$name]['sortOrder'] = $field['element']['sortOrder'];
+            if (!array_key_exists('sortOrder', $columns[$name])) {
+                if (array_key_exists('element', $field)) {
+                    $columns[$name]['sortOrder'] = $field['element']['sortOrder'] ?? 100;
+                } else {
+                    $columns[$name]['sortOrder'] = $sortOrder;
+                }
             }
+            if (!array_key_exists('visible', $columns[$name])) {
+                $columns[$name]['visible'] = true;
+            }
+            $sortOrder++;
         }
+
+        // 2. from attributes
         $metaDataCategory = $this->getEntityManager()->getClassMetadata($metaData->getAssociationTargetClass('category'));
         $attributesClass = $metaDataCategory->getAssociationTargetClass('attributes');
 
@@ -93,20 +126,65 @@ abstract class AbstractAttributableEntityController extends AbstractAppGrudContr
         $attributes = $dao->findAll();
         /** @var AttributeInterface $attribute */
         foreach ($attributes as $attribute) {
-            $key = $attribute->getUniqueKey();;
-            $columns[$key]['name'] = $attribute->getUniqueKey();
-            $columns[$key]['label'] = $attribute->getName();
-            $columns[$key]['sortOrder'] = $attribute->getSortOrder();
+            $name = $attribute->getUniqueKey();
+            $columns[$name]['name'] = $attribute->getUniqueKey();
+            $columns[$name]['label'] = $attribute->getName();
+            if (!array_key_exists('sortOrder', $columns[$name])) {
+                $columns[$name]['sortOrder'] = $attribute->getSortOrder();
+            }
+            if (!array_key_exists('visible', $columns[$name])) {
+                $columns[$name]['visible'] = true;
+            }
         }
 
         uasort($columns, static function ($a, $b) {
             return $a['sortOrder'] > $b['sortOrder'];
         });
+
+        // ============== NO FORM HANDLING ==============
+
         $responseParameters = $this->configureResponseParameters(KeyValueStore::new([
-            'pageName'     => 'configureView',
-            'templateName' => 'crud/edit',
-            'columns'      => $columns
+            'pageName'      => 'configureView',
+            'entity_label'  => ucfirst($this->getScope()),
+            'templateName'  => 'crud/edit',
+            'columns'       => $columns,
+            'currentConfig' => $currentConfig
         ]));
+
+        $request = $context->getRequest();
+        if ($request->isMethod('POST')) {
+            $attributeMap = [];
+            /** @var AttributeInterface $attribute */
+            foreach ($attributes as $attribute) {
+                $attributeMap[$attribute->getUniqueKey()] = $attribute;
+            }
+            $columnOptions = $request->request->all();
+
+            // ============== MODIFY ATTRIBUTE SORT ORDER ==============
+            foreach ($columnOptions as $name => $column) {
+                if (array_key_exists($name, $attributeMap)) {
+                    $attributeMap[$name]->setSortOrder((int)$column['sortOrder']);
+                    $this->getEntityManager()->persist($attributeMap[$name]);
+                }
+            }
+            if ($columnOptions['submit'] === 'create') {
+                $currentConfig = $this->getViewConfigManager()->createViewConfig();
+                $user = $this->getUser();
+                if ($user instanceof User) {
+                    foreach ($user->getUserViewConfigs() as $userViewConfig) {
+                        $userViewConfig->setCurrent(false);
+                        $this->getEntityManager()->persist($userViewConfig);
+                    }
+                }
+            }
+            $currentConfig->setName($columnOptions['config_name'] ?? 'default');
+            unset($columnOptions['config_name'], $columnOptions['submit']);
+            $currentConfig->setColumnOptions($columnOptions);
+            $this->getEntityManager()->persist($currentConfig);
+            $this->getEntityManager()->flush();
+            $url = $this->getAdminUrlGenerator()->setAction(Crud::PAGE_INDEX)->setController(get_class($this))->generateUrl();
+            return $this->redirect($url);
+        }
 
         $event = new AfterCrudActionEvent($context, $responseParameters);
         $this->container->get('event_dispatcher')->dispatch($event);
@@ -157,20 +235,38 @@ abstract class AbstractAttributableEntityController extends AbstractAppGrudContr
 
     public function configureActions(Actions $actions): Actions
     {
-        $configureView = Action::new('configureViewAction', 'Configure View', 'fa fa-columns')
+        parent::configureActions($actions);
+        $viewConfig = $this->getViewConfigManager()->getCurrentViewConfig();
+        $label = $viewConfig !== null ? 'Config: ' . $viewConfig->getName() : 'Configure View';
+        $configureView = Action::new('configureViewAction', $label, 'fa fa-columns')
+            ->setTemplatePath('bundles/EasyAdminBundle/crud/attribute/configure_view_button.html.twig')
             ->linkToCrudAction('configureViewAction')
             ->createAsGlobalAction();
-
+//        dump($configureView->getAsDto()->getTemplatePath());die;
         return $actions->add(Crud::PAGE_INDEX, $configureView);
     }
 
     /**
      * Gets entity class name in a snake case e.g. App\Entity\UserProfile to user_profile
-     * @param string $entityFqcn
+     * @param string|null $entityFqcn
      * @return string
+     * @noinspection PhpSameParameterValueInspection
      */
-    private function getScope(string $entityFqcn): string
+    private function getScope(string $entityFqcn = null): string
     {
+        if ($entityFqcn === null) {
+            $entityFqcn = $this::getEntityFqcn();
+        }
         return Util::toSnakeCase(substr(strrchr($entityFqcn, '\\'), 1));
     }
+
+    /**
+     * @return ViewConfigManager
+     */
+    public function getViewConfigManager(): ViewConfigManager
+    {
+        return $this->viewConfigManager;
+    }
+
+
 }

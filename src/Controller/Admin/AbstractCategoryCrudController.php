@@ -1,4 +1,5 @@
-<?php
+<?php /** @noinspection PhpUnused */
+
 /**
  * Class AbstractCategoryController
  * @package App\Controller\Admin
@@ -9,14 +10,11 @@
 
 namespace App\Controller\Admin;
 
-use App\Bundles\Attribute\Controller\CrudControllerManager;
-use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FieldTrait;
-use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Gedmo\Tree\Entity\Repository\NestedTreeRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,13 +22,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 abstract class AbstractCategoryCrudController extends AbstractAppGrudController
 {
-    protected AdminUrlGenerator $adminUrlGenerator;
-
-    public function __construct(EntityManagerInterface $em, CrudControllerManager $controllerManager, AdminUrlGenerator $adminUrlGenerator)
-    {
-        parent::__construct($em, $controllerManager);
-        $this->adminUrlGenerator = $adminUrlGenerator;
-    }
 
     public function configureActions(Actions $actions): Actions
     {
@@ -70,9 +61,9 @@ abstract class AbstractCategoryCrudController extends AbstractAppGrudController
             ->addJsFile('/js/jquery-treegrid/dist/js/jquery.treegrid.js');
     }
 
-    public function excludeFields(string $pageName = null): array
+    public function getFieldOptions(string $pageName = null): array
     {
-        $fields = array_merge(parent::excludeFields($pageName), ['lft', 'rgt', 'level', 'root', 'children']);
+        $fields = array_merge(parent::getFieldOptions($pageName), ['lft', 'rgt', 'level', 'root', 'children']);
         if ($pageName !== 'index') {
             $fields[] = 'products';
         }

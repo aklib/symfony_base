@@ -55,14 +55,27 @@ class CrudControllerManager
         $this->parameterBug = $parameterBug;
     }
 
-    public function configureFields(CrudControllerManagerInterface $controller, string $pageName, array $excludeFields = []): iterable
+    /**
+     * @param CrudControllerManagerInterface $controller
+     * @param string $pageName
+     * @param array $fieldOptions [name => sortOrder<int>, visible<bool>]
+     * @return iterable
+     */
+    public function configureFields(CrudControllerManagerInterface $controller, string $pageName, array $fieldOptions = []): iterable
     {
         $mappings = $this->getMappings($controller);
         $fields = [];
         foreach ($mappings as $propertyName => $mapping) {
-            if (in_array($propertyName, $excludeFields, true)) {
-                continue;
+            if (array_key_exists($propertyName, $fieldOptions)) {
+                $visible = $fieldOptions[$propertyName]['visible'] ?? true;
+                if (!$visible) {
+                    continue;
+                }
             }
+            if (array_key_exists($propertyName, $fieldOptions) && array_key_exists(self::OPTION_SORT_ORDER, $fieldOptions[$propertyName])) {
+                $mapping['element'][self::OPTION_SORT_ORDER] = (int)$fieldOptions[$propertyName][self::OPTION_SORT_ORDER];
+            }
+
             $field = $this->createField($mapping, $pageName, $controller);
             if ($field === null) {
                 continue;
@@ -71,6 +84,12 @@ class CrudControllerManager
         }
         if ($controller instanceof CrudControllerAttributableEntity) {
             foreach ($controller->getCategory()->getAttributes(true) as $attribute) {
+                if (array_key_exists($attribute->getUniqueKey(), $fieldOptions)) {
+                    $visible = $fieldOptions[$attribute->getUniqueKey()]['visible'] ?? true;
+                    if (!$visible) {
+                        continue;
+                    }
+                }
                 $mapping = $attribute->toMapping();
                 $field = $this->createField($mapping, $pageName, $controller, $attribute);
                 if ($field === null) {

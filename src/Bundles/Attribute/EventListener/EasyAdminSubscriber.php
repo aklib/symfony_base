@@ -20,7 +20,8 @@ class EasyAdminSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-//            BeforeEntityUpdatedEvent::class => ['beforeEntityUpdated']
+//            BeforeEntityUpdatedEvent::class => ['beforeEntityUpdated'],
+//            AfterCrudActionEvent::class => ['afterCrudActionEvent']
         ];
     }
 }

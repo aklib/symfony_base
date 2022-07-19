@@ -14,17 +14,21 @@ use App\Entity\UserViewConfig;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Event\AfterCrudActionEvent;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class ViewConfigManager
+class ViewConfigManager implements EventSubscriberInterface
 {
     private $entityFqcn;
     private EntityManagerInterface $em;
     private Security $security;
     private RequestStack $requestStack;
+    private ?UserViewConfig $currentUserViewConfig = null;
+    private bool $doFlash = false;
 
     public function __construct(RequestStack $requestStack, Security $security, EntityManagerInterface $em)
     {
@@ -57,39 +61,33 @@ class ViewConfigManager
 
     public function getCurrentViewConfig(string $pageName = 'index'): ?UserViewConfig
     {
-        $viewConfigId = (int)$this->getRequest()->query->get('viewConfig');
+        if ($this->currentUserViewConfig !== null) {
+            return $this->currentUserViewConfig;
+        }
 
         $userViewConfigs = $this->getViewConfigs();
         if ($userViewConfigs->isEmpty()) {
             return null;
         }
-        $results = $userViewConfigs->filter(static function (UserViewConfig $viewConfig) use ($viewConfigId) {
-            if ($viewConfigId === 0 && $viewConfig->isCurrent()) {
-                return $viewConfig;
-            }
-            if ($viewConfigId === $viewConfig->getId()) {
-                return $viewConfig;
-            }
-            return null;
-        });
-
-        if ($viewConfigId !== 0) {
-            // switch view
-            /** @var  UserViewConfig $userViewConfig */
+        $viewConfigId = (int)$this->getRequest()->query->get('viewConfig');
+        if ($viewConfigId > 0) {
+            // switch config
             foreach ($userViewConfigs as $userViewConfig) {
                 $userViewConfig->setCurrent($viewConfigId === $userViewConfig->getId());
                 $this->getEntityManager()->persist($userViewConfig);
             }
-            $this->getEntityManager()->flush();
-        } elseif ($results->count() > 1) {
-            /** @var UserViewConfig $result */
-            foreach ($results as $i => $result) {
-                $result->setCurrent($i === 0);
-                $this->getEntityManager()->persist($result);
-            }
-            $this->getEntityManager()->flush();
+            // can't do flush directly, it destroys loaded entities
+            $this->doFlash = true;
         }
-        return $results->isEmpty() ? null : $results->first();
+
+        $results = $userViewConfigs->filter(static function (UserViewConfig $viewConfig) use ($viewConfigId) {
+            if ($viewConfig->isCurrent()) {
+                return $viewConfig;
+            }
+            return null;
+        });
+        $this->currentUserViewConfig = $results->isEmpty() ? null : $results->first();
+        return $this->currentUserViewConfig;
     }
 
     public function createViewConfig(string $name = null): UserViewConfig
@@ -146,5 +144,18 @@ class ViewConfigManager
 
     }
 
+    //================== EVENT ==================
+    public static function getSubscribedEvents(): array
+    {
+        return [
+            AfterCrudActionEvent::class => ['doFlush']
+        ];
+    }
 
+    public function doFlush(AfterCrudActionEvent $event): void
+    {
+        if ($this->doFlash) {
+            $this->getEntityManager()->flush();
+        }
+    }
 }

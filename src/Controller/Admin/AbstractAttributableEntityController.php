@@ -124,10 +124,12 @@ abstract class AbstractAttributableEntityController extends AbstractAppGrudContr
 
         $dao = $this->getEntityManager()->getRepository($attributesClass);
         $attributes = $dao->findAll();
+        $attrKeys = [];
         /** @var AttributeInterface $attribute */
         foreach ($attributes as $attribute) {
             $name = $attribute->getUniqueKey();
-            $columns[$name]['name'] = $attribute->getUniqueKey();
+            $attrKeys[] = $name;
+            $columns[$name]['name'] = $name;
             $columns[$name]['label'] = $attribute->getName();
             if (!array_key_exists(Constant::OPTION_SORT_ORDER, $columns[$name])) {
                 $columns[$name][Constant::OPTION_SORT_ORDER] = $attribute->getSortOrder();
@@ -135,6 +137,12 @@ abstract class AbstractAttributableEntityController extends AbstractAppGrudContr
             if (!array_key_exists(Constant::OPTION_VISIBLE, $columns[$name])) {
                 $columns[$name][Constant::OPTION_VISIBLE] = true;
             }
+        }
+        // 3. deleted attributes or fields
+        $exists = array_merge(array_keys($fields), $attrKeys);
+        $all = array_keys($columns);
+        foreach (array_diff($all, $exists) as $key) {
+            unset($columns[$key]);
         }
 
         uasort($columns, static function ($a, $b) {

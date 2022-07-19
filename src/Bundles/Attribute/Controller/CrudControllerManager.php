@@ -42,6 +42,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\UrlField;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use RuntimeException;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 
@@ -70,7 +71,7 @@ class CrudControllerManager
         foreach ($mappings as $propertyName => &$mapping) {
             if (array_key_exists($propertyName, $fieldOptions)) {
                 $visible = $fieldOptions[$propertyName][Constant::OPTION_VISIBLE] ?? true;
-                if (!$visible) {
+                if (!$visible && $pageName === Crud::PAGE_INDEX) {
                     continue;
                 }
             }
@@ -95,7 +96,7 @@ class CrudControllerManager
             foreach ($controller->getCategory()->getAttributes(true) as $attribute) {
                 if (array_key_exists($attribute->getUniqueKey(), $fieldOptions)) {
                     $visible = $fieldOptions[$attribute->getUniqueKey()][Constant::OPTION_VISIBLE] ?? true;
-                    if (!$visible) {
+                    if (!$visible && $pageName === Crud::PAGE_INDEX) {
                         continue;
                     }
                 }
@@ -115,11 +116,13 @@ class CrudControllerManager
         $doTab = $controller instanceof CrudControllerAttributableEntity && ($pageName === Crud::PAGE_DETAIL || $pageName === Crud::PAGE_EDIT || $pageName === Crud::PAGE_NEW);
         if ($doTab) {
             $byTab = [];
-            foreach ($mappings as $propertyName => $mapping) {
-                if (!array_key_exists($propertyName, $fields)) {
+            foreach ($fields as $propertyName => $field) {
+                if (!array_key_exists($propertyName, $mappings)) {
+                    // can't be
                     continue;
                 }
-                $byTab[$mapping['element'][Constant::OPTION_TAB]][$propertyName] = $fields[$propertyName];
+                $mapping = $mappings[$propertyName];
+                $byTab[$mapping['element'][Constant::OPTION_TAB]][$propertyName] = $field;
             }
             $tabbedFields = [];
             foreach ($byTab as $tab => $fieldsOrdered) {
@@ -272,6 +275,11 @@ class CrudControllerManager
             case 'image':
                 $folder = $attribute === null ? $propertyName : $attribute->getUniqueKey();
                 $imagePath = $this->getParameter('upload_image_path') . '/' . $folder;
+
+                $absPath = $this->getParameter('web_base_path') . '/' . $imagePath;
+                if (!file_exists($absPath) && !mkdir($absPath, 0777, true) && !is_dir($absPath)) {
+                    throw new RuntimeException(sprintf('Directory "%s" was not created', $absPath));
+                }
                 $field = ImageField::new($propertyName, $label)
                     ->setUploadDir("public/$imagePath")
                     ->setBasePath($imagePath);

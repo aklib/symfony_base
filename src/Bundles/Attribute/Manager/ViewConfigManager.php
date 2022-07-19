@@ -57,9 +57,6 @@ class ViewConfigManager
 
     public function getCurrentViewConfig(string $pageName = 'index'): ?UserViewConfig
     {
-        if ($pageName !== 'index') {
-            return null;
-        }
         $viewConfigId = (int)$this->getRequest()->query->get('viewConfig');
 
         $userViewConfigs = $this->getViewConfigs();

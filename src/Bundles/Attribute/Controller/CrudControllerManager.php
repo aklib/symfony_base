@@ -18,6 +18,7 @@ use App\Entity\Extension\Attributable\CategoryInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\QueryBuilder;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Controller\CrudControllerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Contracts\Field\FieldInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
@@ -29,6 +30,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\CountryField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
@@ -65,7 +67,7 @@ class CrudControllerManager
     {
         $mappings = $this->getMappings($controller);
         $fields = [];
-        foreach ($mappings as $propertyName => $mapping) {
+        foreach ($mappings as $propertyName => &$mapping) {
             if (array_key_exists($propertyName, $fieldOptions)) {
                 $visible = $fieldOptions[$propertyName][Constant::OPTION_VISIBLE] ?? true;
                 if (!$visible) {
@@ -80,8 +82,15 @@ class CrudControllerManager
             if ($field === null) {
                 continue;
             }
+            if (!array_key_exists('element', $mapping)) {
+                $mapping['element'] = [];
+            }
+            if (!array_key_exists(Constant::OPTION_TAB, $mapping['element'])) {
+                $mapping['element'][Constant::OPTION_TAB] = 'General';
+            }
             $fields[$propertyName] = $field;
         }
+        unset($mapping);
         if ($controller instanceof CrudControllerAttributableEntity) {
             foreach ($controller->getCategory()->getAttributes(true) as $attribute) {
                 if (array_key_exists($attribute->getUniqueKey(), $fieldOptions)) {
@@ -96,12 +105,31 @@ class CrudControllerManager
                     continue;
                 }
                 $fields[$attribute->getUniqueKey()] = $field;
+                $mappings[$attribute->getUniqueKey()] = $mapping;
             }
         }
 
         uasort($fields, static function ($a, $b) {
             return $a->getAsDto()->getCustomOption(Constant::OPTION_SORT_ORDER) > $b->getAsDto()->getCustomOption(Constant::OPTION_SORT_ORDER);
         });
+        $doTab = $controller instanceof CrudControllerAttributableEntity && ($pageName === Crud::PAGE_DETAIL || $pageName === Crud::PAGE_EDIT || $pageName === Crud::PAGE_NEW);
+        if ($doTab) {
+            $byTab = [];
+            foreach ($mappings as $propertyName => $mapping) {
+                if (!array_key_exists($propertyName, $fields)) {
+                    continue;
+                }
+                $byTab[$mapping['element'][Constant::OPTION_TAB]][$propertyName] = $fields[$propertyName];
+            }
+            $tabbedFields = [];
+            foreach ($byTab as $tab => $fieldsOrdered) {
+                $tabbedFields[$tab] = FormField::addPanel($tab);
+                foreach ($fieldsOrdered as $propertyName => $field) {
+                    $tabbedFields[$propertyName] = $field;
+                }
+            }
+            $fields = $tabbedFields;
+        }
         return $fields;
     }
 

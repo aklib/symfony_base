@@ -289,7 +289,7 @@ trait AttributeTrait
             'precision' => null,
             'element'   => [
                 'type'                      => $this->getAttributeDef()->getType(),
-                'tab'                       => $this->getAttributeDef()->getType(),
+                Constant::OPTION_TAB        => $this->getTab()->getName(),
                 'help'                      => $this->getHelpText(),
                 Constant::OPTION_SORT_ORDER => $this->getSortOrder(),
             ]

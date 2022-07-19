@@ -34,7 +34,7 @@ class Element implements CustomDoctrineAnnotation
     public function __construct(array $properties)
     {
         $this->type = $properties['type'] ?? '';
-        $this->tab = $properties[Constant::OPTION_TAB] ?? 'general';
+        $this->tab = $properties[Constant::OPTION_TAB] ?? 'General';
         $this->help = $properties['help'] ?? '';
         $this->sortOrder = $properties[Constant::OPTION_SORT_ORDER] ?? 100;
     }

@@ -62,7 +62,7 @@ abstract class AbstractAttributableEntityController extends AbstractAppGrudContr
     public function getFieldOptions(string $pageName = 'index'): array
     {
         $fields = parent::getFieldOptions($pageName);
-        $config = $this->getViewConfigManager()->getCurrentViewConfig($pageName);
+        $config = $this->getViewConfigManager()->getCurrentViewConfig();
         if ($config instanceof UserViewConfig) {
             $fields = array_replace_recursive($fields, $config->getColumnOptions());
         }

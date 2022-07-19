@@ -59,7 +59,7 @@ class ViewConfigManager implements EventSubscriberInterface
         return $userViewConfigs;
     }
 
-    public function getCurrentViewConfig(string $pageName = 'index'): ?UserViewConfig
+    public function getCurrentViewConfig(): ?UserViewConfig
     {
         if ($this->currentUserViewConfig !== null) {
             return $this->currentUserViewConfig;
@@ -80,7 +80,7 @@ class ViewConfigManager implements EventSubscriberInterface
             $this->doFlash = true;
         }
 
-        $results = $userViewConfigs->filter(static function (UserViewConfig $viewConfig) use ($viewConfigId) {
+        $results = $userViewConfigs->filter(static function (UserViewConfig $viewConfig) {
             if ($viewConfig->isCurrent()) {
                 return $viewConfig;
             }
@@ -152,7 +152,7 @@ class ViewConfigManager implements EventSubscriberInterface
         ];
     }
 
-    public function doFlush(AfterCrudActionEvent $event): void
+    public function doFlush(): void
     {
         if ($this->doFlash) {
             $this->getEntityManager()->flush();

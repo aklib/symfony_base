@@ -26,12 +26,10 @@ abstract class AbstractAppGrudController extends AbstractCrudController implemen
 {
     private EntityManagerInterface $em;
     private CrudControllerManager $controllerManager;
-    protected const OPTION_SORT_ORDER = 'sortOrder';
     private AdminUrlGenerator $adminUrlGenerator;
 
     public function __construct(EntityManagerInterface $em, CrudControllerManager $controllerManager, AdminUrlGenerator $adminUrlGenerator)
     {
-
         $this->em = $em;
         $this->controllerManager = $controllerManager;
         $this->adminUrlGenerator = $adminUrlGenerator;

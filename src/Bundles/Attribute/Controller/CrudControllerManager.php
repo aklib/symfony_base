@@ -10,6 +10,7 @@
 
 namespace App\Bundles\Attribute\Controller;
 
+use App\Bundles\Attribute\Constant;
 use App\Bundles\Attribute\Form\AddressFormEmbed;
 use App\Controller\Admin\Extension\CrudControllerManagerInterface;
 use App\Entity\Extension\Attributable\AttributeInterface;
@@ -46,7 +47,6 @@ class CrudControllerManager
 {
     private EntityManagerInterface $em;
     private ContainerBagInterface $parameterBug;
-    protected const OPTION_SORT_ORDER = 'sortOrder';
     protected string $entityFqcn;
 
     public function __construct(EntityManagerInterface $em, ContainerBagInterface $parameterBug)
@@ -67,13 +67,13 @@ class CrudControllerManager
         $fields = [];
         foreach ($mappings as $propertyName => $mapping) {
             if (array_key_exists($propertyName, $fieldOptions)) {
-                $visible = $fieldOptions[$propertyName]['visible'] ?? true;
+                $visible = $fieldOptions[$propertyName][Constant::OPTION_VISIBLE] ?? true;
                 if (!$visible) {
                     continue;
                 }
             }
-            if (array_key_exists($propertyName, $fieldOptions) && array_key_exists(self::OPTION_SORT_ORDER, $fieldOptions[$propertyName])) {
-                $mapping['element'][self::OPTION_SORT_ORDER] = (int)$fieldOptions[$propertyName][self::OPTION_SORT_ORDER];
+            if (array_key_exists($propertyName, $fieldOptions) && array_key_exists(Constant::OPTION_SORT_ORDER, $fieldOptions[$propertyName])) {
+                $mapping['element'][Constant::OPTION_SORT_ORDER] = (int)$fieldOptions[$propertyName][Constant::OPTION_SORT_ORDER];
             }
 
             $field = $this->createField($mapping, $pageName, $controller);
@@ -85,7 +85,7 @@ class CrudControllerManager
         if ($controller instanceof CrudControllerAttributableEntity) {
             foreach ($controller->getCategory()->getAttributes(true) as $attribute) {
                 if (array_key_exists($attribute->getUniqueKey(), $fieldOptions)) {
-                    $visible = $fieldOptions[$attribute->getUniqueKey()]['visible'] ?? true;
+                    $visible = $fieldOptions[$attribute->getUniqueKey()][Constant::OPTION_VISIBLE] ?? true;
                     if (!$visible) {
                         continue;
                     }
@@ -100,7 +100,7 @@ class CrudControllerManager
         }
 
         uasort($fields, static function ($a, $b) {
-            return $a->getAsDto()->getCustomOption(self::OPTION_SORT_ORDER) > $b->getAsDto()->getCustomOption(self::OPTION_SORT_ORDER);
+            return $a->getAsDto()->getCustomOption(Constant::OPTION_SORT_ORDER) > $b->getAsDto()->getCustomOption(Constant::OPTION_SORT_ORDER);
         });
         return $fields;
     }
@@ -114,7 +114,6 @@ class CrudControllerManager
             // overridden from annotation e.g. email
             $type = $mapping['element']['type'];
         }
-        $field = null;
         switch ($type) {
             case 'integer':
                 if ($propertyName !== 'id') {
@@ -178,18 +177,18 @@ class CrudControllerManager
                     });
                 }
 
-            if ($propertyName === 'category' && $controller instanceof CrudControllerAttributableEntity) {
-                /** @var CategoryInterface $category */
-                $category = $controller->getCategory();
+                if ($propertyName === 'category' && $controller instanceof CrudControllerAttributableEntity) {
+                    /** @var CategoryInterface $category */
+                    $category = $controller->getCategory();
 
-                $field->setQueryBuilder(
-                    fn(QueryBuilder $qb) => $qb
-                        ->andWhere($qb->expr()->between('entity.lft', $category->getLft(), $category->getRgt()))
-                        ->orderBy('entity.lft')
+                    $field->setQueryBuilder(
+                        fn(QueryBuilder $qb) => $qb
+                            ->andWhere($qb->expr()->between('entity.lft', $category->getLft(), $category->getRgt()))
+                            ->orderBy('entity.lft')
 
-                );
-            }
-            break;
+                    );
+                }
+                break;
 
             // attributes and custom annotations
             case 'email':
@@ -273,9 +272,9 @@ class CrudControllerManager
         }
 
         if ($attribute === null) {
-            $field->setCustomOption(self::OPTION_SORT_ORDER, $mapping['element'][self::OPTION_SORT_ORDER]);
+            $field->setCustomOption(Constant::OPTION_SORT_ORDER, $mapping['element'][Constant::OPTION_SORT_ORDER]);
         } else {
-            $field->setCustomOption(self::OPTION_SORT_ORDER, $attribute->getSortOrder());
+            $field->setCustomOption(Constant::OPTION_SORT_ORDER, $attribute->getSortOrder());
         }
         return $field;
     }
@@ -288,17 +287,17 @@ class CrudControllerManager
         $count = 1;
         foreach ($mappings as &$mapping) {
             if (!array_key_exists('element', $mapping)) {
-                $mapping['element'][self::OPTION_SORT_ORDER] = $count;
-            } elseif (!array_key_exists(self::OPTION_SORT_ORDER, $mapping['element'])) {
-                $mapping['element'][self::OPTION_SORT_ORDER] = $count;
+                $mapping['element'][Constant::OPTION_SORT_ORDER] = $count;
+            } elseif (!array_key_exists(Constant::OPTION_SORT_ORDER, $mapping['element'])) {
+                $mapping['element'][Constant::OPTION_SORT_ORDER] = $count;
             } else {
-                $count = $mapping['element'][self::OPTION_SORT_ORDER];
+                $count = $mapping['element'][Constant::OPTION_SORT_ORDER];
             }
             $count++;
         }
         unset($mapping);
         uasort($mappings, static function ($a, $b) {
-            return $a['element'][self::OPTION_SORT_ORDER] > $b['element'][self::OPTION_SORT_ORDER];
+            return $a['element'][Constant::OPTION_SORT_ORDER] > $b['element'][Constant::OPTION_SORT_ORDER];
         });
         return $mappings;
     }

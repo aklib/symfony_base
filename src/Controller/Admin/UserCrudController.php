@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Bundles\Attribute\Constant;
 use App\Entity\User;
 use App\Entity\UserProfile;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
@@ -22,7 +23,7 @@ class UserCrudController extends AbstractAppGrudController
     {
         $fields = parent::getFieldOptions($pageName);
         if ($pageName !== 'index') {
-            $fields['userProfile']['visible'] = false;
+            $fields['userProfile'][Constant::OPTION_VISIBLE] = false;
         }
         return $fields;
     }

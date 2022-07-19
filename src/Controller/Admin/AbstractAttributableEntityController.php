@@ -13,6 +13,7 @@
 namespace App\Controller\Admin;
 
 use App\Bundles\Attribute\Adapter\Interfaces\AttributeAdapterInterface;
+use App\Bundles\Attribute\Constant;
 use App\Bundles\Attribute\Controller\CrudControllerAttributableEntity;
 use App\Bundles\Attribute\Controller\CrudControllerManager;
 use App\Bundles\Attribute\Manager\ViewConfigManager;
@@ -104,15 +105,15 @@ abstract class AbstractAttributableEntityController extends AbstractAppGrudContr
         foreach ($fields as $name => $field) {
             $columns[$name]['name'] = $name;
             $columns[$name]['label'] = $name;
-            if (!array_key_exists('sortOrder', $columns[$name])) {
+            if (!array_key_exists(Constant::OPTION_SORT_ORDER, $columns[$name])) {
                 if (array_key_exists('element', $field)) {
-                    $columns[$name]['sortOrder'] = $field['element']['sortOrder'] ?? 100;
+                    $columns[$name][Constant::OPTION_SORT_ORDER] = $field['element'][Constant::OPTION_SORT_ORDER] ?? 100;
                 } else {
-                    $columns[$name]['sortOrder'] = $sortOrder;
+                    $columns[$name][Constant::OPTION_SORT_ORDER] = $sortOrder;
                 }
             }
-            if (!array_key_exists('visible', $columns[$name])) {
-                $columns[$name]['visible'] = true;
+            if (!array_key_exists(Constant::OPTION_VISIBLE, $columns[$name])) {
+                $columns[$name][Constant::OPTION_VISIBLE] = true;
             }
             $sortOrder++;
         }
@@ -128,16 +129,16 @@ abstract class AbstractAttributableEntityController extends AbstractAppGrudContr
             $name = $attribute->getUniqueKey();
             $columns[$name]['name'] = $attribute->getUniqueKey();
             $columns[$name]['label'] = $attribute->getName();
-            if (!array_key_exists('sortOrder', $columns[$name])) {
-                $columns[$name]['sortOrder'] = $attribute->getSortOrder();
+            if (!array_key_exists(Constant::OPTION_SORT_ORDER, $columns[$name])) {
+                $columns[$name][Constant::OPTION_SORT_ORDER] = $attribute->getSortOrder();
             }
-            if (!array_key_exists('visible', $columns[$name])) {
-                $columns[$name]['visible'] = true;
+            if (!array_key_exists(Constant::OPTION_VISIBLE, $columns[$name])) {
+                $columns[$name][Constant::OPTION_VISIBLE] = true;
             }
         }
 
         uasort($columns, static function ($a, $b) {
-            return $a['sortOrder'] > $b['sortOrder'];
+            return $a[Constant::OPTION_SORT_ORDER] > $b[Constant::OPTION_SORT_ORDER];
         });
 
         // ============== NO FORM HANDLING ==============
@@ -162,7 +163,7 @@ abstract class AbstractAttributableEntityController extends AbstractAppGrudContr
             // ============== MODIFY ATTRIBUTE SORT ORDER ==============
             foreach ($columnOptions as $name => $column) {
                 if (array_key_exists($name, $attributeMap)) {
-                    $attributeMap[$name]->setSortOrder((int)$column['sortOrder']);
+                    $attributeMap[$name]->setSortOrder((int)$column[Constant::OPTION_SORT_ORDER]);
                     $this->getEntityManager()->persist($attributeMap[$name]);
                 }
             }

@@ -10,6 +10,7 @@
 
 namespace App\Entity\Extension\Attributable;
 
+use App\Bundles\Attribute\Constant;
 use App\Entity\Extension\Annotation as AppORM;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -287,10 +288,10 @@ trait AttributeTrait
             'nullable'  => !$this->isRequired(),
             'precision' => null,
             'element'   => [
-                'type'      => $this->getAttributeDef()->getType(),
-                'tab'       => $this->getAttributeDef()->getType(),
-                'help'      => $this->getHelpText(),
-                'sortOrder' => $this->getSortOrder(),
+                'type'                      => $this->getAttributeDef()->getType(),
+                'tab'                       => $this->getAttributeDef()->getType(),
+                'help'                      => $this->getHelpText(),
+                Constant::OPTION_SORT_ORDER => $this->getSortOrder(),
             ]
 
         ];

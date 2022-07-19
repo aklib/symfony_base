@@ -2,6 +2,7 @@
 
 namespace App\Entity\Extension\Annotation;
 
+use App\Bundles\Attribute\Constant;
 use Doctrine\Common\Annotations\Annotation;
 
 /**
@@ -33,8 +34,8 @@ class Element implements CustomDoctrineAnnotation
     public function __construct(array $properties)
     {
         $this->type = $properties['type'] ?? '';
-        $this->tab = $properties['tab'] ?? 'general';
+        $this->tab = $properties[Constant::OPTION_TAB] ?? 'general';
         $this->help = $properties['help'] ?? '';
-        $this->sortOrder = $properties['sortOrder'] ?? 100;
+        $this->sortOrder = $properties[Constant::OPTION_SORT_ORDER] ?? 100;
     }
 }

@@ -10,6 +10,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Bundles\Attribute\Constant;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -64,14 +65,14 @@ abstract class AbstractCategoryCrudController extends AbstractAppGrudController
     public function getFieldOptions(string $pageName = null): array
     {
         $fields = parent::getFieldOptions($pageName);
-        $fields['lft']['visible'] = false;
-        $fields['rgt']['visible'] = false;
-        $fields['level']['visible'] = false;
-        $fields['root']['visible'] = false;
-        $fields['children']['visible'] = false;
+        $fields['lft'][Constant::OPTION_VISIBLE] = false;
+        $fields['rgt'][Constant::OPTION_VISIBLE] = false;
+        $fields['level'][Constant::OPTION_VISIBLE] = false;
+        $fields['root'][Constant::OPTION_VISIBLE] = false;
+        $fields['children'][Constant::OPTION_VISIBLE] = false;
 
         if ($pageName !== 'index') {
-            $fields['products']['visible'] = false;
+            $fields['products'][Constant::OPTION_VISIBLE] = false;
         }
         return $fields;
     }

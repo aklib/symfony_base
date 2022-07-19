@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin\Product;
 
+use App\Bundles\Attribute\Constant;
 use App\Controller\Admin\AbstractAppGrudController;
 use App\Entity\Extension\Attributable\AttributeInterface;
 use App\Entity\Product\ProductAttribute;
@@ -20,18 +21,18 @@ class ProductAttributeCrudController extends AbstractAppGrudController
         $entity = $this->getEntity();
         if ($entity instanceof AttributeInterface) {
             if ($pageName === Crud::PAGE_NEW || $entity->getAttributeDef()->getType() !== 'select') {
-                $fields['optionsArray']['visible'] = false;
+                $fields['optionsArray'][Constant::OPTION_VISIBLE] = false;
             }
         } else {
-            $fields['optionsArray']['visible'] = false;
+            $fields['optionsArray'][Constant::OPTION_VISIBLE] = false;
         }
         if ($pageName === 'edit') {
             $attribute = $this->getEntity();
             if ($attribute instanceof AttributeInterface && !$attribute->getAttributeDef()->isCanMultiple()) {
-                $fields['multiple']['visible'] = false;
+                $fields['multiple'][Constant::OPTION_VISIBLE] = false;
             }
         } else {
-            $fields['multiple']['visible'] = false;
+            $fields['multiple'][Constant::OPTION_VISIBLE] = false;
         }
         return $fields;
     }

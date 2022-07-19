@@ -131,17 +131,7 @@ class CrudControllerManager
                 $field = MoneyField::new($propertyName, $label)->setCurrency('EUR');
                 break;
             case 'boolean':
-                if ($attribute === null) {
-                    $field = BooleanField::new($propertyName, $label);
-                } else {
-                    $fields[$propertyName] = ChoiceField::new($propertyName, $label);
-                    $fields[$propertyName]->setChoices(
-                        [
-                            'yes'   => true,
-                            'no'    => false,
-                            'maybe' => null
-                        ]);
-                }
+                $field = BooleanField::new($propertyName, $label);
                 break;
             case 'datetime':
             case 'date_immutable':
@@ -251,8 +241,6 @@ class CrudControllerManager
                 } else {
                     $field = ArrayField::new($propertyName, $label);
                 }
-
-
                 break;
             case 'image':
                 $folder = $attribute === null ? $propertyName : $attribute->getUniqueKey();
@@ -273,10 +261,6 @@ class CrudControllerManager
                 break;
             default:
                 $field = TextField::new($propertyName, $label);
-        }
-
-        if ($field === null) {
-            return null;
         }
 
         if (empty($mapping['element']['help'])) {

@@ -120,10 +120,6 @@ class AttributeAdapterDatabase extends AbstractAttributeAdapter
                 }
                 $attrValues[$uniqueKey] = $attrValue;
             }
-            if (empty($attrValues)) {
-                continue;
-            }
-
             /** @var AttributeValue $attributeValue */
             $attributeValue = $this->attributeValues[$docId] ?? null;
             if ($attributeValue instanceof AttributeValue) {
@@ -143,6 +139,7 @@ class AttributeAdapterDatabase extends AbstractAttributeAdapter
                 $attributeValue->setCreatedAt(new DateTime());
                 $attributeValue->setCreatedBy($identifier);
             }
+
             $modified[] = $attributeValue;
             $this->setUpdatedData($entity);
             $modified[] = $entity;

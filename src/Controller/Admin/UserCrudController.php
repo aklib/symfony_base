@@ -22,7 +22,7 @@ class UserCrudController extends AbstractAppGrudController
     {
         $fields = parent::getFieldOptions($pageName);
         if ($pageName !== 'index') {
-            $fields[] = 'userProfile';
+            $fields['userProfile']['visible'] = false;
         }
         return $fields;
     }

@@ -61,7 +61,7 @@ abstract class AbstractAttributableEntityController extends AbstractAppGrudContr
     public function getFieldOptions(string $pageName = 'index'): array
     {
         $fields = parent::getFieldOptions($pageName);
-        $config = $this->getViewConfigManager()->getCurrentViewConfig();
+        $config = $this->getViewConfigManager()->getCurrentViewConfig($pageName);
         if ($config instanceof UserViewConfig) {
             $fields = array_replace_recursive($fields, $config->getColumnOptions());
         }
@@ -91,7 +91,6 @@ abstract class AbstractAttributableEntityController extends AbstractAppGrudContr
             throw new ForbiddenActionException($context);
         }
         // ============== GET CONFIG ==============
-
         $currentConfig = $this->getViewConfigManager()->getCurrentViewConfig();
         if ($currentConfig === null) {
             $currentConfig = $this->getViewConfigManager()->createViewConfig();
@@ -242,7 +241,6 @@ abstract class AbstractAttributableEntityController extends AbstractAppGrudContr
             ->setTemplatePath('bundles/EasyAdminBundle/crud/attribute/configure_view_button.html.twig')
             ->linkToCrudAction('configureViewAction')
             ->createAsGlobalAction();
-//        dump($configureView->getAsDto()->getTemplatePath());die;
         return $actions->add(Crud::PAGE_INDEX, $configureView);
     }
 

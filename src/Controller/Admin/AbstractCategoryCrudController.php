@@ -63,9 +63,15 @@ abstract class AbstractCategoryCrudController extends AbstractAppGrudController
 
     public function getFieldOptions(string $pageName = null): array
     {
-        $fields = array_merge(parent::getFieldOptions($pageName), ['lft', 'rgt', 'level', 'root', 'children']);
+        $fields = parent::getFieldOptions($pageName);
+        $fields['lft']['visible'] = false;
+        $fields['rgt']['visible'] = false;
+        $fields['level']['visible'] = false;
+        $fields['root']['visible'] = false;
+        $fields['children']['visible'] = false;
+
         if ($pageName !== 'index') {
-            $fields[] = 'products';
+            $fields['products']['visible'] = false;
         }
         return $fields;
     }

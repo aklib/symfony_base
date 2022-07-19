@@ -21,15 +21,15 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class ViewConfigManager
 {
-    private Request $request;
-    private UserInterface $user;
     private $entityFqcn;
     private EntityManagerInterface $em;
+    private Security $security;
+    private RequestStack $requestStack;
 
     public function __construct(RequestStack $requestStack, Security $security, EntityManagerInterface $em)
     {
-        $this->request = $requestStack->getCurrentRequest();
-        $this->user = $security->getUser();
+        $this->requestStack = $requestStack;
+        $this->security = $security;
         $this->em = $em;
     }
 
@@ -55,8 +55,11 @@ class ViewConfigManager
         return $userViewConfigs;
     }
 
-    public function getCurrentViewConfig(): ?UserViewConfig
+    public function getCurrentViewConfig(string $pageName = 'index'): ?UserViewConfig
     {
+        if ($pageName !== 'index') {
+            return null;
+        }
         $viewConfigId = (int)$this->getRequest()->query->get('viewConfig');
 
         $userViewConfigs = $this->getViewConfigs();
@@ -72,6 +75,7 @@ class ViewConfigManager
             }
             return null;
         });
+
         if ($viewConfigId !== 0) {
             // switch view
             /** @var  UserViewConfig $userViewConfig */
@@ -133,7 +137,7 @@ class ViewConfigManager
      */
     protected function getRequest(): Request
     {
-        return $this->request;
+        return $this->requestStack->getCurrentRequest();
     }
 
     /**
@@ -141,7 +145,7 @@ class ViewConfigManager
      */
     protected function getUser(): UserInterface
     {
-        return $this->user;
+        return $this->security->getUser();
 
     }
 

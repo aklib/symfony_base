@@ -38,7 +38,7 @@ trait AttributeTrait
      * @AppORM\Element(sortOrder="3", help="Only [a-z] characters in lower case and underscore '_'.")
      *
      * @Assert\Regex(
-     *     pattern     = "/^[a-z_]+$/"
+     *     pattern     = "/^[a-z0-9_]+$/"
      * )
      * @Assert\NotEqualTo("category")
      * @Assert\NotEqualTo("id")

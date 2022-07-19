@@ -20,18 +20,18 @@ class ProductAttributeCrudController extends AbstractAppGrudController
         $entity = $this->getEntity();
         if ($entity instanceof AttributeInterface) {
             if ($pageName === Crud::PAGE_NEW || $entity->getAttributeDef()->getType() !== 'select') {
-                $fields[] = 'attributeOptions';
+                $fields['optionsArray']['visible'] = false;
             }
         } else {
-            $fields[] = 'attributeOptions';
+            $fields['optionsArray']['visible'] = false;
         }
         if ($pageName === 'edit') {
             $attribute = $this->getEntity();
             if ($attribute instanceof AttributeInterface && !$attribute->getAttributeDef()->isCanMultiple()) {
-                $fields[] = 'multiple';
+                $fields['multiple']['visible'] = false;
             }
         } else {
-            $fields[] = 'multiple';
+            $fields['multiple']['visible'] = false;
         }
         return $fields;
     }

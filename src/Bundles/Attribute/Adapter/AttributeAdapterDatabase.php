@@ -115,9 +115,6 @@ class AttributeAdapterDatabase extends AbstractAttributeAdapter
                 if ($attribute === null) {
                     continue;
                 }
-                if (empty($attrValue)) {
-                    continue;
-                }
                 $attrValues[$uniqueKey] = $attrValue;
             }
             /** @var AttributeValue $attributeValue */

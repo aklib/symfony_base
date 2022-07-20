@@ -8,7 +8,7 @@
  * author: alexej@kisselev.de
  */
 
-namespace App\Bundles\Attribute\Controller;
+namespace App\Bundles\Attribute\Manager;
 
 use App\Bundles\Attribute\Constant;
 use App\Bundles\Attribute\Form\AddressFormEmbed;
@@ -44,13 +44,18 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use RuntimeException;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
+use Symfony\Component\HttpKernel\Event\ControllerEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
 
-class CrudControllerManager
+class CrudControllerManager implements EventSubscriberInterface
 {
     private EntityManagerInterface $em;
     private ContainerBagInterface $parameterBug;
     protected string $entityFqcn;
+    protected CrudControllerManagerInterface $controller;
+    protected string $pageName;
 
     public function __construct(EntityManagerInterface $em, ContainerBagInterface $parameterBug)
     {
@@ -59,13 +64,14 @@ class CrudControllerManager
     }
 
     /**
-     * @param CrudControllerManagerInterface $controller
-     * @param string $pageName
      * @param array $fieldOptions [name => sortOrder<int>, visible<bool>]
      * @return iterable
      */
-    public function configureFields(CrudControllerManagerInterface $controller, string $pageName, array $fieldOptions = []): iterable
+    public function configureFields(array $fieldOptions = []): iterable
     {
+        $controller = $this->getController();
+        $pageName = $this->getPageName();
+
         $mappings = $this->getMappings($controller);
         $fields = [];
         foreach ($mappings as $propertyName => &$mapping) {
@@ -352,4 +358,63 @@ class CrudControllerManager
         }
         return null;
     }
+
+    //==================== EVENT ====================
+    public static function getSubscribedEvents(): array
+    {
+        return [
+            KernelEvents::CONTROLLER => 'onKernelController',
+        ];
+    }
+
+    public function onKernelController(ControllerEvent $event): void
+    {
+        $controller = $event->getController();
+        if (is_array($controller)) {
+            if ($controller[0] instanceof CrudControllerManagerInterface) {
+                $this->setController($controller[0]);
+            }
+            if (is_string($controller[1])) {
+                $this->setPageName($controller[1]);
+            }
+        }
+    }
+
+    /**
+     * @return CrudControllerManagerInterface
+     */
+    public function getController(): CrudControllerManagerInterface
+    {
+        return $this->controller;
+    }
+
+    /**
+     * @param CrudControllerManagerInterface $controller
+     * @return CrudControllerManager
+     */
+    public function setController(CrudControllerManagerInterface $controller): CrudControllerManager
+    {
+        $this->controller = $controller;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPageName(): string
+    {
+        return $this->pageName;
+    }
+
+    /**
+     * @param string $pageName
+     * @return CrudControllerManager
+     */
+    public function setPageName(string $pageName): CrudControllerManager
+    {
+        $this->pageName = $pageName;
+        return $this;
+    }
+
+
 }

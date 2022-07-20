@@ -14,8 +14,8 @@ namespace App\Controller\Admin;
 
 use App\Bundles\Attribute\Adapter\Interfaces\AttributeAdapterInterface;
 use App\Bundles\Attribute\Constant;
-use App\Bundles\Attribute\Controller\CrudControllerAttributableEntity;
-use App\Bundles\Attribute\Controller\CrudControllerManager;
+use App\Bundles\Attribute\Manager\CrudControllerAttributableEntity;
+use App\Bundles\Attribute\Manager\CrudControllerManager;
 use App\Bundles\Attribute\Manager\ViewConfigManager;
 use App\Entity\Extension\Attributable\AttributableEntity;
 use App\Entity\Extension\Attributable\AttributeInterface;

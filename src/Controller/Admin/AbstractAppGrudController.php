@@ -10,7 +10,7 @@
 
 namespace App\Controller\Admin;
 
-use App\Bundles\Attribute\Controller\CrudControllerManager;
+use App\Bundles\Attribute\Manager\CrudControllerManager;
 use App\Controller\Admin\Extension\CrudControllerManagerInterface;
 use App\Entity\Extension\DeletableEntity;
 use Doctrine\ORM\EntityManagerInterface;
@@ -51,7 +51,7 @@ abstract class AbstractAppGrudController extends AbstractCrudController implemen
      */
     public function configureFields(string $pageName): iterable
     {
-        return $this->getControllerManager()->configureFields($this, $pageName, $this->getFieldOptions($pageName));
+        return $this->getControllerManager()->configureFields($this->getFieldOptions($pageName));
     }
 
     public function configureFilters(Filters $filters): Filters
@@ -113,7 +113,7 @@ abstract class AbstractAppGrudController extends AbstractCrudController implemen
     }
 
     /**
-     * @return CrudControllerManager
+     * @return \App\Bundles\Attribute\Manager\CrudControllerManager
      */
     public function getControllerManager(): CrudControllerManager
     {

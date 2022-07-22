@@ -32,6 +32,11 @@ class AttributeValue
     private array $docData = [];
 
     /**
+     * @ORM\Column(type="text")
+     */
+    private string $tags = '';
+
+    /**
      * @ORM\Column(type="integer")
      */
     private int $attributableId;
@@ -72,6 +77,24 @@ class AttributeValue
     {
         $this->docData = $docData;
 
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTags(): string
+    {
+        return $this->tags;
+    }
+
+    /**
+     * @param string $tags
+     * @return AttributeValue
+     */
+    public function setTags(string $tags): AttributeValue
+    {
+        $this->tags = $tags;
         return $this;
     }
 

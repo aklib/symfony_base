@@ -11,211 +11,211 @@ msgid "Id"
 msgstr "ID"
 
 msgid "name"
-msgstr "name"
+msgstr "имя"
 
 msgid "createdAt"
-msgstr "created"
+msgstr "создано"
 
 msgid "updatedAt"
-msgstr "updated"
+msgstr "обновленно"
 
 msgid "category"
-msgstr "category"
-
-msgid "Category"
-msgstr "Category"
-
-msgid "product"
-msgstr "product"
-
-msgid "Product"
-msgstr "Product"
-
-msgid "Name"
-msgstr "Name"
+msgstr "категория"
 
 msgid "CreatedAt"
-msgstr "Created"
+msgstr "Создано"
 
 msgid "UpdatedAt"
-msgstr "Updated"
-
-msgid "Parent"
-msgstr "Parent"
+msgstr "Обновленно"
 
 msgid "CreatedBy"
-msgstr "Created by"
+msgstr "Кем создано"
 
 msgid "UpdatedBy"
-msgstr "Updated by"
+msgstr "Кем обновленно"
+
+msgid "Category"
+msgstr "Категория"
+
+msgid "product"
+msgstr "продукт"
+
+msgid "Product"
+msgstr "Продукт"
+
+msgid "Name"
+msgstr "Имя"
+
+msgid "Parent"
+msgstr "Родитель"
 
 msgid "Dashboard"
 msgstr "Dashboard"
 
 msgid "Products"
-msgstr "Products"
+msgstr "Продукты"
 
 msgid "User"
-msgstr "User"
+msgstr "Пользователь"
 
 msgid "Attribute"
-msgstr "Attribute"
+msgstr "Свойство"
 
 msgid "AttributeTabs"
 msgstr "Attribute Tabs"
 
-msgid "AttributeTypes"
+msgid "Attribute Types"
 msgstr "Attribute Types"
 
 msgid "Active"
-msgstr "Active"
+msgstr "Активно"
 
 msgid "field.max.length"
-msgstr "Max. length %count% characters."
+msgstr "Макс. длина %count% знаков."
 
 msgid "Person"
-msgstr "Person"
+msgstr "Человек"
 
 msgid "UniqueKey"
-msgstr "Unique Key"
+msgstr "Уникальный ключ"
 
 msgid "uniqueKey"
-msgstr "Unique Key"
+msgstr "уникальный ключ"
 
 msgid "Tab"
-msgstr "Tab"
+msgstr "Таб"
 
 msgid "tab"
-msgstr "Tab"
+msgstr "tab"
 
 msgid "Type"
-msgstr "Type"
+msgstr "Тип"
 
 msgid "type"
-msgstr "Type"
+msgstr "тип"
 
 msgid "Multiple"
-msgstr "Multiple"
+msgstr "Несколько"
 
 msgid "multiple"
-msgstr "Multiple"
+msgstr "несколько"
 
 msgid "Required"
-msgstr "Required"
+msgstr "Обязательно"
 
 msgid "required"
-msgstr "Required"
+msgstr "обязательно"
 
 msgid "HelpText"
-msgstr "Help Text"
+msgstr "Текст помощи"
 
 msgid "helpText"
-msgstr "Help Text"
+msgstr "текст помощи"
 
 msgid "SortOrder"
 msgstr "Sort Order"
 
 msgid "sortOrder"
-msgstr "Sort Order"
+msgstr "Сортировка"
 
 msgid "Gender"
-msgstr "Gender"
+msgstr "Пол"
 
 msgid "gender"
-msgstr "gender"
+msgstr "пол"
 
 msgid "Female"
-msgstr "Female"
+msgstr "Женский"
 
 msgid "female"
-msgstr "female"
+msgstr "женский"
 
 msgid "Male"
-msgstr "Male"
+msgstr "Мужской"
 
 msgid "male"
-msgstr "male"
+msgstr "мужской"
 
 msgid "Address"
-msgstr "Address"
+msgstr "Адрес"
 
 msgid "address"
-msgstr "address"
+msgstr "адрес"
 
 msgid "Attribute Options"
-msgstr "Attribute Options"
+msgstr "Опции Атрибутов"
 
 msgid "Country"
-msgstr "Country"
+msgstr "Страна"
 
 msgid "country"
-msgstr "country"
+msgstr "страна"
 
 msgid "item"
-msgstr "item"
+msgstr "элемент"
 
 msgid "Item"
-msgstr "Item"
+msgstr "Элемент"
 
 msgid "Article Number"
 msgstr "Article Number"
 
 msgid "Attributes"
-msgstr "Attributes"
+msgstr "Свойства"
 
 msgid "attributes"
-msgstr "Attributes"
+msgstr "свойства"
 
 msgid "UserProfile"
 msgstr "User Profile"
 
 msgid "userProfile"
-msgstr "User Profile"
+msgstr "Профиль пользователя"
 
 msgid "Avatar"
-msgstr "Avatar"
+msgstr "Аватар"
 
 msgid "avatar"
-msgstr "avatar"
+msgstr "аватар"
 
 msgid "Birthday"
-msgstr "Birthday"
+msgstr "Дата рождения"
 
 msgid "birthday"
-msgstr "birthday"
+msgstr "дата рождения"
 
 msgid "Profile"
 msgstr "Profile"
 
 msgid "profile"
-msgstr "profile"
+msgstr "профиль"
 
 msgid "Settings"
-msgstr "Settings"
+msgstr "Настройки"
 
 msgid "settings"
-msgstr "settings"
+msgstr "настройки"
 
 msgid "Attribute Definitions"
-msgstr "Attribute Definitions"
+msgstr "Определения атрибутов"
 
 msgid "Home Page"
-msgstr "Home Page"
+msgstr "Главная страница"
 
 msgid "Price"
-msgstr "Price"
+msgstr "Цена"
 
 msgid "price"
-msgstr "price"
+msgstr "цена"
 
 msgid "Managed Objects"
-msgstr "Managed Objects"
+msgstr "Управляемые объекты"
 
 msgid "Users"
-msgstr "Users"
+msgstr "Пользователи"
 
 msgid "users"
-msgstr "users"
+msgstr "пользователи"
 
 
 
@@ -225,115 +225,115 @@ msgstr "__label.form.empty_value"
 
 #.security
 msgid "An authentication exception occurred."
-msgstr "An authentication exception occurred."
+msgstr "Произошла ошибка аутентификации"
 
 msgid "Authentication credentials could not be found."
-msgstr "Authentication credentials could not be found."
+msgstr "Не удалось найти учетные данные для аутентификации."
 
 msgid "Authentication request could not be processed due to a system problem."
-msgstr "Authentication request could not be processed due to a system problem."
+msgstr "Запрос на аутентификацию не может быть обработан из-за системной проблемы."
 
 msgid "Invalid credentials."
-msgstr "Invalid credentials."
+msgstr "Недействительные учетные данные."
 
 msgid "Cookie has already been used by someone else."
-msgstr "Cookie has already been used by someone else."
+msgstr "Cookie уже был использован кем-то другим."
 
 msgid "Not privileged to request the resource."
-msgstr "Not privileged to request the resource."
+msgstr "Нет прав на запрос ресурса."
 
 msgid "Invalid CSRF token."
-msgstr "Invalid CSRF token."
+msgstr "Неверный CSRF-токен."
 
 msgid "No authentication provider found to support the authentication token."
-msgstr "No authentication provider found to support the authentication token."
+msgstr "Не найден провайдер аутентификации, поддерживающий маркер аутентификации."
 
 msgid "No session available, it either timed out or cookies are not enabled."
-msgstr "No session available, it either timed out or cookies are not enabled."
+msgstr "Нет доступной сессии, она либо завершилась по времени, либо cookies не включены."
 
 msgid "No token could be found."
-msgstr "No token could be found."
+msgstr "Не удалось найти маркер."
 
 msgid "Username could not be found."
-msgstr "Username could not be found."
+msgstr "Имя пользователя не найдено."
 
 msgid "Account has expired."
-msgstr "Account has expired."
+msgstr "Срок действия учетной записи истек."
 
 msgid "Credentials have expired."
-msgstr "Credentials have expired."
+msgstr "Срок действия учетных данных истек."
 
 msgid "Account is disabled."
-msgstr "Account is disabled."
+msgstr "Аккаунт отключен."
 
 msgid "Account is locked."
-msgstr "Account is locked."
+msgstr "Аккаунт заблокирован."
 
 msgid "Too many failed login attempts, please try again later."
-msgstr "Too many failed login attempts, please try again later."
+msgstr "Слишком много неудачных попыток входа, повторите попытку позже."
 
 msgid "Invalid or expired login link."
-msgstr "Invalid or expired login link."
+msgstr "Недействительная или истекшая ссылка для входа в систему."
 
 msgid "Too many failed login attempts, please try again in %minutes% minute."
-msgstr "Too many failed login attempts, please try again in %minutes% minute."
+msgstr "Слишком много неудачных попыток входа, повторите попытку через %minutes% минут."
 
 msgid "Too many failed login attempts, please try again in %minutes% minutes."
-msgstr "Too many failed login attempts, please try again in %minutes% minutes."
+msgstr "Слишком много неудачных попыток входа, повторите попытку через %minutes% минут."
 
 #.validators
 
 msgid "This value should be false."
-msgstr "This value should be false."
+msgstr "Это значение должно быть false."
 
 msgid "This value should be true."
-msgstr "This value should be true."
+msgstr "Это значение должно быть true."
 
 msgid "This value should be of type {{ type }}."
-msgstr "This value should be of type {{ type }}."
+msgstr "Это значение должно быть типа {{ type }}."
 
 msgid "This value should be blank."
-msgstr "This value should be blank."
+msgstr "Это значение должно быть пустым."
 
 msgid "The value you selected is not a valid choice."
-msgstr "The value you selected is not a valid choice."
+msgstr "Неправильный выбор."
 
 msgid "You must select at least {{ limit }} choice."
-msgid_plural "You must select at least {{ limit }} choices."
-msgstr[0] "You must select at least {{ limit }} choice."
-msgstr[1] "You must select at least {{ limit }} choices."
+msgid_plural "Вы должны выбрать не менее {{ limit }} значений."
+msgstr[0] "Вы должны выбрать не менее {{ limit }} значений."
+msgstr[1] "Вы должны выбрать не менее {{ limit }} значений."
 
 msgid "You must select at most {{ limit }} choice."
-msgid_plural "You must select at most {{ limit }} choices."
-msgstr[0] "You must select at most {{ limit }} choice."
-msgstr[1] "You must select at most {{ limit }} choices."
+msgid_plural "Вы должны выбрать не более {{ limit }} значений."
+msgstr[0] "Вы должны выбрать не более {{ limit }} значений."
+msgstr[1] "Вы должны выбрать не более {{ limit }} значений."
 
 msgid "One or more of the given values is invalid."
-msgstr "One or more of the given values is invalid."
+msgstr "Одно или несколько заданных значений неверно."
 
 msgid "This field was not expected."
-msgstr "This field was not expected."
+msgstr "Это поле не предполагалось."
 
 msgid "This field is missing."
-msgstr "This field is missing."
+msgstr "Это поле отсутствует."
 
 msgid "This value is not a valid date."
-msgstr "This value is not a valid date."
+msgstr "Недействительная дата."
 
 msgid "This value is not a valid datetime."
-msgstr "This value is not a valid datetime."
+msgstr "Недействительное день и время."
 
 msgid "This value is not a valid email address."
-msgstr "This value is not a valid email address."
+msgstr "Это значение не является действительным адресом электронной почты."
 
 msgid "The file could not be found."
-msgstr "The file could not be found."
+msgstr "Файл не может быть найден."
 
 msgid "The file is not readable."
-msgstr "The file is not readable."
+msgstr "Файл не доступен для чтения."
 
 msgid "The file is too large ({{ size }} {{ suffix }}). Allowed maximum size is {{ limit }} {{ suffix }}."
-msgstr "The file is too large ({{ size }} {{ suffix }}). Allowed maximum size is {{ limit }} {{ suffix }}."
+msgstr "Файл слишком большой ({{ size }} {{ suffix }}). Допустимый максимальный размер {{ limit }} {{ suffix }}."
 
 msgid "The mime type of the file is invalid ({{ type }}). Allowed mime types are {{ types }}."
 msgstr "The mime type of the file is invalid ({{ type }}). Allowed mime types are {{ types }}."

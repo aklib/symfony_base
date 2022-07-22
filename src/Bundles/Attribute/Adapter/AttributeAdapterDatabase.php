@@ -25,7 +25,18 @@ class AttributeAdapterDatabase extends AbstractAttributeAdapter
 {
     public function search(QueryBuilder $qb, SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields): void
     {
-        // TODO: Implement search() method.
+        $searchString = $searchDto->getQuery();
+        if (empty($searchString)) {
+            return;
+        }
+        /** @var AttributeValueRepository $dao */
+        $dao = $this->getEntityManager()->getRepository(AttributeValue::class);
+        $result = $dao->search($searchString);
+
+        if (!empty($result)) {
+            $expr = $qb->expr()->in('entity.id', array_column($result, 'attributableId'));
+            $qb->orWhere($expr);
+        }
     }
 
     public function getAttributeValues(AttributableEntity $entity): array
@@ -117,6 +128,19 @@ class AttributeAdapterDatabase extends AbstractAttributeAdapter
                 }
                 $attrValues[$uniqueKey] = $attrValue;
             }
+            $tags = '';
+            if (is_array($attrValues)) {
+                $tagsArray = [];
+                foreach ($attrValues as $attrVal) {
+                    if (!is_array($attrVal)) {
+                        $tagsArray[] = $attrVal;
+                    } else {
+                        $tagsArray[] = implode('|', $attrVal);
+                    }
+                }
+                $tags = implode('|', $tagsArray);
+            }
+
             /** @var AttributeValue $attributeValue */
             $attributeValue = $this->attributeValues[$docId] ?? null;
             if ($attributeValue instanceof AttributeValue) {
@@ -124,7 +148,9 @@ class AttributeAdapterDatabase extends AbstractAttributeAdapter
                 if ($docDataOld === $attrValues) {
                     continue;
                 }
-                $attributeValue->setDocData($attrValues);
+                $attributeValue
+                    ->setDocData($attrValues)
+                    ->setTags($tags);
                 $attributeValue->setUpdatedAt(new DateTime());
                 $attributeValue->setUpdatedBy($identifier);
             } else {
@@ -132,7 +158,8 @@ class AttributeAdapterDatabase extends AbstractAttributeAdapter
                 $attributeValue
                     ->setAttributableId($entity->getId())
                     ->setScope($this->getScope($entity))
-                    ->setDocData($attrValues);
+                    ->setDocData($attrValues)
+                    ->setTags($tags);
                 $attributeValue->setCreatedAt(new DateTime());
                 $attributeValue->setCreatedBy($identifier);
             }

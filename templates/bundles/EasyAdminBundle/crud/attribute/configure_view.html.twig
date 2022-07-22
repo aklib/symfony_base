@@ -1,6 +1,6 @@
 {% extends '@EasyAdmin/page/content.html.twig' %}
 {% block body_class %}ea-content-width-full{% endblock %}
-{% block page_title %}{{ entity_label }} view Configuration {% endblock %}
+{% block page_title %}{{ entity_label|trans }}: {{ 'view Configuration'|trans }} {% endblock %}
 
 {% block main %}
     <form id="configurationForm" name="checkboxes" method="post">
@@ -8,22 +8,22 @@
             <div id="columnActions" class="" role="toolbar">
                 <div class="btn-group" role="group">
                     <a class="btn btn-outline-success" href="#" data-action="select">
-                        <i class="fa check-square-o"></i> {{ 'select all'|trans }}
+                        <i class="fa check-square-o"></i> {{ 'select.all'|trans }}
                     </a>
                     <a class="btn btn-outline-secondary" href="#" data-action="deselect">
-                        <i class="fa fa-square-o"></i> {{ 'deselect_all'|trans }}
+                        <i class="fa fa-square-o"></i> {{ 'deselect.all'|trans }}
                     </a>
                 </div>
 
                 <div class="btn-group ms-5" role="group">
                     <a class="btn btn-outline-success" href="#" data-action="all">
-                        {{ 'show all'|trans }}
+                        {{ 'show.all'|trans }}
                     </a>
                     <a class="btn btn-outline-secondary" href="#" data-action="checked">
-                        <i class="fa fa-check-square-o"></i> {{ 'show checked'|trans }}
+                        <i class="fa fa-check-square-o"></i> {{ 'show.checked'|trans }}
                     </a>
                     <a class="btn btn-outline-secondary" href="#" data-action="unchecked">
-                        <i class="fa fa-square-o"></i> {{ 'show unchecked'|trans }}
+                        <i class="fa fa-square-o"></i> {{ 'show.unchecked'|trans }}
                     </a>
                 </div>
             </div>
@@ -42,7 +42,7 @@
             </div>
         </section>
         <section class="content-header">
-            <small class="text-muted">{{ 'Drag and drop columns to change an order. Check-in or check-out to show or hide the column in the list view.'|trans }}</small>
+            <small class="text-muted">{{ 'drag.drop.columns'|trans }}</small>
         </section>
         <section id="main" class="content-body">
             <div id="columnContainer" class="row row-cols-auto justify-content-start gap-3 gx-1 gy-0 draggable-zone container-fluid">

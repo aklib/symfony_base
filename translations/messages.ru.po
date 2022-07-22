@@ -59,13 +59,13 @@ msgid "User"
 msgstr "Пользователь"
 
 msgid "Attribute"
-msgstr "Свойство"
+msgstr "Атрибут"
 
 msgid "AttributeTabs"
-msgstr "Attribute Tabs"
+msgstr "Атрибут таб"
 
 msgid "Attribute Types"
-msgstr "Attribute Types"
+msgstr "Атрибут тип"
 
 msgid "Active"
 msgstr "Активно"
@@ -86,7 +86,7 @@ msgid "Tab"
 msgstr "Таб"
 
 msgid "tab"
-msgstr "tab"
+msgstr "таб"
 
 msgid "Type"
 msgstr "Тип"
@@ -161,10 +161,10 @@ msgid "Article Number"
 msgstr "Article Number"
 
 msgid "Attributes"
-msgstr "Свойства"
+msgstr "Атрибуты"
 
 msgid "attributes"
-msgstr "свойства"
+msgstr "атрибуты"
 
 msgid "UserProfile"
 msgstr "User Profile"
@@ -339,114 +339,114 @@ msgid "The mime type of the file is invalid ({{ type }}). Allowed mime types are
 msgstr "The mime type of the file is invalid ({{ type }}). Allowed mime types are {{ types }}."
 
 msgid "This value should be {{ limit }} or less."
-msgstr "This value should be {{ limit }} or less."
+msgstr "Это значение должно быть {{ limit }} или меньше."
 
 msgid "This value is too long. It should have {{ limit }} character or less."
-msgid_plural "This value is too long. It should have {{ limit }} characters or less."
-msgstr[0] "This value is too long. It should have {{ limit }} character or less."
-msgstr[1] "This value is too long. It should have {{ limit }} characters or less."
+msgid_plural "Это значение слишком длинное. Оно должно быть {{ limit }} знаков или меньше."
+msgstr[0] "Это значение слишком длинное. Оно должно быть {{ limit }} знаков или меньше."
+msgstr[1] "Это значение слишком длинное. Оно должно быть {{ limit }} знаков или меньше."
 
 msgid "This value should be {{ limit }} or more."
-msgstr "This value should be {{ limit }} or more."
+msgstr "Это значение должно быть {{ limit }} или больше."
 
 msgid "This value is too short. It should have {{ limit }} character or more."
-msgid_plural "This value is too short. It should have {{ limit }} characters or more."
-msgstr[0] "This value is too short. It should have {{ limit }} character or more."
-msgstr[1] "This value is too short. It should have {{ limit }} characters or more."
+msgid_plural "Это значение слишком короткое. Оно должно быть {{ limit }} символов или более."
+msgstr[0] "Это значение слишком короткое. Оно должно быть {{ limit }} символов или более."
+msgstr[1] "Это значение слишком короткое. Оно должно быть {{ limit }} символов или более."
 
 msgid "This value should not be blank."
-msgstr "This value should not be blank."
+msgstr "Это значение не должно быть пустым."
 
 msgid "This value should not be null."
-msgstr "This value should not be null."
+msgstr "Это значение не должно быть равно null."
 
 msgid "This value should be null."
-msgstr "This value should be null."
+msgstr "Это значение должно быть равно null."
 
 msgid "This value is not valid."
-msgstr "This value is not valid."
+msgstr "Это значение недопустимо."
 
 msgid "This value is not a valid time."
-msgstr "This value is not a valid time."
+msgstr "Это значение не является правильным временем."
 
 msgid "This value is not a valid URL."
-msgstr "This value is not a valid URL."
+msgstr "Это значение не является правильным URL."
 
 msgid "The two values should be equal."
-msgstr "The two values should be equal."
+msgstr "Оба значения должны быть равны."
 
 msgid "The file is too large. Allowed maximum size is {{ limit }} {{ suffix }}."
-msgstr "The file is too large. Allowed maximum size is {{ limit }} {{ suffix }}."
+msgstr "Файл слишком большой. Допустимый максимальный размер {{ limit }} {{ suffix }}."
 
 msgid "The file is too large."
-msgstr "The file is too large."
+msgstr "Файл слишком большой."
 
 msgid "The file could not be uploaded."
-msgstr "The file could not be uploaded."
+msgstr "Файл не удалось загрузить."
 
 msgid "This value should be a valid number."
-msgstr "This value should be a valid number."
+msgstr "Это значение должно быть числом."
 
 msgid "This file is not a valid image."
-msgstr "This file is not a valid image."
+msgstr "Этот файл не является изображением."
 
 msgid "This is not a valid IP address."
-msgstr "This is not a valid IP address."
+msgstr "Это не правильный IP-адрес."
 
 msgid "This value is not a valid language."
-msgstr "This value is not a valid language."
+msgstr "Это значение не является допустимым языком."
 
 msgid "This value is not a valid locale."
-msgstr "This value is not a valid locale."
+msgstr "Это значение не является допустимой локалью."
 
 msgid "This value is not a valid country."
-msgstr "This value is not a valid country."
+msgstr "Это значение не является действительным для страны."
 
 msgid "This value is already used."
-msgstr "This value is already used."
+msgstr "Это значение уже используется."
 
 msgid "The size of the image could not be detected."
-msgstr "The size of the image could not be detected."
+msgstr "Не удалось определить размер изображения."
 
 msgid "The image width is too big ({{ width }}px). Allowed maximum width is {{ max_width }}px."
-msgstr "The image width is too big ({{ width }}px). Allowed maximum width is {{ max_width }}px."
+msgstr "Ширина изображения слишком велика ({{ width }}px). Допустимая максимальная ширина - {{ max_width }}px."
 
 msgid "The image width is too small ({{ width }}px). Minimum width expected is {{ min_width }}px."
-msgstr "The image width is too small ({{ width }}px). Minimum width expected is {{ min_width }}px."
+msgstr "Ширина изображения слишком мала ({{ width }}px). Ожидаемая минимальная ширина - {{ min_width }}px."
 
 msgid "The image height is too big ({{ height }}px). Allowed maximum height is {{ max_height }}px."
-msgstr "The image height is too big ({{ height }}px). Allowed maximum height is {{ max_height }}px."
+msgstr "Высота изображения слишком большая ({{ height }}px). Допустимая максимальная высота - {{ max_height }}px."
 
 msgid "The image height is too small ({{ height }}px). Minimum height expected is {{ min_height }}px."
-msgstr "The image height is too small ({{ height }}px). Minimum height expected is {{ min_height }}px."
+msgstr "Высота изображения слишком мала ({{ height }}px). Ожидаемая минимальная высота - {{ min_height }}px."
 
 msgid "This value should be the user's current password."
-msgstr "This value should be the user's current password."
+msgstr "Это значение должно быть текущим паролем пользователя."
 
 msgid "This value should have exactly {{ limit }} character."
-msgid_plural "This value should have exactly {{ limit }} characters."
-msgstr[0] "This value should have exactly {{ limit }} character."
-msgstr[1] "This value should have exactly {{ limit }} characters."
+msgid_plural "Это значение должно содержать ровно {{ limit }} символов."
+msgstr[0] "Это значение должно содержать ровно {{ limit }} символов."
+msgstr[1] "Это значение должно содержать ровно {{ limit }} символов."
 
 msgid "The file was only partially uploaded."
-msgstr "The file was only partially uploaded."
+msgstr "Файл был загружен только частично."
 
 msgid "No file was uploaded."
-msgstr "No file was uploaded."
+msgstr "Файл не был загружен."
 
 msgid "No temporary folder was configured in php.ini."
-msgstr "No temporary folder was configured in php.ini, or the configured folder does not exist."
+msgstr "В php.ini не была настроена временная директория, или настроенная директория не существует."
 
 msgid "Cannot write temporary file to disk."
-msgstr "Cannot write temporary file to disk."
+msgstr "Невозможно записать временный файл на диск."
 
 msgid "A PHP extension caused the upload to fail."
-msgstr "A PHP extension caused the upload to fail."
+msgstr "Расширение PHP вызвало сбой загрузки."
 
 msgid "This collection should contain {{ limit }} element or more."
-msgid_plural "This collection should contain {{ limit }} elements or more."
-msgstr[0] "This collection should contain {{ limit }} element or more."
-msgstr[1] "This collection should contain {{ limit }} elements or more."
+msgid_plural "Эта коллекция должна содержать {{ limit }} элементов или более."
+msgstr[0] "Эта коллекция должна содержать {{ limit }} элемент или более."
+msgstr[1] "Эта коллекция должна содержать {{ limit }} элементов или более."
 
 msgid "This collection should contain {{ limit }} element or less."
 msgid_plural "This collection should contain {{ limit }} elements or less."
@@ -697,3 +697,48 @@ msgstr "Please select a valid range."
 
 msgid "Please enter a valid week."
 msgstr "Please enter a valid week."
+
+msgid "Back to Login"
+msgstr "Вернуться к логину"
+
+msgid "Remember me"
+msgstr "Запомнить меня"
+
+msgid "Forgot Password"
+msgstr "Забыл пароль"
+
+msgid "Sign in"
+msgstr "Войти"
+
+msgid "select.all"
+msgstr "выбрать все"
+
+msgid "deselect.all"
+msgstr "отменить выбор всех"
+
+msgid "show.all"
+msgstr "показать все"
+
+msgid "show.checked"
+msgstr "показать выбранные"
+
+msgid "show.unchecked"
+msgstr "показать не выбранные"
+
+msgid "Update Configuration"
+msgstr "Обновить конфигурацию"
+
+msgid "Create new Configuration"
+msgstr "Создать новую конфигурацию"
+
+msgid "drag.drop.columns"
+msgstr "Перетаскивайте столбцы, чтобы изменить порядок. Отметьте или не отметьте, чтобы показать или скрыть колонку в представлении списка."
+
+msgid "Edit"
+msgstr "Редактировать"
+
+msgid "view Configuration"
+msgstr "конфигурация списка"
+
+
+

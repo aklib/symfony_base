@@ -217,13 +217,9 @@ msgstr "Users"
 msgid "users"
 msgstr "users"
 
-
-
-#. EasyAdminBundle+intl-icu.en
 msgid "label.form.empty_value"
 msgstr "__label.form.empty_value"
 
-#.security
 msgid "An authentication exception occurred."
 msgstr "An authentication exception occurred."
 
@@ -280,8 +276,6 @@ msgstr "Too many failed login attempts, please try again in %minutes% minute."
 
 msgid "Too many failed login attempts, please try again in %minutes% minutes."
 msgstr "Too many failed login attempts, please try again in %minutes% minutes."
-
-#.validators
 
 msgid "This value should be false."
 msgstr "This value should be false."
@@ -697,3 +691,51 @@ msgstr "Please select a valid range."
 
 msgid "Please enter a valid week."
 msgstr "Please enter a valid week."
+
+msgid "Reset your password"
+msgstr "Reset your password"
+
+msgid "Enter your email address and we will send you a\n                link to reset your password."
+msgstr "Enter your email address and we will send you a\n                link to reset your password."
+
+msgid "Send password reset email"
+msgstr "Send password reset email"
+
+msgid "Back to Login"
+msgstr "Back to Login"
+
+msgid "Remember me"
+msgstr "Remember me"
+
+msgid "Forgot Password"
+msgstr "Forgot Password"
+
+msgid "Sign in"
+msgstr "Sign in"
+
+msgid "select.all"
+msgstr "select all"
+
+msgid "deselect.all"
+msgstr "deselect_all"
+
+msgid "show.all"
+msgstr "show all"
+
+msgid "show.checked"
+msgstr "show checked"
+
+msgid "show.unchecked"
+msgstr "show unchecked"
+
+msgid "Update Configuration"
+msgstr "Update Configuration"
+
+msgid "Create new Configuration"
+msgstr "Create new Configuration"
+
+msgid "drag.drop.columns"
+msgstr "Drag and drop columns to change an order. Check-in or check-out to show or hide the column in the list view."
+
+msgid "Edit"
+msgstr "Edit"

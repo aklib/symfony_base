@@ -16,21 +16,9 @@ class UserProfile implements Extension\Attributable\AttributableEntity
     use TimestampableEntityTrait, BlameableEntityTrait, AttributableEntityTrait;
 
     /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private int $id;
-
-    /**
      * @ORM\OneToOne(targetEntity=User::class, inversedBy="userProfile", cascade={"persist", "remove"})
      */
     private ?User $user = null;
-
-    public function getId(): int
-    {
-        return $this->id;
-    }
 
     public function getUser(): ?User
     {

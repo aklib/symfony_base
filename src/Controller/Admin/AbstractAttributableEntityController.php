@@ -69,7 +69,6 @@ abstract class AbstractAttributableEntityController extends AbstractAppGrudContr
         return $fields;
     }
 
-
     /**
      * Configure and save index/list view for attributable entities
      * @param AdminContext $context

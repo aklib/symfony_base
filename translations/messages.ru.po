@@ -22,6 +22,18 @@ msgstr "обновленно"
 msgid "category"
 msgstr "категория"
 
+msgid "Category"
+msgstr "Категория"
+
+msgid "User Profile"
+msgstr "Профили пользователей"
+
+msgid "categories"
+msgstr "категории"
+
+msgid "Categories"
+msgstr "Категории"
+
 msgid "CreatedAt"
 msgstr "Создано"
 
@@ -33,9 +45,6 @@ msgstr "Кем создано"
 
 msgid "UpdatedBy"
 msgstr "Кем обновленно"
-
-msgid "Category"
-msgstr "Категория"
 
 msgid "product"
 msgstr "продукт"
@@ -197,7 +206,10 @@ msgid "settings"
 msgstr "настройки"
 
 msgid "Attribute Definitions"
-msgstr "Определения атрибутов"
+msgstr "Типы атрибутов"
+
+msgid "Attribute Tabs"
+msgstr "Табы атрибутов"
 
 msgid "Home Page"
 msgstr "Главная страница"

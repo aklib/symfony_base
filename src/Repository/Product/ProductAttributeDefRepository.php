@@ -8,7 +8,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<ProductAttributeDef>
+ * @extends ServiceEntityRepository<AttributeDefInterface>
  *
  * @method AttributeDefInterface|null find($id, $lockMode = null, $lockVersion = null)
  * @method AttributeDefInterface|null findOneBy(array $criteria, array $orderBy = null)

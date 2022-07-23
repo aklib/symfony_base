@@ -11,6 +11,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * @ORM\Table(name="attribute_definition", uniqueConstraints={@ORM\UniqueConstraint(name="UNIQ_6C5628BD8CDE5729", columns={"type"})})
  * @ORM\Entity(repositoryClass=ProductAttributeDefRepository::class)
  */
 class ProductAttributeDef implements AttributeDefInterface

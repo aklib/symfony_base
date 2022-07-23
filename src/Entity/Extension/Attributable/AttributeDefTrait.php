@@ -18,8 +18,7 @@ trait AttributeDefTrait
 {
     /**
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class="App\Entity\Generator\SequenceGenerator")
+     * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
     private int $id;

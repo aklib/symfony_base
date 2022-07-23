@@ -72,14 +72,12 @@ class AttributeAdapterDatabase extends AbstractAttributeAdapter
         $ids = [];
         /** @var AttributableEntity $entity */
         foreach ($this->entities as $entity) {
-            $key = $this->getDocumentId($entity);
-            if (in_array($key, $this->initialisedEntities, true)) {
+            if ($entity->isLoaded()) {
                 continue;
             }
             $entities->add($entity);
             $scopes[] = $this->getScope($entity);
             $ids[] = $entity->getId();
-            $this->initialisedEntities[] = $key;
         }
         if ($entities->isEmpty()) {
             return [];

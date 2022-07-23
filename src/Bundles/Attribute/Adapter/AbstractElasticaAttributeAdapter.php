@@ -74,12 +74,10 @@ abstract class AbstractElasticaAttributeAdapter extends AbstractAttributeAdapter
 
         /** @var AttributableEntity $entity */
         foreach ($this->entities as $entity) {
-            $key = $this->getDocumentId($entity);
-            if (in_array($key, $this->initialisedEntities, true)) {
+            if ($entity->isLoaded()) {
                 continue;
             }
             $entities->add($entity);
-            $this->initialisedEntities[] = $key;
         }
         if ($entities->isEmpty()) {
             return [];

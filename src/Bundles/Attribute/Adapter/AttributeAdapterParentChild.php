@@ -23,7 +23,6 @@ use Elastica\Util;
 use Exception;
 use FOS\ElasticaBundle\Elastica\Index;
 use Throwable;
-use function App\Bundles\Attribute\Manager\str_contains;
 
 class AttributeAdapterParentChild extends AbstractElasticaAttributeAdapter
 {

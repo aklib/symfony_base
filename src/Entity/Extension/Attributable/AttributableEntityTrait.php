@@ -36,7 +36,8 @@ trait AttributableEntityTrait
     private ?CategoryInterface $category = null;
     private AttributeValueAdapterInterface $attributeManager;
     private ?string $scope = null;
-    private ?array $attributeValues = null;
+    private array $attributeValues = [];
+    private bool $loaded = false;
 
     /**
      * @return int
@@ -90,6 +91,14 @@ trait AttributableEntityTrait
         return $this;
     }
 
+    /**
+     * @return bool
+     */
+    public function isLoaded(): bool
+    {
+        return $this->loaded;
+    }
+
     //==================================== HANDLE ATTRIBUTE VALUES ====================================
 
     public function setAttributeManager(AttributeValueAdapterInterface $manager): AttributableEntity
@@ -105,7 +114,7 @@ trait AttributableEntityTrait
 
     public function setAttributeValues(array $attributeValues = null): AttributableEntity
     {
-        if ($this->attributeValues === null) {
+        if (!$this->isLoaded()) {
             if ($attributeValues === null) {
                 $this->attributeValues = $this->getAttributemanager()->getAttributeValues($this);
             } else {

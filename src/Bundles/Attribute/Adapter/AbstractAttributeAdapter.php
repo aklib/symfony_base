@@ -34,7 +34,6 @@ abstract class AbstractAttributeAdapter implements AttributeAdapterInterface
     private EntityManagerInterface $em;
     private ArrayCollection $attributes;
     private SessionInterface $session;
-    protected array $initialisedEntities = [];
     protected ?array $attributeValues = null;
     /**
      * @var ArrayCollection<AttributableEntity>

@@ -35,5 +35,7 @@ interface AttributableEntity extends DeletableEntity
 
     public function getAttributeManager(): AttributeValueAdapterInterface;
 
+    public function isLoaded(): bool;
+
     public function __toString();
 }

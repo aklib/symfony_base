@@ -123,6 +123,7 @@ trait AttributableEntityTrait
             foreach ($this->attributeValues as $uniqueKey => $attributeValue) {
                 $this->{$uniqueKey} = $attributeValue;
             }
+            $this->loaded = true;
         }
         return $this;
     }

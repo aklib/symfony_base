@@ -1,0 +1,25 @@
+<?php
+
+namespace App\Entity\Xxxxx;
+
+use App\Entity\Extension\Attributable\AttributeTabInterface;
+use App\Entity\Extension\Attributable\AttributeTabTrait;
+use App\Entity\Extension\Traits\BlameableEntityTrait;
+use App\Entity\Extension\Traits\TimestampableEntityTrait;
+use App\Repository\Xxxxx\XxxxxAttributeTabRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity(repositoryClass=XxxxxAttributeTabRepository::class)
+ */
+class XxxxxAttributeTab implements AttributeTabInterface
+{
+    use AttributeTabTrait, TimestampableEntityTrait, BlameableEntityTrait;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Xxxxx\XxxxxAttribute", mappedBy="tab")
+     * @ORM\OrderBy({"name" = "ASC"})
+     */
+    private Collection $attributes;
+}

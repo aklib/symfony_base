@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity\Product;
+namespace App\Entity\Xxxxx;
 
 
 use App\Entity\Extension\Annotation as AppORM;
@@ -11,25 +11,25 @@ use App\Entity\Extension\Attributable\AttributeTrait;
 use App\Entity\Extension\Attributable\CategoryInterface;
 use App\Entity\Extension\Traits\BlameableEntityTrait;
 use App\Entity\Extension\Traits\TimestampableEntityTrait;
-use App\Repository\Product\ProductAttributeRepository;
+use App\Repository\Xxxxx\XxxxxAttributeRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
- * @ORM\Entity(repositoryClass=ProductAttributeRepository::class)
+ * @ORM\Entity(repositoryClass=XxxxxAttributeRepository::class)
  * @UniqueEntity(
  *     fields={"uniqueKey"},
  *     message="The name '{{ value }}' is already in use. Please choose any other one."
  * )
  */
-class ProductAttribute implements AttributeInterface
+class XxxxxAttribute implements AttributeInterface
 {
 
     use AttributeTrait, TimestampableEntityTrait, BlameableEntityTrait;
 
     /**
      * @var CategoryInterface
-     * @ORM\ManyToOne(targetEntity=ProductCategory::class, inversedBy="attributes")
+     * @ORM\ManyToOne(targetEntity=XxxxxCategory::class, inversedBy="attributes")
      *
      * @ORM\OrderBy({"lft" = "ASC"})
      * @AppORM\Element(sortOrder="3")
@@ -39,7 +39,7 @@ class ProductAttribute implements AttributeInterface
     /**
      * @var AttributeTabInterface
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\Product\ProductAttributeTab", fetch="EXTRA_LAZY", inversedBy="attributes")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Xxxxx\XxxxxAttributeTab", fetch="EXTRA_LAZY", inversedBy="attributes")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="tab_id", referencedColumnName="id", nullable=false)
      * })

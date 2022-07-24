@@ -12,6 +12,7 @@
 namespace App\Bundles\Attribute\Command;
 
 use Doctrine\ORM\EntityManagerInterface;
+use ReflectionClass;
 use Symfony\Bundle\MakerBundle\ConsoleStyle;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -57,34 +58,56 @@ class AttributableCreateCommand extends Command
         $helper = $this->getHelper('question');
         $question = new Question('The name (camelcase) of the bundle[entity] : ');
 //
-        $entityName = $helper->ask($input, $output, $question);
+        $entityShortName = $helper->ask($input, $output, $question);
 
-        $entityName = "$entityName\\$entityName";
-        $entityNameAttribute = $entityName . 'Attribute';
-        $entityNameAttributeDef = $entityName . 'AttributeDef';
-        $entityNameAttributeTab = $entityName . 'AttributeTab';
-        $entityNameCategory = $entityName . 'Category';
+        $templates = [
+            'Entity',
+            'Attribute',
+            'AttributeTab',
+            'Category',
+        ];
 
+        $entityName = "$entityShortName\\$entityShortName";
+        $entityShortNameLower = lcfirst($entityShortName);
 
-//        $kernel = new MakerTestKernel('dev', true);
-//        $kernel->registerBundles();
-//        $kernel->boot();
-//        /** @var MakeEntity $maker */
-//        $maker = $kernel->getContainer()->get('maker.maker.make_entity');
-//        $maker->generate($input, $io, $this->generator);
+        $templateBase = __DIR__ . '/Template';
 
-//        shell_exec('php bin/console -q make:entity ' . escapeshellarg($entityName) . "\n");
-//        sleep(1);
-//        shell_exec('php bin/console -q make:entity ' . escapeshellarg($entityNameAttribute) . "\n");
-//        sleep(1);
-//        shell_exec('php bin/console -q make:entity ' . escapeshellarg($entityNameAttributeDef) . "\n");
-//        sleep(1);
-//        shell_exec('php bin/console -q make:entity ' . escapeshellarg($entityNameAttributeTab) . "\n");
-//        sleep(1);
-//        shell_exec('php bin/console -q make:entity ' . escapeshellarg($entityNameCategory) . "\n");
+        shell_exec('php bin/console -q -n --env=dev cache:clear');
 
+        foreach ($templates as $template) {
+            if ($template !== 'Entity') {
+                $class = $entityName . $template;
+            } else {
+                $class = $entityName;
+            }
+            shell_exec('php bin/console -q -n --env=dev make:entity ' . escapeshellarg($class) . "\n");
 
+            // get template
+            $path = "$templateBase/$template.php.dist";
+            if (!file_exists($path)) {
+                $output->writeln(sprintf("Class not found: %s", $path));
+                continue;
+            }
+            //entity class
+            $refClass = new ReflectionClass("App\\Entity\\$class");
+            $output->writeln(sprintf("File path: %s", $refClass->getFileName()));
+
+            $entityContent = file_get_contents($path);
+            $entityContent = str_replace(['Xxxxx', 'xxxxx'], [$entityShortName, $entityShortNameLower], $entityContent);
+            // clear class content
+            file_put_contents($refClass->getFileName(), '');
+            $result = file_put_contents($refClass->getFileName(), $entityContent, FILE_APPEND);
+            sleep(1);
+        }
         return Command::SUCCESS;
+//
+//
+
+
+        //$output->writeln(sprintf("Result: %d", $$result));
+
+
+//        return Command::SUCCESS;
         //================= RESET INDEX? =================
 //        if ($this->resetIndex($this->getManagerNested(), $input, $output)) {
 //            $output->writeln(sprintf("\tIndex <info>%s</> has been <info>reset</>", $this->getManagerNested()->getIndex()->getName()));

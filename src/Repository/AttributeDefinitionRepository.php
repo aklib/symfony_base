@@ -1,28 +1,27 @@
 <?php
 
-namespace App\Repository\Product;
+namespace App\Repository;
 
-use App\Entity\Extension\Attributable\AttributeDefInterface;
-use App\Entity\Product\ProductAttributeDef;
+use App\Entity\AttributeDefinition;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<AttributeDefInterface>
+ * @extends ServiceEntityRepository<AttributeDefinition>
  *
- * @method AttributeDefInterface|null find($id, $lockMode = null, $lockVersion = null)
- * @method AttributeDefInterface|null findOneBy(array $criteria, array $orderBy = null)
- * @method AttributeDefInterface[]    findAll()
- * @method AttributeDefInterface[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method AttributeDefinition|null find($id, $lockMode = null, $lockVersion = null)
+ * @method AttributeDefinition|null findOneBy(array $criteria, array $orderBy = null)
+ * @method AttributeDefinition[]    findAll()
+ * @method AttributeDefinition[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class ProductAttributeDefRepository extends ServiceEntityRepository
+class AttributeDefinitionRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, ProductAttributeDef::class);
+        parent::__construct($registry, AttributeDefinition::class);
     }
 
-    public function add(ProductAttributeDef $entity, bool $flush = false): void
+    public function add(AttributeDefinition $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
 
@@ -31,7 +30,7 @@ class ProductAttributeDefRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(ProductAttributeDef $entity, bool $flush = false): void
+    public function remove(AttributeDefinition $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
 
@@ -41,7 +40,7 @@ class ProductAttributeDefRepository extends ServiceEntityRepository
     }
 
 //    /**
-//     * @return AttributeType[] Returns an array of AttributeType objects
+//     * @return AttributeDefinition[] Returns an array of AttributeDefinition objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -55,7 +54,7 @@ class ProductAttributeDefRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?AttributeType
+//    public function findOneBySomeField($value): ?AttributeDefinition
 //    {
 //        return $this->createQueryBuilder('a')
 //            ->andWhere('a.exampleField = :val')

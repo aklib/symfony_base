@@ -1,23 +1,22 @@
 <?php /** @noinspection PhpUnused */
 
-namespace App\Entity\Product;
+namespace App\Entity\Xxxxx;
 
 use App\Entity\Extension\Annotation as AppORM;
-use App\Entity\Extension\Attributable\AttributableEntity;
 use App\Entity\Extension\Attributable\CategoryInterface;
 use App\Entity\Extension\Attributable\CategoryTrait;
 use App\Entity\Extension\Traits\BlameableEntityTrait;
 use App\Entity\Extension\Traits\TimestampableEntityTrait;
-use App\Repository\Product\ProductCategoryRepository;
+use App\Repository\Xxxxx\XxxxxCategoryRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @Gedmo\Tree(type="nested")
- * @ORM\Entity(repositoryClass=ProductCategoryRepository::class)
+ * @ORM\Entity(repositoryClass=XxxxxCategoryRepository::class)
  */
-class ProductCategory implements CategoryInterface
+class XxxxxCategory implements CategoryInterface
 {
     use CategoryTrait, TimestampableEntityTrait, BlameableEntityTrait;
 
@@ -30,7 +29,7 @@ class ProductCategory implements CategoryInterface
 
     /**
      * @Gedmo\TreeParent
-     * @ORM\ManyToOne(targetEntity="App\Entity\Product\ProductCategory", inversedBy="children", fetch="EAGER")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Xxxxx\XxxxxCategory", inversedBy="children", fetch="EAGER")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
      * @AppORM\Element(sortOrder="2")
      */
@@ -38,48 +37,48 @@ class ProductCategory implements CategoryInterface
 
     /**
      * @Gedmo\TreeRoot
-     * @ORM\ManyToOne(targetEntity="App\Entity\Product\ProductCategory")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Xxxxx\XxxxxCategory")
      * @ORM\JoinColumn(name="tree_root", referencedColumnName="id", onDelete="CASCADE")
      */
     private ?CategoryInterface $root;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Product\ProductCategory", mappedBy="parent")
+     * @ORM\OneToMany(targetEntity="App\Entity\Xxxxx\XxxxxCategory", mappedBy="parent")
      * @ORM\OrderBy({"lft" = "ASC"})
      */
     private Collection $children;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Product\ProductAttribute", mappedBy="category")
+     * @ORM\OneToMany(targetEntity="App\Entity\Xxxxx\XxxxxAttribute", mappedBy="category")
      */
     private Collection $attributes;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Product\Product", mappedBy="category")
+     * @ORM\OneToMany(targetEntity="App\Entity\Xxxxx\Xxxxx", mappedBy="category")
      */
-    private Collection $products;
+    private Collection $xxxxxs;
 
     /**
      * @return Collection<AttributableEntity>
      */
-    public function getProducts(): Collection
+    public function getXxxxxs(): Collection
     {
-        return $this->products;
+        return $this->xxxxxs;
     }
 
     /**
-     * @param Collection<AttributableEntity> $products
-     * @return ProductCategory
+     * @param Collection<AttributableEntity> $xxxxxs
+     * @return XxxxxCategory
      */
-    public function setProducts(Collection $products): ProductCategory
+    public function setXxxxxs(Collection $xxxxxs): XxxxxCategory
     {
-        $this->products = $products;
+        $this->xxxxxs = $xxxxxs;
         return $this;
     }
 
     public function isDeletable(): bool
     {
-        return $this->getAttributes()->count() === 0 && $this->getProducts()->count() === 0;
+        return $this->getAttributes()->count() === 0 && $this->getXxxxxts()->count() === 0;
     }
 }
    

@@ -177,9 +177,9 @@ trait CategoryTrait
 
     /**
      * @param CategoryInterface|null $root
-     * @return \App\Entity\Product\ProductCategory
+     * @return CategoryInterface
      */
-    public function setRoot(?CategoryInterface $root): \App\Entity\Product\ProductCategory
+    public function setRoot(?CategoryInterface $root): CategoryInterface
     {
         $this->root = $root;
         return $this;
@@ -195,35 +195,12 @@ trait CategoryTrait
 
     /**
      * @param Collection $children
-     * @return ProductCategory
+     * @return CategoryInterface
      */
     public function setChildren(Collection $children): CategoryInterface
     {
         $this->children = $children;
         return $this;
-    }
-
-    /**
-     * @return Collection
-     */
-    public function getProducts(): Collection
-    {
-        return $this->products;
-    }
-
-    /**
-     * @param Collection $products
-     * @return ProductCategory
-     */
-    public function setProducts(Collection $products): ProductCategory
-    {
-        $this->products = $products;
-        return $this;
-    }
-
-    public function isDeletable(): bool
-    {
-        return $this->getAttributes()->count() === 0 && $this->getProducts()->count() === 0;
     }
 
     // ======================= METHODS REQUIRED FOR HYDRATION =======================

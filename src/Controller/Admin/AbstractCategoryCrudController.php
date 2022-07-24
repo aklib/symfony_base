@@ -73,6 +73,7 @@ abstract class AbstractCategoryCrudController extends AbstractAppGrudController
 
         if ($pageName !== 'index') {
             $fields['products'][Constant::OPTION_VISIBLE] = false;
+            $fields['campaign'][Constant::OPTION_VISIBLE] = false;
         }
         return $fields;
     }

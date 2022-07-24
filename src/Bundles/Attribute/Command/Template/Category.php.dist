@@ -3,11 +3,13 @@
 namespace App\Entity\Xxxxx;
 
 use App\Entity\Extension\Annotation as AppORM;
+use App\Entity\Extension\Attributable\AttributableEntity;
 use App\Entity\Extension\Attributable\CategoryInterface;
 use App\Entity\Extension\Attributable\CategoryTrait;
 use App\Entity\Extension\Traits\BlameableEntityTrait;
 use App\Entity\Extension\Traits\TimestampableEntityTrait;
 use App\Repository\Xxxxx\XxxxxCategoryRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -78,7 +80,14 @@ class XxxxxCategory implements CategoryInterface
 
     public function isDeletable(): bool
     {
-        return $this->getAttributes()->count() === 0 && $this->getXxxxxts()->count() === 0;
+        return $this->getAttributes()->count() === 0 && $this->getXxxxxs()->count() === 0;
+    }
+
+    public function __construct()
+    {
+        $this->attributes = new ArrayCollection();
+        $this->children = new ArrayCollection();
+        $this->xxxxxs = new ArrayCollection();
     }
 }
    

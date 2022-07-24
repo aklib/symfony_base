@@ -98,32 +98,24 @@ class AttributableCreateCommand extends Command
             file_put_contents($refClass->getFileName(), '');
             $result = file_put_contents($refClass->getFileName(), $entityContent, FILE_APPEND);
             sleep(1);
+
+            $output->writeln("Entity has been created: App\\Entity\\$class with result[$result]");
+
         }
+
+        $output->writeln('These are the next steps:');
+        $output->writeln('Please refresh the your admin page. The Symfony cache will be created.');
+        $output->writeln('Create database tables: php bin/console  doctrine:schema:update --force');
+        $output->writeln(sprintf("Create directory src/Controller/Admin/%s", $entityShortName));
+        $output->writeln(sprintf("Create crud controllers for all entities starts with '%s': php bin/console make:admin:crud", $entityShortName));
+        $output->writeln(sprintf("Replace in %sCrudController: 'extends AbstractCrudController' with 'extends AbstractAttributableEntityController'", $entityShortName));
+        $output->writeln(sprintf("Replace in %sCategoryCrudController: 'extends AbstractCrudController' with 'extends AbstractCategoryCrudController'", $entityShortName));
+        $output->writeln("Replace in other controllers: 'extends AbstractCrudController' with 'extends AbstractAppGrudController'");
+
+        $output->writeln(sprintf("Create a menu for  %ss in DashboardController::configureMenuItems()", $entityShortName));
+        $output->writeln(sprintf('Enjoy your new functionality. Start with creating of %sCategory root named %s', $entityShortName, $entityShortName));
+        $output->writeln('Bye-bye!');
         return Command::SUCCESS;
-//
-//
-
-
-        //$output->writeln(sprintf("Result: %d", $$result));
-
-
-//        return Command::SUCCESS;
-        //================= RESET INDEX? =================
-//        if ($this->resetIndex($this->getManagerNested(), $input, $output)) {
-//            $output->writeln(sprintf("\tIndex <info>%s</> has been <info>reset</>", $this->getManagerNested()->getIndex()->getName()));
-//        } else {
-//            $output->writeln(sprintf("\tIndex resetting <comment>%s</> was <comment>canceled</>", $this->getManagerNested()->getIndex()->getName()));
-//        }
-//
-//        if ($this->resetIndex($this->getManagerParentChild(), $input, $output)) {
-//            $output->writeln(sprintf("\tIndex <info>%s</> has been <info>reset</>", $this->getManagerParentChild()->getIndex()->getName()));
-//        } else {
-//            $output->writeln(sprintf("\tIndex resetting <comment>%s</> was <comment>canceled</>", $this->getManagerParentChild()->getIndex()->getName()));
-//        }
-//        //================= CREATE INDEXES IF NOT EXISTS =================
-//
-//
-//        return Command::SUCCESS;
     }
 
     //============================== GETTERS ==============================

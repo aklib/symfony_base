@@ -6,7 +6,7 @@ use App\Controller\Admin\AbstractAttributableEntityController;
 use App\Entity\Product\Product;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 
-class ProductEntityController extends AbstractAttributableEntityController
+class ProductCrudController extends AbstractAttributableEntityController
 {
     public static function getEntityFqcn(): string
     {

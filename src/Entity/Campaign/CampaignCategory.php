@@ -1,6 +1,6 @@
 <?php /** @noinspection PhpUnused */
 
-namespace App\Entity\Product;
+namespace App\Entity\Campaign;
 
 use App\Entity\Extension\Annotation as AppORM;
 use App\Entity\Extension\Attributable\AttributableEntity;
@@ -8,7 +8,7 @@ use App\Entity\Extension\Attributable\CategoryInterface;
 use App\Entity\Extension\Attributable\CategoryTrait;
 use App\Entity\Extension\Traits\BlameableEntityTrait;
 use App\Entity\Extension\Traits\TimestampableEntityTrait;
-use App\Repository\Product\ProductCategoryRepository;
+use App\Repository\Campaign\CampaignCategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -16,9 +16,9 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @Gedmo\Tree(type="nested")
- * @ORM\Entity(repositoryClass=ProductCategoryRepository::class)
+ * @ORM\Entity(repositoryClass=CampaignCategoryRepository::class)
  */
-class ProductCategory implements CategoryInterface
+class CampaignCategory implements CategoryInterface
 {
     use CategoryTrait, TimestampableEntityTrait, BlameableEntityTrait;
 
@@ -31,7 +31,7 @@ class ProductCategory implements CategoryInterface
 
     /**
      * @Gedmo\TreeParent
-     * @ORM\ManyToOne(targetEntity="App\Entity\Product\ProductCategory", inversedBy="children", fetch="EAGER")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Campaign\CampaignCategory", inversedBy="children", fetch="EAGER")
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="CASCADE")
      * @AppORM\Element(sortOrder="2")
      */
@@ -39,55 +39,57 @@ class ProductCategory implements CategoryInterface
 
     /**
      * @Gedmo\TreeRoot
-     * @ORM\ManyToOne(targetEntity="App\Entity\Product\ProductCategory")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Campaign\CampaignCategory")
      * @ORM\JoinColumn(name="tree_root", referencedColumnName="id", onDelete="CASCADE")
      */
     private ?CategoryInterface $root;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Product\ProductCategory", mappedBy="parent")
+     * @ORM\OneToMany(targetEntity="App\Entity\Campaign\CampaignCategory", mappedBy="parent")
      * @ORM\OrderBy({"lft" = "ASC"})
      */
     private Collection $children;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Product\ProductAttribute", mappedBy="category")
+     * @ORM\OneToMany(targetEntity="App\Entity\Campaign\CampaignAttribute", mappedBy="category")
      */
     private Collection $attributes;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Product\Product", mappedBy="category")
+     * @ORM\OneToMany(targetEntity="App\Entity\Campaign\Campaign", mappedBy="category")
      */
-    private Collection $products;
+    private Collection $campaigns;
 
     /**
      * @return Collection<AttributableEntity>
      */
-    public function getProducts(): Collection
+    public function getCampaigns(): Collection
     {
-        return $this->products;
+        return $this->campaigns;
     }
 
     /**
-     * @param Collection<AttributableEntity> $products
-     * @return ProductCategory
+     * @param Collection<AttributableEntity> $campaigns
+     * @return CampaignCategory
      */
-    public function setProducts(Collection $products): ProductCategory
+    public function setCampaigns(Collection $campaigns): CampaignCategory
     {
-        $this->products = $products;
+        $this->campaigns = $campaigns;
         return $this;
     }
 
     public function isDeletable(): bool
     {
-        return $this->getAttributes()->count() === 0 && $this->getProducts()->count() === 0;
+        return $this->getAttributes()->count() === 0 && $this->getCampaigns()->count() === 0;
     }
 
     public function __construct()
     {
         $this->attributes = new ArrayCollection();
         $this->children = new ArrayCollection();
-        $this->products = new ArrayCollection();
+        $this->campaigns = new ArrayCollection();
     }
+
+
 }
    

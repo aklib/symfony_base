@@ -59,12 +59,14 @@ abstract class AbstractAttributableEntityController extends AbstractAppGrudContr
         $this->viewConfigManager->setEntityFqcn($this::getEntityFqcn());
     }
 
-    public function getFieldOptions(string $pageName = 'index'): array
+    public function getFieldOptions(string $pageName = Crud::PAGE_INDEX): array
     {
         $fields = parent::getFieldOptions($pageName);
-        $config = $this->getViewConfigManager()->getCurrentViewConfig();
-        if ($config instanceof UserViewConfig) {
-            $fields = array_replace_recursive($fields, $config->getColumnOptions());
+        if ($pageName === Crud::PAGE_INDEX) {
+            $config = $this->getViewConfigManager()->getCurrentViewConfig();
+            if ($config instanceof UserViewConfig) {
+                $fields = array_replace_recursive($fields, $config->getColumnOptions());
+            }
         }
         return $fields;
     }

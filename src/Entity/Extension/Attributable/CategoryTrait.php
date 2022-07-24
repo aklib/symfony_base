@@ -11,7 +11,6 @@
 namespace App\Entity\Extension\Attributable;
 
 use App\Entity\Extension\Annotation as AppORM;
-use App\Entity\Product\ProductCategory;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -51,23 +50,9 @@ trait CategoryTrait
      */
     private int $level;
 
-    //============= OVERRIDDEN IN IMPLEMENTATION CLASS =============
-    // must be override because target entity
-
-    private ?CategoryInterface $parent = null;
-    private ?CategoryInterface $root;
-    private Collection $children;
-    private Collection $attributes;
-    private Collection $products;
-
     //============= EO OVERRIDDEN =============
 
-    public function __construct()
-    {
-        $this->attributes = new ArrayCollection();
-        $this->children = new ArrayCollection();
-        $this->products = new ArrayCollection();
-    }
+
 
     /**
      * @return int
@@ -159,9 +144,9 @@ trait CategoryTrait
 
     /**
      * @param CategoryInterface|null $parent
-     * @return ProductCategory
+     * @return CategoryInterface
      */
-    public function setParent(?CategoryInterface $parent): ProductCategory
+    public function setParent(?CategoryInterface $parent): CategoryInterface
     {
         $this->parent = $parent;
         return $this;
@@ -219,7 +204,7 @@ trait CategoryTrait
 
     /**
      * @param ArrayCollection|Collection $attributes
-     * @return ProductCategory
+     * @return CategoryInterface
      */
     public function setAttributes($attributes): CategoryInterface
     {

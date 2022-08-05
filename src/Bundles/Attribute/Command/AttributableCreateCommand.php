@@ -49,7 +49,7 @@ class AttributableCreateCommand extends Command
 
         // outputs multiple lines to the console (adding "\n" at the end of each line)
         $output->writeln([
-            'Creating an attributable object',
+            '<info>Creating an attributable object</>',
             '============',
             '',
         ]);
@@ -103,17 +103,17 @@ class AttributableCreateCommand extends Command
 
         }
 
-        $output->writeln('These are the next steps:');
-        $output->writeln('Please refresh the your admin page. The Symfony cache will be created.');
-        $output->writeln('Create database tables: php bin/console  doctrine:schema:update --force');
-        $output->writeln(sprintf("Create directory src/Controller/Admin/%s", $entityShortName));
-        $output->writeln(sprintf("Create crud controllers for all entities starts with '%s': php bin/console make:admin:crud", $entityShortName));
-        $output->writeln(sprintf("Replace in %sCrudController: 'extends AbstractCrudController' with 'extends AbstractAttributableEntityController'", $entityShortName));
-        $output->writeln(sprintf("Replace in %sCategoryCrudController: 'extends AbstractCrudController' with 'extends AbstractCategoryCrudController'", $entityShortName));
-        $output->writeln("Replace in other controllers: 'extends AbstractCrudController' with 'extends AbstractAppGrudController'");
+        $output->writeln('<info>These are the next steps:</>');
+        $output->writeln("\t- Please refresh the your admin page. The Symfony cache will be created.");
+        $output->writeln("\t- Create database tables: php bin/console  doctrine:schema:update --force");
+        $output->writeln(sprintf("\t- Create directory src/Controller/Admin/%s", $entityShortName));
+        $output->writeln(sprintf("\t- Create crud controllers for all entities starts with '%s': php bin/console make:admin:crud", $entityShortName));
+        $output->writeln(sprintf("\t- Replace in %sCrudController: 'extends AbstractCrudController' with 'extends AbstractAttributableEntityController'", $entityShortName));
+        $output->writeln(sprintf("\t- Replace in %sCategoryCrudController: 'extends AbstractCrudController' with 'extends AbstractCategoryCrudController'", $entityShortName));
+        $output->writeln("\t- Replace in other controllers: 'extends AbstractCrudController' with 'extends AbstractAppGrudController'");
 
-        $output->writeln(sprintf("Create a menu for  %ss in DashboardController::configureMenuItems()", $entityShortName));
-        $output->writeln(sprintf('Enjoy your new functionality. Start with creating of %sCategory root named %s', $entityShortName, $entityShortName));
+        $output->writeln(sprintf("\t- Create a menu for  %ss in DashboardController::configureMenuItems()", $entityShortName));
+        $output->writeln(sprintf("\t- Enjoy your new functionality. Start with creating of %sCategory root named %s", $entityShortName, $entityShortName));
         $output->writeln('Bye-bye!');
         return Command::SUCCESS;
     }

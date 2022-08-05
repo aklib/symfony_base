@@ -21,7 +21,7 @@ trait AttributeTabTrait
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class="App\Entity\Generator\SequenceGenerator")
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=false)
      */
     private int $id;
 

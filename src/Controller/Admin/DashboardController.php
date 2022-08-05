@@ -2,10 +2,6 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\Campaign\Campaign;
-use App\Entity\Campaign\CampaignAttribute;
-use App\Entity\Campaign\CampaignAttributeTab;
-use App\Entity\Campaign\CampaignCategory;
 use App\Entity\Extension\Attributable\AttributableEntity;
 use App\Entity\Product\Product;
 use App\Entity\Product\ProductAttribute;
@@ -28,7 +24,6 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 
 class DashboardController extends AbstractDashboardController
 {
-
     public const DATE_FORMAT_DEFAULT = 'y-MM-dd';
     public const DATETIME_FORMAT_DEFAULT = 'y-MM-dd hh:mm:ss';
     private EntityManagerInterface $em;
@@ -46,7 +41,6 @@ class DashboardController extends AbstractDashboardController
             ->setDateFormat(self::DATE_FORMAT_DEFAULT)
             ->setDateTimeFormat(self::DATETIME_FORMAT_DEFAULT)
             ->setTimezone('Europe/Berlin');
-
     }
 
     /**
@@ -82,13 +76,6 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Categories', 'fas fa-stream', ProductCategory::class)->setPermission('ROLE_ADMIN')->setCssClass('ms-3');
         yield MenuItem::linkToCrud('Attributes', 'fas fa-list-ol', ProductAttribute::class)->setPermission('ROLE_ADMIN')->setCssClass('ms-3');
         yield MenuItem::linkToCrud('Attribute Tabs', 'fas fa-list-ol', ProductAttributeTab::class)->setPermission('ROLE_ADMIN')->setCssClass('ms-3');
-
-
-        yield MenuItem::section('Campaign')->setPermission('ROLE_ADMIN');
-        yield MenuItem::linkToCrud('Campaign', 'fas fa-list', Campaign::class)->setPermission('ROLE_ADMIN');
-        yield MenuItem::linkToCrud('Categories', 'fas fa-stream', CampaignCategory::class)->setPermission('ROLE_ADMIN')->setCssClass('ms-3');
-        yield MenuItem::linkToCrud('Attributes', 'fas fa-list-ol', CampaignAttribute::class)->setPermission('ROLE_ADMIN')->setCssClass('ms-3');
-        yield MenuItem::linkToCrud('Attribute Tabs', 'fas fa-list-ol', CampaignAttributeTab::class)->setPermission('ROLE_ADMIN')->setCssClass('ms-3');
 
         yield MenuItem::section('Users')->setPermission('ROLE_ADMIN');
         yield MenuItem::linkToCrud('User', 'fas fa-list-ul', User::class)->setPermission('ROLE_ADMIN');

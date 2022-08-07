@@ -739,3 +739,27 @@ msgstr "Drag and drop columns to change an order. Check-in or check-out to show 
 
 msgid "Edit"
 msgstr "Edit"
+
+#no added to ru
+
+msgid "ProductCategory"
+msgstr "Category"
+
+msgid "ProductAttributeTab"
+msgstr "Attribute Tab"
+
+msgid "ProductAttribute"
+msgstr "Attribute"
+
+msgid "UserProfile"
+msgstr "User Profile"
+
+msgid "AttributeDef"
+msgstr "Attribute Definition"
+
+msgid "Only [a-z] characters in lower case and underscore '_'."
+msgstr "Only [a-z] characters in lower case and underscore '_'."
+
+
+
+

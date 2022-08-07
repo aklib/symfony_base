@@ -6,6 +6,7 @@
   "require": {
     "php": ">=7.4",
     "ext-ctype": "*",
+    "ext-gd": "*",
     "ext-iconv": "*",
     "ext-json": "*",
     "doctrine/annotations": "^1.13",
@@ -19,6 +20,7 @@
     "laminas/laminas-json": "^3.3",
     "ruflin/elastica": "^7.1",
     "sensio/framework-extra-bundle": "^6.2",
+    "sonata-project/media-bundle": "^4.5",
     "stof/doctrine-extensions-bundle": "^1.7",
     "symfony/asset": "5.4.*",
     "symfony/console": "5.4.*",
@@ -45,7 +47,9 @@
     "allow-plugins": {
       "composer/package-versions-deprecated": true,
       "symfony/flex": true,
-      "symfony/runtime": true
+      "symfony/runtime": true,
+      "composer/installers": true,
+      "oomphinc/composer-installers-extender": true
     },
     "optimize-autoloader": true,
     "preferred-install": {

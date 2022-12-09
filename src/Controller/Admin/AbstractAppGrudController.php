@@ -99,6 +99,8 @@ abstract class AbstractAppGrudController extends AbstractCrudController implemen
         return $actions;
     }
 
+// ============================= HELP METHODS =============================
+
     protected function getEntityManager(): EntityManagerInterface
     {
         return $this->em;
@@ -113,7 +115,7 @@ abstract class AbstractAppGrudController extends AbstractCrudController implemen
     }
 
     /**
-     * @return \App\Bundles\Attribute\Manager\CrudControllerManager
+     * @return CrudControllerManager
      */
     public function getControllerManager(): CrudControllerManager
     {

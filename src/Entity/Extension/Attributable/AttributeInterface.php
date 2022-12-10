@@ -11,6 +11,7 @@
 namespace App\Entity\Extension\Attributable;
 
 use App\Entity\Extension\DeletableEntity;
+use Doctrine\Common\Collections\Collection;
 
 interface AttributeInterface extends DeletableEntity
 {
@@ -108,6 +109,7 @@ interface AttributeInterface extends DeletableEntity
 
     public function setOptionsArray(array $optionsArray): AttributeInterface;
 
+    public function getAssets(): Collection;
     /**
      * @param string $uniqueKey
      */

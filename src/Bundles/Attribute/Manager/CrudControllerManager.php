@@ -11,7 +11,7 @@
 namespace App\Bundles\Attribute\Manager;
 
 use App\Bundles\Attribute\Constant;
-use App\Bundles\Attribute\Form\AddressFormEmbed;
+use App\Bundles\Attribute\Form\AddressFormEmbedType;
 use App\Controller\Admin\Extension\CrudControllerManagerInterface;
 use App\Entity\Extension\Attributable\AttributeInterface;
 use App\Entity\Extension\Attributable\CategoryInterface;
@@ -42,7 +42,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\UrlField;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use RuntimeException;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
@@ -72,6 +71,7 @@ class CrudControllerManager implements EventSubscriberInterface
         $controller = $this->getController();
         $pageName = $this->getPageName();
         $mappings = $this->getMappings($controller);
+//        dump($mappings);
         $fields = [];
         foreach ($mappings as $propertyName => &$mapping) {
             if (array_key_exists($propertyName, $fieldOptions)) {
@@ -279,20 +279,23 @@ class CrudControllerManager implements EventSubscriberInterface
                 }
                 break;
             case 'image':
-                $folder = $attribute === null ? $propertyName : $attribute->getUniqueKey();
-                $imagePath = $this->getParameter('upload_image_path') . '/' . $folder;
-
-                $absPath = $this->getParameter('web_base_path') . '/' . $imagePath;
-                if (!file_exists($absPath) && !mkdir($absPath, 0777, true) && !is_dir($absPath)) {
-                    throw new RuntimeException(sprintf('Directory "%s" was not created', $absPath));
-                }
+                $imagePath = $this->getParameter('upload_image_path');
                 $field = ImageField::new($propertyName, $label)
                     ->setUploadDir("public/$imagePath")
-                    ->setBasePath($imagePath);
+                    ->setBasePath($imagePath);//->setFormTypeOption('multiple', true);
+
+//                $field = CollectionField::new($propertyName, $label)
+//                    ->setEntryType(AttributeFileType::class)
+//                    ->setFormTypeOption('by_reference', false)
+//                ;
+//                if ($pageName === Crud::PAGE_DETAIL) {
+//                    $field->setTemplatePath('bundles/EasyAdminBundle/crud/field/attribute_images.html.twig');
+//                }
+
                 break;
             case 'address':
                 $field = CollectionField::new($propertyName, $label)
-                    ->setEntryType(AddressFormEmbed::class)
+                    ->setEntryType(AddressFormEmbedType::class)
                     ->setTemplatePath('bundles/EasyAdminBundle/crud/field/attribute_address.html.twig');
 
                 break;

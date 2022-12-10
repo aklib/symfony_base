@@ -20,7 +20,6 @@
     "laminas/laminas-json": "^3.3",
     "ruflin/elastica": "^7.1",
     "sensio/framework-extra-bundle": "^6.2",
-    "sonata-project/media-bundle": "^4.5",
     "stof/doctrine-extensions-bundle": "^1.7",
     "symfony/asset": "5.4.*",
     "symfony/console": "5.4.*",
@@ -41,7 +40,8 @@
     "symfonycasts/reset-password-bundle": "^1.13",
     "twig/extra-bundle": "^3.4",
     "twig/intl-extra": "^3.4",
-    "twig/twig": "^2.12|^3.0"
+    "twig/twig": "^2.12|^3.0",
+    "vich/uploader-bundle": "^1.21"
   },
   "config": {
     "allow-plugins": {

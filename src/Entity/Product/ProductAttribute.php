@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpUnused */
 
 namespace App\Entity\Product;
 
@@ -12,6 +12,8 @@ use App\Entity\Extension\Attributable\CategoryInterface;
 use App\Entity\Extension\Traits\BlameableEntityTrait;
 use App\Entity\Extension\Traits\TimestampableEntityTrait;
 use App\Repository\Product\ProductAttributeRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
@@ -57,4 +59,113 @@ class ProductAttribute implements AttributeInterface
      * @AppORM\Element(sortOrder="3")
      */
     private AttributeDefInterface $attributeDef;
+
+    /**
+     * @ORM\OneToMany(targetEntity=ProductAttributeAsset::class, mappedBy="attribute", orphanRemoval=true, cascade={"persist", "remove"})
+     */
+    private Collection $assets;
+
+    /**
+     * @ORM\OneToMany(targetEntity=ProductAttributeOption::class, mappedBy="productAttribute", orphanRemoval=true)
+     */
+    private $productAttributeOptions;
+
+    /**
+     * @ORM\OneToMany(targetEntity=ProductAttributeValue::class, mappedBy="productAttribute", orphanRemoval=true)
+     */
+    private $productAttributeValues;
+
+    public function __construct()
+    {
+        $this->assets = new ArrayCollection();
+        $this->productAttributeOptions = new ArrayCollection();
+        $this->productAttributeValues = new ArrayCollection();
+    }
+
+    /**
+     * @return Collection<int, ProductAttributeAsset>
+     */
+    public function getAssets(): Collection
+    {
+        return $this->assets;
+    }
+
+    public function addAsset(ProductAttributeAsset $asset): self
+    {
+        if (!$this->assets->contains($asset)) {
+            $this->assets[] = $asset;
+            $asset->setAttribute($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAsset(ProductAttributeAsset $asset): self
+    {
+        // set the owning side to null (unless already changed)
+        if ($this->assets->removeElement($asset) && $asset->getAttribute() === $this) {
+            $asset->setAttribute(null);
+        }
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ProductAttributeOption>
+     */
+    public function getProductAttributeOptions(): Collection
+    {
+        return $this->productAttributeOptions;
+    }
+
+    public function addProductAttributeOption(ProductAttributeOption $productAttributeOption): self
+    {
+        if (!$this->productAttributeOptions->contains($productAttributeOption)) {
+            $this->productAttributeOptions[] = $productAttributeOption;
+            $productAttributeOption->setProductAttribute($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProductAttributeOption(ProductAttributeOption $productAttributeOption): self
+    {
+        if ($this->productAttributeOptions->removeElement($productAttributeOption)) {
+            // set the owning side to null (unless already changed)
+            if ($productAttributeOption->getProductAttribute() === $this) {
+                $productAttributeOption->setProductAttribute(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ProductAttributeValue>
+     */
+    public function getProductAttributeValues(): Collection
+    {
+        return $this->productAttributeValues;
+    }
+
+    public function addProductAttributeValue(ProductAttributeValue $productAttributeValue): self
+    {
+        if (!$this->productAttributeValues->contains($productAttributeValue)) {
+            $this->productAttributeValues[] = $productAttributeValue;
+            $productAttributeValue->setProductAttribute($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProductAttributeValue(ProductAttributeValue $productAttributeValue): self
+    {
+        if ($this->productAttributeValues->removeElement($productAttributeValue)) {
+            // set the owning side to null (unless already changed)
+            if ($productAttributeValue->getProductAttribute() === $this) {
+                $productAttributeValue->setProductAttribute(null);
+            }
+        }
+
+        return $this;
+    }
 }

@@ -1,4 +1,5 @@
-<?php /** @noinspection PhpUnusedPrivateMethodInspection */
+<?php /** @noinspection PhpUnusedLocalVariableInspection */
+/** @noinspection PhpUnusedPrivateMethodInspection */
 
 /**
  * Class AbstractAttributeManager
@@ -150,6 +151,16 @@ abstract class AbstractAttributeAdapter implements AttributeAdapterInterface
                 break;
             case 'address':
                 // don't touch!
+                break;
+            case 'image':
+            case 'file':
+                if ($attribute->isMultiple()) {
+                    $attributeValue = $attribute->getAssets();
+                } elseif ($attribute->getAssets()->isEmpty()) {
+                    $attributeValue = null;
+                } else {
+                    $attributeValue = $attribute->getAssets()->first();
+                }
                 break;
             default:
                 if (!$attribute->isMultiple()) {
